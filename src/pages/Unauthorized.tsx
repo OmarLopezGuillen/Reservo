@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "../components/ui/card"
+import { ROUTES } from "../ROUTES"
 
 const Unauthorized = () => {
 	return (
@@ -30,13 +31,13 @@ const Unauthorized = () => {
 						</p>
 						<div className="flex flex-col gap-2">
 							<Button asChild>
-								<Link to="/">
+								<Link to={ROUTES.HOME}>
 									<Home className="h-4 w-4 mr-2" />
 									Ir al inicio
 								</Link>
 							</Button>
 							<Button variant="outline" asChild>
-								<Link to="/login">
+								<Link to={ROUTES.LOGIN}>
 									<ArrowLeft className="h-4 w-4 mr-2" />
 									Iniciar sesión
 								</Link>

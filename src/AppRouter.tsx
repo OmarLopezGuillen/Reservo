@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react"
 import { BrowserRouter, Route, Routes } from "react-router"
 import Login from "./pages/auth/pages/Login"
 import Register from "./pages/auth/pages/Register"
+import { ROUTES } from "./ROUTES"
 
 const Unauthorized = lazy(() => import("./pages/Unauthorized"))
 const NotFound = lazy(() => import("./pages/NotFound"))
@@ -36,13 +37,13 @@ export default function AppRouter() {
 		<BrowserRouter>
 			<Routes>
 				{/* Rutas públicas */}
-				<Route path="/" element={<Login />} />
-				<Route path="/login" element={<Login />} />
-				<Route path="/register" element={<Register />} />
+				<Route path={ROUTES.HOME} element={<Login />} />
+				<Route path={ROUTES.LOGIN} element={<Login />} />
+				<Route path={ROUTES.REGISTER} element={<Register />} />
 
 				{/* Admin */}
 				<Route
-					path="/admin"
+					path={ROUTES.ADMIN.ROOT}
 					element={
 						<Suspense fallback={<Loader />}>
 							<Admin />
@@ -50,7 +51,7 @@ export default function AppRouter() {
 					}
 				>
 					<Route
-						path="/admin/ajustes"
+						path={ROUTES.ADMIN.AJUSTES}
 						element={
 							<Suspense fallback={<Loader />}>
 								<AdminAjustes />
@@ -58,7 +59,7 @@ export default function AppRouter() {
 						}
 					/>
 					<Route
-						path="/admin/estadisticas"
+						path={ROUTES.ADMIN.ESTADISTICAS}
 						element={
 							<Suspense fallback={<Loader />}>
 								<AdminEstadisticas />
@@ -66,7 +67,7 @@ export default function AppRouter() {
 						}
 					/>
 					<Route
-						path="/admin/liga"
+						path={ROUTES.ADMIN.LIGA}
 						element={
 							<Suspense fallback={<Loader />}>
 								<AdminLiga />
@@ -74,7 +75,7 @@ export default function AppRouter() {
 						}
 					/>
 					<Route
-						path="/admin/lista-espera"
+						path={ROUTES.ADMIN.LISTA_ESPERA}
 						element={
 							<Suspense fallback={<Loader />}>
 								<AdminListaEspera />
@@ -82,7 +83,7 @@ export default function AppRouter() {
 						}
 					/>
 					<Route
-						path="/admin/recursos"
+						path={ROUTES.ADMIN.RECURSOS}
 						element={
 							<Suspense fallback={<Loader />}>
 								<AdminRecursos />
@@ -90,7 +91,7 @@ export default function AppRouter() {
 						}
 					/>
 					<Route
-						path="/admin/reportes"
+						path={ROUTES.ADMIN.REPORTES}
 						element={
 							<Suspense fallback={<Loader />}>
 								<AdminReportes />
@@ -101,7 +102,7 @@ export default function AppRouter() {
 
 				{/* Legales */}
 				<Route
-					path="/legal/privacidad"
+					path={ROUTES.LEGAL.PRIVACIDAD}
 					element={
 						<Suspense fallback={<Loader />}>
 							<LegalPrivacidad />
@@ -109,7 +110,7 @@ export default function AppRouter() {
 					}
 				/>
 				<Route
-					path="/legal/terminos"
+					path={ROUTES.LEGAL.TERMINOS}
 					element={
 						<Suspense fallback={<Loader />}>
 							<LegalTerminos />
@@ -119,7 +120,7 @@ export default function AppRouter() {
 
 				{/* Reservas */}
 				<Route
-					path="/reserva/:reservaId"
+					path={ROUTES.RESERVA(":reservaId")}
 					element={
 						<Suspense fallback={<Loader />}>
 							<Reserva />
@@ -128,7 +129,7 @@ export default function AppRouter() {
 				/>
 
 				<Route
-					path="/crear-reserva"
+					path={ROUTES.CREAR_RESERVA.ROOT}
 					element={
 						<Suspense fallback={<Loader />}>
 							<CrearReserva />
@@ -136,7 +137,7 @@ export default function AppRouter() {
 					}
 				>
 					<Route
-						path="/crear-reserva/datos"
+						path={ROUTES.CREAR_RESERVA.DATOS}
 						element={
 							<Suspense fallback={<Loader />}>
 								<CrearReservaDatos />
@@ -144,7 +145,7 @@ export default function AppRouter() {
 						}
 					/>
 					<Route
-						path="/crear-reserva/pago"
+						path={ROUTES.CREAR_RESERVA.PAGO}
 						element={
 							<Suspense fallback={<Loader />}>
 								<CrearReservaPago />
@@ -152,7 +153,7 @@ export default function AppRouter() {
 						}
 					/>
 					<Route
-						path="/crear-reserva/exito"
+						path={ROUTES.CREAR_RESERVA.EXITO}
 						element={
 							<Suspense fallback={<Loader />}>
 								<CrearReservaExito />
@@ -163,7 +164,7 @@ export default function AppRouter() {
 
 				{/* Errores */}
 				<Route
-					path="/unauthorized"
+					path={ROUTES.UNAUTHORIZED}
 					element={
 						<Suspense fallback={<Loader />}>
 							<Unauthorized />
@@ -171,7 +172,7 @@ export default function AppRouter() {
 					}
 				/>
 				<Route
-					path="*"
+					path={ROUTES.NOT_FOUND}
 					element={
 						<Suspense fallback={<Loader />}>
 							<NotFound />

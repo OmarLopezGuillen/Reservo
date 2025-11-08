@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "../components/ui/card"
+import { ROUTES } from "../ROUTES"
 
 const NotFound = () => {
 	return (
@@ -30,7 +31,7 @@ const NotFound = () => {
 
 						<div className="space-y-2">
 							<Button asChild className="w-full">
-								<Link to="/">
+								<Link to={ROUTES.HOME}>
 									<Home className="h-4 w-4 mr-2" />
 									Volver al inicio
 								</Link>
@@ -40,7 +41,7 @@ const NotFound = () => {
 								asChild
 								className="w-full bg-transparent"
 							>
-								<Link to="/reservar">
+								<Link to={ROUTES.CREAR_RESERVA.ROOT}>
 									<ArrowLeft className="h-4 w-4 mr-2" />
 									Hacer una reserva
 								</Link>
