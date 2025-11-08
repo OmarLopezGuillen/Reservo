@@ -25,7 +25,7 @@ const NotFound = () => {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						<div className="text-center text-6xl font-bold text-muted-foreground/20">
+						<div className="text-center text-6xl font-bold text-muted-foreground/20 pb-6">
 							404
 						</div>
 
@@ -48,7 +48,7 @@ const NotFound = () => {
 							</Button>
 						</div>
 
-						<div className="text-center text-sm text-muted-foreground">
+						<div className="text-center text-sm text-muted-foreground space-y-2">
 							<p>¿Necesitas ayuda?</p>
 							<p>
 								Contacta con nosotros en{" "}
