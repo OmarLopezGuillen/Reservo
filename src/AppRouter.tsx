@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react"
 import { BrowserRouter, Route, Routes } from "react-router"
+import { Spinner } from "./components/ui/spinner"
 import Login from "./pages/auth/pages/Login"
 import Register from "./pages/auth/pages/Register"
 import { ROUTES } from "./ROUTES"
@@ -30,7 +31,11 @@ const AdminReportes = lazy(() => import("./pages/admin/pages/Reportes"))
 const LegalPrivacidad = lazy(() => import("./pages/legal/pages/Privacidad"))
 const LegalTerminos = lazy(() => import("./pages/legal/pages/Terminos"))
 
-const Loader = () => <div className="p-8 text-center">Cargando...</div>
+const Loader = () => (
+	<div className="h-dvh flex justify-center items-center">
+		<Spinner className="size-8" />
+	</div>
+)
 
 export default function AppRouter() {
 	return (
