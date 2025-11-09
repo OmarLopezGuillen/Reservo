@@ -10,7 +10,6 @@ export const logIn = async ({ email, password }: Props) => {
 		email,
 		password,
 	})
-	console.log("TOKEN?: ", data)
 	if (error) {
 		console.error("Error logging out:", error.message)
 		throw Error("No se pudo iniciar sessión")

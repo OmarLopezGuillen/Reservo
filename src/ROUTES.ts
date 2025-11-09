@@ -7,6 +7,7 @@ export const ROUTES = {
 	// Admin
 	ADMIN: {
 		ROOT: "/admin",
+		AGENDA: "/admin/agenda",
 		AJUSTES: "/admin/ajustes",
 		ESTADISTICAS: "/admin/estadisticas",
 		LIGA: "/admin/liga",

@@ -1,10 +1,13 @@
 import { lazy, Suspense } from "react"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router"
 import { AuthInit } from "@/auth/components/AuthInit"
+import { NoAuthRoute } from "@/auth/layouts/NoAuthRoute"
 import { PrivateRoute } from "@/auth/layouts/PrivateRoute"
 import Login from "@/auth/pages/Login"
 import Register from "@/auth/pages/Register"
 import { Loading } from "@/components/Loading"
+import { ROLES } from "@/models/roles.model"
+import Home from "@/pages/Home"
 import { ROUTES } from "@/ROUTES"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
@@ -24,6 +27,7 @@ const CrearReservaExito = lazy(
 
 const AdminLayout = lazy(() => import("@/pages/admin/layout/AdminLayout"))
 
+const AdminAgenda = lazy(() => import("@/pages/admin/pages/Agenda"))
 const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes"))
 const AdminEstadisticas = lazy(() => import("@/pages/admin/pages/Estadisticas"))
 const AdminLiga = lazy(() => import("@/pages/admin/pages/Liga"))
@@ -35,45 +39,16 @@ const LegalPrivacidad = lazy(() => import("@/pages/legal/pages/Privacidad"))
 const LegalTerminos = lazy(() => import("@/pages/legal/pages/Terminos"))
 
 export default function AppRouter() {
-	//TODO. A: Mejorar las rutas con los roles
 	return (
 		<BrowserRouter>
 			<AuthInit />
 			<Routes>
 				{/* Rutas públicas */}
-				<Route path={ROUTES.HOME} element={<Login />} />
-				<Route path={ROUTES.LOGIN} element={<Login />} />
-				<Route path={ROUTES.REGISTER} element={<Register />} />
+				<Route path={ROUTES.HOME} element={<Home />} />
 
-				{/* Admin */}
-				<Route element={<PrivateRoute roles={["user"]} />}>
-					<Route
-						path={ROUTES.ADMIN.ROOT}
-						element={
-							<Suspense fallback={<Loading />}>
-								<AdminLayout />
-							</Suspense>
-						}
-					>
-						{/* Redirección por defecto */}
-						<Route
-							index
-							element={<Navigate to={ROUTES.ADMIN.AJUSTES} replace />}
-						/>
-
-						<Route path={ROUTES.ADMIN.AJUSTES} element={<AdminAjustes />} />
-						<Route
-							path={ROUTES.ADMIN.ESTADISTICAS}
-							element={<AdminEstadisticas />}
-						/>
-						<Route path={ROUTES.ADMIN.LIGA} element={<AdminLiga />} />
-						<Route
-							path={ROUTES.ADMIN.LISTA_ESPERA}
-							element={<AdminListaEspera />}
-						/>
-						<Route path={ROUTES.ADMIN.RECURSOS} element={<AdminRecursos />} />
-						<Route path={ROUTES.ADMIN.REPORTES} element={<AdminReportes />} />
-					</Route>
+				<Route element={<NoAuthRoute />}>
+					<Route path={ROUTES.LOGIN} element={<Login />} />
+					<Route path={ROUTES.REGISTER} element={<Register />} />
 				</Route>
 
 				{/* Legales */}
@@ -94,48 +69,99 @@ export default function AppRouter() {
 					}
 				/>
 
-				{/* Reservas */}
-				<Route
-					path={ROUTES.RESERVA(":reservaId")}
-					element={
-						<Suspense fallback={<Loading />}>
-							<Reserva />
-						</Suspense>
-					}
-				/>
+				{/* Admin */}
+				<Route element={<PrivateRoute roles={[ROLES.ADMIN]} />}>
+					<Route
+						path={ROUTES.ADMIN.ROOT}
+						element={
+							<Suspense fallback={<Loading />}>
+								<AdminLayout />
+							</Suspense>
+						}
+					>
+						{/* Redirección por defecto */}
+						<Route
+							index
+							element={<Navigate to={ROUTES.ADMIN.AGENDA} replace />}
+						/>
 
-				<Route
-					path={ROUTES.CREAR_RESERVA.ROOT}
-					element={
-						<Suspense fallback={<Loading />}>
-							<CrearReserva />
-						</Suspense>
-					}
-				>
+						<Route path={ROUTES.ADMIN.AGENDA} element={<AdminAgenda />} />
+
+						<Route path={ROUTES.ADMIN.AJUSTES} element={<AdminAjustes />} />
+
+						<Route
+							element={
+								<PrivateRoute
+									roles={[ROLES.OWNER]}
+									redirectTo={ROUTES.ADMIN.AGENDA}
+								/>
+							}
+						>
+							<Route
+								path={ROUTES.ADMIN.ESTADISTICAS}
+								element={<AdminEstadisticas />}
+							/>
+						</Route>
+
+						<Route path={ROUTES.ADMIN.LIGA} element={<AdminLiga />} />
+						<Route
+							path={ROUTES.ADMIN.LISTA_ESPERA}
+							element={<AdminListaEspera />}
+						/>
+						<Route path={ROUTES.ADMIN.RECURSOS} element={<AdminRecursos />} />
+						<Route path={ROUTES.ADMIN.REPORTES} element={<AdminReportes />} />
+					</Route>
+				</Route>
+
+				{/* Reservas */}
+				<Route element={<PrivateRoute roles={[ROLES.USER, ROLES.ADMIN]} />}>
 					<Route
-						path={ROUTES.CREAR_RESERVA.DATOS}
+						path={ROUTES.RESERVA(":reservaId")}
 						element={
 							<Suspense fallback={<Loading />}>
-								<CrearReservaDatos />
+								<Reserva />
 							</Suspense>
 						}
 					/>
+
 					<Route
-						path={ROUTES.CREAR_RESERVA.PAGO}
+						path={ROUTES.CREAR_RESERVA.ROOT}
 						element={
 							<Suspense fallback={<Loading />}>
-								<CrearReservaPago />
+								<CrearReserva />
 							</Suspense>
 						}
-					/>
-					<Route
-						path={ROUTES.CREAR_RESERVA.EXITO}
-						element={
-							<Suspense fallback={<Loading />}>
-								<CrearReservaExito />
-							</Suspense>
-						}
-					/>
+					>
+						{/* Redirección por defecto */}
+						<Route
+							index
+							element={<Navigate to={ROUTES.CREAR_RESERVA.DATOS} replace />}
+						/>
+						<Route
+							path={ROUTES.CREAR_RESERVA.DATOS}
+							element={
+								<Suspense fallback={<Loading />}>
+									<CrearReservaDatos />
+								</Suspense>
+							}
+						/>
+						<Route
+							path={ROUTES.CREAR_RESERVA.PAGO}
+							element={
+								<Suspense fallback={<Loading />}>
+									<CrearReservaPago />
+								</Suspense>
+							}
+						/>
+						<Route
+							path={ROUTES.CREAR_RESERVA.EXITO}
+							element={
+								<Suspense fallback={<Loading />}>
+									<CrearReservaExito />
+								</Suspense>
+							}
+						/>
+					</Route>
 				</Route>
 
 				{/* Errores */}
@@ -147,6 +173,7 @@ export default function AppRouter() {
 						</Suspense>
 					}
 				/>
+
 				<Route
 					path={ROUTES.NOT_FOUND}
 					element={
