@@ -1,8 +1,10 @@
 import { lazy, Suspense } from "react"
 import { BrowserRouter, Route, Routes } from "react-router"
-import { Spinner } from "@/components/ui/spinner"
-import Login from "@/pages/auth/pages/Login"
-import Register from "@/pages/auth/pages/Register"
+import { AuthInit } from "@/auth/components/AuthInit"
+import { PrivateRoute } from "@/auth/layouts/PrivateRoute"
+import Login from "@/auth/pages/Login"
+import Register from "@/auth/pages/Register"
+import { Loading } from "@/components/Loading"
 import { ROUTES } from "@/ROUTES"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
@@ -20,7 +22,6 @@ const CrearReservaExito = lazy(
 	() => import("@/pages/crear-reserva/pages/Exito"),
 )
 
-const Admin = lazy(() => import("@/pages/admin/layout/AdminLayout"))
 const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes"))
 const AdminEstadisticas = lazy(() => import("@/pages/admin/pages/Estadisticas"))
 const AdminLiga = lazy(() => import("@/pages/admin/pages/Liga"))
@@ -31,15 +32,10 @@ const AdminReportes = lazy(() => import("@/pages/admin/pages/Reportes"))
 const LegalPrivacidad = lazy(() => import("@/pages/legal/pages/Privacidad"))
 const LegalTerminos = lazy(() => import("@/pages/legal/pages/Terminos"))
 
-const Loader = () => (
-	<div className="h-dvh flex justify-center items-center">
-		<Spinner className="size-8" />
-	</div>
-)
-
 export default function AppRouter() {
 	return (
 		<BrowserRouter>
+			<AuthInit />
 			<Routes>
 				{/* Rutas públicas */}
 				<Route path={ROUTES.HOME} element={<Login />} />
@@ -49,16 +45,12 @@ export default function AppRouter() {
 				{/* Admin */}
 				<Route
 					path={ROUTES.ADMIN.ROOT}
-					element={
-						<Suspense fallback={<Loader />}>
-							<Admin />
-						</Suspense>
-					}
+					element={<PrivateRoute roles={["admin"]} />}
 				>
 					<Route
 						path={ROUTES.ADMIN.AJUSTES}
 						element={
-							<Suspense fallback={<Loader />}>
+							<Suspense fallback={<Loading />}>
 								<AdminAjustes />
 							</Suspense>
 						}
@@ -66,7 +58,7 @@ export default function AppRouter() {
 					<Route
 						path={ROUTES.ADMIN.ESTADISTICAS}
 						element={
-							<Suspense fallback={<Loader />}>
+							<Suspense fallback={<Loading />}>
 								<AdminEstadisticas />
 							</Suspense>
 						}
@@ -74,7 +66,7 @@ export default function AppRouter() {
 					<Route
 						path={ROUTES.ADMIN.LIGA}
 						element={
-							<Suspense fallback={<Loader />}>
+							<Suspense fallback={<Loading />}>
 								<AdminLiga />
 							</Suspense>
 						}
@@ -82,7 +74,7 @@ export default function AppRouter() {
 					<Route
 						path={ROUTES.ADMIN.LISTA_ESPERA}
 						element={
-							<Suspense fallback={<Loader />}>
+							<Suspense fallback={<Loading />}>
 								<AdminListaEspera />
 							</Suspense>
 						}
@@ -90,7 +82,7 @@ export default function AppRouter() {
 					<Route
 						path={ROUTES.ADMIN.RECURSOS}
 						element={
-							<Suspense fallback={<Loader />}>
+							<Suspense fallback={<Loading />}>
 								<AdminRecursos />
 							</Suspense>
 						}
@@ -98,7 +90,7 @@ export default function AppRouter() {
 					<Route
 						path={ROUTES.ADMIN.REPORTES}
 						element={
-							<Suspense fallback={<Loader />}>
+							<Suspense fallback={<Loading />}>
 								<AdminReportes />
 							</Suspense>
 						}
@@ -109,7 +101,7 @@ export default function AppRouter() {
 				<Route
 					path={ROUTES.LEGAL.PRIVACIDAD}
 					element={
-						<Suspense fallback={<Loader />}>
+						<Suspense fallback={<Loading />}>
 							<LegalPrivacidad />
 						</Suspense>
 					}
@@ -117,7 +109,7 @@ export default function AppRouter() {
 				<Route
 					path={ROUTES.LEGAL.TERMINOS}
 					element={
-						<Suspense fallback={<Loader />}>
+						<Suspense fallback={<Loading />}>
 							<LegalTerminos />
 						</Suspense>
 					}
@@ -127,7 +119,7 @@ export default function AppRouter() {
 				<Route
 					path={ROUTES.RESERVA(":reservaId")}
 					element={
-						<Suspense fallback={<Loader />}>
+						<Suspense fallback={<Loading />}>
 							<Reserva />
 						</Suspense>
 					}
@@ -136,7 +128,7 @@ export default function AppRouter() {
 				<Route
 					path={ROUTES.CREAR_RESERVA.ROOT}
 					element={
-						<Suspense fallback={<Loader />}>
+						<Suspense fallback={<Loading />}>
 							<CrearReserva />
 						</Suspense>
 					}
@@ -144,7 +136,7 @@ export default function AppRouter() {
 					<Route
 						path={ROUTES.CREAR_RESERVA.DATOS}
 						element={
-							<Suspense fallback={<Loader />}>
+							<Suspense fallback={<Loading />}>
 								<CrearReservaDatos />
 							</Suspense>
 						}
@@ -152,7 +144,7 @@ export default function AppRouter() {
 					<Route
 						path={ROUTES.CREAR_RESERVA.PAGO}
 						element={
-							<Suspense fallback={<Loader />}>
+							<Suspense fallback={<Loading />}>
 								<CrearReservaPago />
 							</Suspense>
 						}
@@ -160,7 +152,7 @@ export default function AppRouter() {
 					<Route
 						path={ROUTES.CREAR_RESERVA.EXITO}
 						element={
-							<Suspense fallback={<Loader />}>
+							<Suspense fallback={<Loading />}>
 								<CrearReservaExito />
 							</Suspense>
 						}
@@ -171,7 +163,7 @@ export default function AppRouter() {
 				<Route
 					path={ROUTES.UNAUTHORIZED}
 					element={
-						<Suspense fallback={<Loader />}>
+						<Suspense fallback={<Loading />}>
 							<Unauthorized />
 						</Suspense>
 					}
@@ -179,7 +171,7 @@ export default function AppRouter() {
 				<Route
 					path={ROUTES.NOT_FOUND}
 					element={
-						<Suspense fallback={<Loader />}>
+						<Suspense fallback={<Loading />}>
 							<NotFound />
 						</Suspense>
 					}

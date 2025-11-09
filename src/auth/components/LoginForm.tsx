@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Mail } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router"
+import { useAuthActions } from "@/auth/hooks/useAuthActions"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
@@ -24,6 +25,8 @@ import { ROUTES } from "@/ROUTES"
 import { type LoginFormSchema, loginFormSchema } from "@/schemas/login.schema"
 
 export default function LoginForm() {
+	const { logIn } = useAuthActions()
+
 	const form = useForm<LoginFormSchema>({
 		resolver: zodResolver(loginFormSchema),
 		defaultValues: {
@@ -34,13 +37,8 @@ export default function LoginForm() {
 
 	async function onSubmit(values: LoginFormSchema) {
 		try {
-			// Assuming an async login function
-			console.log(values)
-			/* toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>,
-      ) */
+			const { email, password } = values
+			await logIn({ email, password })
 		} catch (error) {
 			console.error("Form submission error", error)
 		}

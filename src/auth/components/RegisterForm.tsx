@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { UserPlus } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router"
+import { useAuthActions } from "@/auth/hooks/useAuthActions"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
@@ -27,6 +28,8 @@ import {
 } from "@/schemas/register.schema"
 
 export default function RegisterForm() {
+	const { signUp } = useAuthActions()
+
 	const form = useForm<RegisterFormSchema>({
 		resolver: zodResolver(registerFormSchema),
 		defaultValues: {
@@ -40,8 +43,8 @@ export default function RegisterForm() {
 
 	async function onSubmit(values: RegisterFormSchema) {
 		try {
-			// Assuming an async registration function
-			console.log(values)
+			const { email, password } = values
+			await signUp({ email, password })
 		} catch (error) {
 			console.error("Form submission error", error)
 		}

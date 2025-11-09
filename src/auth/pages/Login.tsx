@@ -1,10 +1,10 @@
 import { ArrowLeft } from "lucide-react"
 import { Link } from "react-router"
+import LoginForm from "@/auth/components/LoginForm"
 import { Button } from "@/components/ui/button"
-import RegisterForm from "@/pages/auth/components/RegisterForm"
 import { ROUTES } from "@/ROUTES"
 
-const Register = () => {
+const Login = () => {
 	return (
 		<div className="h-screen flex flex-col justify-center max-w-md mx-auto">
 			<Button variant="ghost" asChild className="mb-4 self-start">
@@ -13,8 +13,8 @@ const Register = () => {
 					Volver al inicio
 				</Link>
 			</Button>
-			<RegisterForm />
+			<LoginForm />
 		</div>
 	)
 }
-export default Register
+export default Login
