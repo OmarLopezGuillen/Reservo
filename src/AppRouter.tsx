@@ -1,35 +1,35 @@
 import { lazy, Suspense } from "react"
 import { BrowserRouter, Route, Routes } from "react-router"
-import { Spinner } from "./components/ui/spinner"
-import Login from "./pages/auth/pages/Login"
-import Register from "./pages/auth/pages/Register"
-import { ROUTES } from "./ROUTES"
+import { Spinner } from "@/components/ui/spinner"
+import Login from "@/pages/auth/pages/Login"
+import Register from "@/pages/auth/pages/Register"
+import { ROUTES } from "@/ROUTES"
 
-const Unauthorized = lazy(() => import("./pages/Unauthorized"))
-const NotFound = lazy(() => import("./pages/NotFound"))
-const Reserva = lazy(() => import("./pages/reserva/pages/Reserva"))
+const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
+const NotFound = lazy(() => import("@/pages/NotFound"))
+const Reserva = lazy(() => import("@/pages/reserva/pages/Reserva"))
 
 const CrearReserva = lazy(
-	() => import("./pages/crear-reserva/layout/CrearReservaLayout"),
+	() => import("@/pages/crear-reserva/layout/CrearReservaLayout"),
 )
 const CrearReservaDatos = lazy(
-	() => import("./pages/crear-reserva/pages/Datos"),
+	() => import("@/pages/crear-reserva/pages/Datos"),
 )
-const CrearReservaPago = lazy(() => import("./pages/crear-reserva/pages/Pago"))
+const CrearReservaPago = lazy(() => import("@/pages/crear-reserva/pages/Pago"))
 const CrearReservaExito = lazy(
-	() => import("./pages/crear-reserva/pages/Exito"),
+	() => import("@/pages/crear-reserva/pages/Exito"),
 )
 
-const Admin = lazy(() => import("./pages/admin/layout/AdminLayout"))
-const AdminAjustes = lazy(() => import("./pages/admin/pages/Ajustes"))
-const AdminEstadisticas = lazy(() => import("./pages/admin/pages/Estadisticas"))
-const AdminLiga = lazy(() => import("./pages/admin/pages/Liga"))
-const AdminListaEspera = lazy(() => import("./pages/admin/pages/ListaEspera"))
-const AdminRecursos = lazy(() => import("./pages/admin/pages/Recursos"))
-const AdminReportes = lazy(() => import("./pages/admin/pages/Reportes"))
+const Admin = lazy(() => import("@/pages/admin/layout/AdminLayout"))
+const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes"))
+const AdminEstadisticas = lazy(() => import("@/pages/admin/pages/Estadisticas"))
+const AdminLiga = lazy(() => import("@/pages/admin/pages/Liga"))
+const AdminListaEspera = lazy(() => import("@/pages/admin/pages/ListaEspera"))
+const AdminRecursos = lazy(() => import("@/pages/admin/pages/Recursos"))
+const AdminReportes = lazy(() => import("@/pages/admin/pages/Reportes"))
 
-const LegalPrivacidad = lazy(() => import("./pages/legal/pages/Privacidad"))
-const LegalTerminos = lazy(() => import("./pages/legal/pages/Terminos"))
+const LegalPrivacidad = lazy(() => import("@/pages/legal/pages/Privacidad"))
+const LegalTerminos = lazy(() => import("@/pages/legal/pages/Terminos"))
 
 const Loader = () => (
 	<div className="h-dvh flex justify-center items-center">

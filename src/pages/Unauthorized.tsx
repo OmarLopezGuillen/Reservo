@@ -1,14 +1,14 @@
 import { AlertTriangle, ArrowLeft, Home } from "lucide-react"
 import { Link } from "react-router"
-import { Button } from "../components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../components/ui/card"
-import { ROUTES } from "../ROUTES"
+} from "@/components/ui/card"
+import { ROUTES } from "@/ROUTES"
 
 const Unauthorized = () => {
 	return (

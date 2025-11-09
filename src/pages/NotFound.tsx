@@ -1,14 +1,14 @@
 import { ArrowLeft, Home, Search } from "lucide-react"
 import { Link } from "react-router"
-import { Button } from "../components/ui/button"
+import { ROUTES } from "@/ROUTES"
+import { Button } from "@/components/ui/button"
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../components/ui/card"
-import { ROUTES } from "../ROUTES"
+} from "@/components/ui/card"
 
 const NotFound = () => {
 	return (
