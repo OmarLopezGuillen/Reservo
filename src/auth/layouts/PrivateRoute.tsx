@@ -3,6 +3,7 @@ import { useAuthStore } from "@/auth/stores/auth.store"
 import { Loading } from "@/components/Loading"
 import { ROUTES } from "@/ROUTES"
 
+//TODO. A: Crear los roles
 type ROLE = "admin" | "user"
 
 interface PrivateRouteProps {

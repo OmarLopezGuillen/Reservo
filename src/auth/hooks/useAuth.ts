@@ -1,8 +1,6 @@
 import { type JwtPayload, jwtDecode } from "jwt-decode"
 import { useEffect } from "react"
-import { useNavigate } from "react-router"
 import { useAuthStore } from "@/auth/stores/auth.store"
-import { ROUTES } from "@/ROUTES"
 import { onAuthStateChange } from "@/services/auth/onAuthStateChange.service"
 
 interface MyJwtPayload extends JwtPayload {
@@ -12,25 +10,23 @@ interface MyJwtPayload extends JwtPayload {
 export function useAuth() {
 	const setAuth = useAuthStore((s) => s.setAuth)
 
-	const navigate = useNavigate()
-
 	useEffect(() => {
-		const subscription = onAuthStateChange((_event, session) => {
-			let userRole: string | null = null
+		const subscription = onAuthStateChange((event, session) => {
+			if (event === "SIGNED_OUT") {
+				setAuth(null, null)
+				return
+			}
+
 			if (session) {
 				const jwt = jwtDecode(session.access_token) as MyJwtPayload
-				userRole = jwt.user_role
-				if (!userRole) {
-					navigate(ROUTES.UNAUTHORIZED, { replace: true })
-					setAuth(null, null) // mantiene el comportamiento de "borrar sesión"
-					return
-				}
+				//TODO. A: Ajustar roles
+				const userRole = jwt.user_role ?? "user" // Se le asigna el rol más bajo si no hay rol
+				setAuth(session, userRole)
 			}
-			setAuth(session, userRole)
 		})
 
 		return () => {
 			subscription.unsubscribe()
 		}
-	}, [setAuth, navigate])
+	}, [])
 }

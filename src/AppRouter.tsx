@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react"
-import { BrowserRouter, Route, Routes } from "react-router"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router"
 import { AuthInit } from "@/auth/components/AuthInit"
 import { PrivateRoute } from "@/auth/layouts/PrivateRoute"
 import Login from "@/auth/pages/Login"
@@ -22,6 +22,8 @@ const CrearReservaExito = lazy(
 	() => import("@/pages/crear-reserva/pages/Exito"),
 )
 
+const AdminLayout = lazy(() => import("@/pages/admin/layout/AdminLayout"))
+
 const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes"))
 const AdminEstadisticas = lazy(() => import("@/pages/admin/pages/Estadisticas"))
 const AdminLiga = lazy(() => import("@/pages/admin/pages/Liga"))
@@ -33,6 +35,7 @@ const LegalPrivacidad = lazy(() => import("@/pages/legal/pages/Privacidad"))
 const LegalTerminos = lazy(() => import("@/pages/legal/pages/Terminos"))
 
 export default function AppRouter() {
+	//TODO. A: Mejorar las rutas con los roles
 	return (
 		<BrowserRouter>
 			<AuthInit />
@@ -43,58 +46,34 @@ export default function AppRouter() {
 				<Route path={ROUTES.REGISTER} element={<Register />} />
 
 				{/* Admin */}
-				<Route
-					path={ROUTES.ADMIN.ROOT}
-					element={<PrivateRoute roles={["admin"]} />}
-				>
+				<Route element={<PrivateRoute roles={["user"]} />}>
 					<Route
-						path={ROUTES.ADMIN.AJUSTES}
+						path={ROUTES.ADMIN.ROOT}
 						element={
 							<Suspense fallback={<Loading />}>
-								<AdminAjustes />
+								<AdminLayout />
 							</Suspense>
 						}
-					/>
-					<Route
-						path={ROUTES.ADMIN.ESTADISTICAS}
-						element={
-							<Suspense fallback={<Loading />}>
-								<AdminEstadisticas />
-							</Suspense>
-						}
-					/>
-					<Route
-						path={ROUTES.ADMIN.LIGA}
-						element={
-							<Suspense fallback={<Loading />}>
-								<AdminLiga />
-							</Suspense>
-						}
-					/>
-					<Route
-						path={ROUTES.ADMIN.LISTA_ESPERA}
-						element={
-							<Suspense fallback={<Loading />}>
-								<AdminListaEspera />
-							</Suspense>
-						}
-					/>
-					<Route
-						path={ROUTES.ADMIN.RECURSOS}
-						element={
-							<Suspense fallback={<Loading />}>
-								<AdminRecursos />
-							</Suspense>
-						}
-					/>
-					<Route
-						path={ROUTES.ADMIN.REPORTES}
-						element={
-							<Suspense fallback={<Loading />}>
-								<AdminReportes />
-							</Suspense>
-						}
-					/>
+					>
+						{/* Redirección por defecto */}
+						<Route
+							index
+							element={<Navigate to={ROUTES.ADMIN.AJUSTES} replace />}
+						/>
+
+						<Route path={ROUTES.ADMIN.AJUSTES} element={<AdminAjustes />} />
+						<Route
+							path={ROUTES.ADMIN.ESTADISTICAS}
+							element={<AdminEstadisticas />}
+						/>
+						<Route path={ROUTES.ADMIN.LIGA} element={<AdminLiga />} />
+						<Route
+							path={ROUTES.ADMIN.LISTA_ESPERA}
+							element={<AdminListaEspera />}
+						/>
+						<Route path={ROUTES.ADMIN.RECURSOS} element={<AdminRecursos />} />
+						<Route path={ROUTES.ADMIN.REPORTES} element={<AdminReportes />} />
+					</Route>
 				</Route>
 
 				{/* Legales */}
