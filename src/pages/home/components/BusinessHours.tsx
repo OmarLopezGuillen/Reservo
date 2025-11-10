@@ -59,7 +59,11 @@ const schedule: BusinessDay[] = [
 const formatHours = (hours: TimeRange[]) => {
 	if (hours.length === 0) return "Cerrado"
 
-	return hours.map((range) => `${range.start} - ${range.end}`).join(" y ")
+	return hours.map((range, index) => (
+		<div key={index} className="mb-1 font-mono">
+			{range.start} - {range.end}
+		</div>
+	))
 }
 
 export function BusinessHours({ businessId }: BusinessHoursProps) {
