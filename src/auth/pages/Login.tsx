@@ -6,7 +6,7 @@ import { ROUTES } from "@/ROUTES"
 
 const Login = () => {
 	return (
-		<div className="h-screen flex flex-col justify-center max-w-md mx-auto">
+		<div className="min-h-svh flex flex-col justify-center max-w-md mx-auto px-2">
 			<Button variant="ghost" asChild className="mb-4 self-start">
 				<Link to={ROUTES.HOME}>
 					<ArrowLeft className="h-4 w-4 mr-2" />

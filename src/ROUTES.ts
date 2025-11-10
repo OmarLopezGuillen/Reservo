@@ -24,6 +24,7 @@ export const ROUTES = {
 
 	// Reservas
 	RESERVA: (id: string | number) => `/reserva/${id}`,
+	MIS_RESERVAS: "/reserva/mis-reservas",
 
 	CREAR_RESERVA: {
 		ROOT: "/crear-reserva",

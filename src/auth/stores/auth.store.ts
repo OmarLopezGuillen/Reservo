@@ -1,16 +1,17 @@
 import type { Session, User } from "@supabase/supabase-js"
 import { create } from "zustand"
+import type { Role } from "@/models/roles.model"
 import { signOut } from "@/services/auth/signOut.service"
 
 interface UserAuth extends User {
-	userRole: string | null
+	userRole: Role | null
 }
 
 interface AuthState {
 	user: UserAuth | null
 	session: Session | null
 	loading: boolean
-	setAuth: (session: Session | null, userRole: string | null) => void
+	setAuth: (session: Session | null, userRole: Role | null) => void
 	signOut: () => void
 }
 

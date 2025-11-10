@@ -51,7 +51,7 @@ export default function RegisterForm() {
 	}
 
 	return (
-		<Card className="w-full max-w-md">
+		<Card className="w-full max-w-md mb-4">
 			<CardHeader className="text-center">
 				<div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
 					<UserPlus className="h-6 w-6 text-primary" />

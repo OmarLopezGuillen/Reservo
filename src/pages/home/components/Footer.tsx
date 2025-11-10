@@ -1,146 +1,131 @@
 import { Mail, MapPin, Phone } from "lucide-react"
 import { Link } from "react-router"
+import { Separator } from "@/components/ui/separator"
+import type { BusinessData } from "@/models/business.model"
 import { BusinessHours } from "./BusinessHours"
 
+const businessData: BusinessData = {
+	id: "1",
+	address: "Calle Falsa 123, Padelandia",
+	phone: "123-456-7890",
+	email: "contacto@reservo.com",
+}
+
+function FooterSection({
+	title,
+	children,
+}: React.PropsWithChildren<{ title: string }>) {
+	return (
+		<div>
+			<h3 className="font-semibold mb-4">{title}</h3>
+			{children}
+		</div>
+	)
+}
+
+function ContactInfo({
+	data,
+	isLoading,
+	isError,
+}: {
+	data?: BusinessData
+	isLoading: boolean
+	isError: boolean
+}) {
+	if (isLoading)
+		return <p className="text-sm text-muted-foreground">Cargando...</p>
+	if (isError || !data)
+		return <p className="text-sm text-muted-foreground">No disponible</p>
+
+	return (
+		<div className="space-y-2 text-sm text-muted-foreground">
+			{data.address && (
+				<a
+					href="https://www.google.com/maps"
+					target="_blank"
+					rel="noreferrer"
+					className="flex items-center gap-2 hover:text-accent-foreground"
+				>
+					<MapPin className="h-4 w-4" /> {data.address}
+				</a>
+			)}
+			{data.phone && (
+				<a
+					href="tel:+1234567890"
+					className="flex items-center gap-2 hover:text-accent-foreground"
+				>
+					<Phone className="h-4 w-4" /> {data.phone}
+				</a>
+			)}
+			{data.email && (
+				<a
+					href="mailto:contacto@reservo.com"
+					className="flex items-center gap-2 hover:text-accent-foreground"
+				>
+					<Mail className="h-4 w-4" /> {data.email}
+				</a>
+			)}
+		</div>
+	)
+}
+
+function LegalLinks() {
+	return (
+		<div className="flex flex-col space-y-2 text-sm">
+			<Link
+				to="/legal/privacidad"
+				className="text-muted-foreground hover:text-foreground transition-colors"
+			>
+				Política de privacidad
+			</Link>
+			<Link
+				to="/legal/terminos"
+				className="text-muted-foreground hover:text-foreground transition-colors"
+			>
+				Términos y condiciones
+			</Link>
+		</div>
+	)
+}
+
 export function Footer() {
-	const businessData = {
-		id: "1",
-		address: "Calle Falsa 123, Padelandia",
-		phone: "123-456-7890",
-		email: "contacto@reservo.com",
-	}
 	const isLoading = false
 	const isError = false
 
-	const schedule = [
-		{
-			day: "Lunes",
-			hours: [
-				{ start: "08:00", end: "13:00" },
-				{ start: "15:00", end: "21:00" },
-			],
-		},
-		{
-			day: "Martes",
-			hours: [
-				{ start: "08:00", end: "13:00" },
-				{ start: "15:00", end: "21:00" },
-			],
-		},
-		{
-			day: "Miércoles",
-			hours: [
-				{ start: "08:00", end: "13:00" },
-				{ start: "15:00", end: "21:00" },
-			],
-		},
-		{
-			day: "Jueves",
-			hours: [
-				{ start: "08:00", end: "13:00" },
-				{ start: "15:00", end: "21:00" },
-			],
-		},
-		{
-			day: "Viernes",
-			hours: [
-				{ start: "08:00", end: "13:00" },
-				{ start: "15:00", end: "21:00" },
-			],
-		},
-		{
-			day: "Sábado",
-			hours: [{ start: "09:00", end: "14:00" }],
-		},
-		{
-			day: "Domingo",
-			closed: true,
-			hours: [],
-		},
-		{
-			day: "*Festivos",
-			closed: true,
-			hours: [],
-		},
-	]
-
 	return (
-		<footer className="border-t bg-muted/50">
-			<div className="container mx-auto px-4 py-12">
-				<div className="grid md:grid-cols-4 gap-8">
-					<div>
-						<div className="flex items-center space-x-2 mb-4">
-							<div className="h-6 w-6 rounded bg-primary flex items-center justify-center">
-								<span className="text-primary-foreground font-bold text-xs">
-									R
-								</span>
-							</div>
-							<span className="font-semibold">Reservo</span>
-						</div>
-						<p className="text-sm text-muted-foreground">
-							Sistema de reservas para pistas de pádel
-						</p>
-					</div>
+		<footer className="border-t bg-muted/50 mb-4">
+			<div className="container mx-auto px-4 py-12  max-w-7xl">
+				<div className="grid lg:grid-cols-3 gap-8">
+					<FooterSection title="Contacto">
+						<ContactInfo
+							data={businessData}
+							isLoading={isLoading}
+							isError={isError}
+						/>
+					</FooterSection>
 
-					<div>
-						<h3 className="font-semibold mb-4">Contacto</h3>
-						{isLoading ? (
-							<p className="text-sm text-muted-foreground">Cargando...</p>
-						) : isError || !businessData ? (
-							<p className="text-sm text-muted-foreground">No disponible</p>
-						) : (
-							<div className="space-y-2 text-sm text-muted-foreground">
-								{businessData.address && (
-									<p className="flex items-center gap-2">
-										<MapPin className="h-4 w-4" /> {businessData.address}
-									</p>
-								)}
-								{businessData.phone && (
-									<p className="flex items-center gap-2">
-										<Phone className="h-4 w-4" /> {businessData.phone}
-									</p>
-								)}
-								{businessData.email && (
-									<p className="flex items-center gap-2">
-										<Mail className="h-4 w-4" /> {businessData.email}
-									</p>
-								)}
-							</div>
-						)}
-					</div>
+					<FooterSection title="Legal">
+						<LegalLinks />
+					</FooterSection>
 
-					<div>
-						<h3 className="font-semibold mb-4">Horarios</h3>
-						{businessData?.id ? (
-							<BusinessHours schedule={schedule} />
-						) : (
-							<p className="text-sm text-muted-foreground">Cargando...</p>
-						)}
-					</div>
-
-					<div>
-						<h3 className="font-semibold mb-4">Legal</h3>
-						<div className="flex flex-col space-y-2 text-sm">
-							<Link
-								to="/legal/privacidad"
-								className="text-muted-foreground hover:text-foreground transition-colors"
-							>
-								Política de privacidad
-							</Link>
-							<Link
-								to="/legal/terminos"
-								className="text-muted-foreground hover:text-foreground transition-colors"
-							>
-								Términos y condiciones
-							</Link>
-						</div>
-					</div>
+					<FooterSection title="Horarios">
+						<BusinessHours businessId={businessData.id} />
+					</FooterSection>
 				</div>
 
-				<div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-					<p>
-						&copy; {new Date().getFullYear()} Reservo. Todos los derechos
-						reservados.
+				<Separator className="my-4" />
+
+				<div className="mx-auto">
+					<div className="flex items-center space-x-2 mb-4">
+						<div className="h-6 w-6 rounded bg-primary flex items-center justify-center">
+							<span className="text-primary-foreground font-bold text-xs">
+								R
+							</span>
+						</div>
+						<span className="font-semibold">Reservo</span>
+					</div>
+					<p className="text-sm text-muted-foreground">
+						Sistema de reservas para pistas de pádel
 					</p>
 				</div>
 			</div>

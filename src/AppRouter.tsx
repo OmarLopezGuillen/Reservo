@@ -8,11 +8,13 @@ import Register from "@/auth/pages/Register"
 import { Loading } from "@/components/Loading"
 import { ROLES } from "@/models/roles.model"
 import Home from "@/pages/home/pages/Home"
+import Landing from "@/pages/landing/pages/Landing"
 import { ROUTES } from "@/ROUTES"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
 const Reserva = lazy(() => import("@/pages/reserva/pages/Reserva"))
+const MisReservas = lazy(() => import("@/pages/reserva/pages/MisReservas"))
 
 const CrearReserva = lazy(
 	() => import("@/pages/crear-reserva/layout/CrearReservaLayout"),
@@ -45,6 +47,7 @@ export default function AppRouter() {
 			<Routes>
 				{/* Rutas públicas */}
 				<Route path={ROUTES.HOME} element={<Home />} />
+				<Route path={"/landing"} element={<Landing />} />
 
 				<Route element={<NoAuthRoute />}>
 					<Route path={ROUTES.LOGIN} element={<Login />} />
@@ -115,6 +118,15 @@ export default function AppRouter() {
 
 				{/* Reservas */}
 				<Route element={<PrivateRoute roles={[ROLES.USER, ROLES.ADMIN]} />}>
+					<Route
+						path={ROUTES.MIS_RESERVAS}
+						element={
+							<Suspense fallback={<Loading />}>
+								<MisReservas />
+							</Suspense>
+						}
+					/>
+
 					<Route
 						path={ROUTES.RESERVA(":reservaId")}
 						element={
