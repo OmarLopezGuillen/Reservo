@@ -29,6 +29,7 @@ import { ROUTES } from "@/ROUTES"
 const NavLinks = () => {
 	const { user } = useAuthStore()
 	const role = user?.userRole
+	console.log("User role in NavLinks:", user)
 	const { signOut } = useAuthActions()
 
 	if (user) {

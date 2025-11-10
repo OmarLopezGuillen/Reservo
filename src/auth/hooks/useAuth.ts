@@ -22,7 +22,7 @@ export function useAuth() {
 
 			if (session) {
 				const jwt = jwtDecode(session.access_token) as MyJwtPayload
-				const userRole = jwt.user_metadata?.role ?? ROLES.USER // Se le asigna el rol más bajo si no hay rol
+				const userRole = jwt.user_role ?? ROLES.USER // Se le asigna el rol más bajo si no hay rol
 				setAuth(session, userRole)
 				return
 			}
