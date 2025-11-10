@@ -87,11 +87,8 @@ export default function AppRouter() {
 							index
 							element={<Navigate to={ROUTES.ADMIN.AGENDA} replace />}
 						/>
-
 						<Route path={ROUTES.ADMIN.AGENDA} element={<AdminAgenda />} />
-
-						<Route path={ROUTES.ADMIN.AJUSTES} element={<AdminAjustes />} />
-
+						<Route path={ROUTES.ADMIN.AJUSTES} element={<AdminAjustes />} />º
 						<Route
 							element={
 								<PrivateRoute
@@ -105,7 +102,6 @@ export default function AppRouter() {
 								element={<AdminEstadisticas />}
 							/>
 						</Route>
-
 						<Route path={ROUTES.ADMIN.LIGA} element={<AdminLiga />} />
 						<Route
 							path={ROUTES.ADMIN.LISTA_ESPERA}
