@@ -5,9 +5,7 @@ import { ROLES, type Role } from "@/models/roles.model"
 import { onAuthStateChange } from "@/services/auth/onAuthStateChange.service"
 
 interface MyJwtPayload extends JwtPayload {
-	user_metadata: {
-		role: Role
-	}
+	user_role: Role
 }
 
 export function useAuth() {
