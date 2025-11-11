@@ -14,4 +14,6 @@ export interface BusinessData {
 	address: string
 	phone: string
 	email: string
+	name: string
+	whatsappNumber: string
 }

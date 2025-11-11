@@ -1,13 +1,34 @@
 import { supabase } from "@/lib/supabase"
+import type { BusinessData } from "@/models/business.model"
 import type { ClubsInsert, ClubsRow, ClubsUpdate } from "@/models/dbTypes"
+import {
+	clubsAdapter,
+	clubsAdapterBase,
+} from "@/services/adapters/clubs.adapter"
 
-export async function getClubs(): Promise<ClubsRow[]> {
+export async function getClubs() {
 	try {
 		const { data, error } = await supabase.from("clubs").select("*")
 
-		if (error) throw error
+		if (error || !data) throw error
 
-		return data
+		return clubsAdapter(data)
+	} catch (error: any) {
+		console.error("Error fetching clubs:", error.message)
+		throw new Error("No se pudieron obtener los clubes.")
+	}
+}
+export async function getClubsById(clubId: string) {
+	try {
+		const { data, error } = await supabase
+			.from("clubs")
+			.select()
+			.eq("id", clubId)
+			.single()
+
+		if (error || !data) throw error
+
+		return clubsAdapterBase(data)
 	} catch (error: any) {
 		console.error("Error fetching clubs:", error.message)
 		throw new Error("No se pudieron obtener los clubes.")

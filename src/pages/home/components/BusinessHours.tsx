@@ -1,7 +1,7 @@
 import type { BusinessDay, TimeRange } from "@/models/business.model"
 
 export interface BusinessHoursProps {
-	businessId: string
+	businessId?: string
 }
 
 const schedule: BusinessDay[] = [

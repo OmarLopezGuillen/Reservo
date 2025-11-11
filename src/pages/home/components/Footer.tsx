@@ -1,15 +1,9 @@
 import { Mail, MapPin, Phone } from "lucide-react"
 import { Link } from "react-router"
 import { Separator } from "@/components/ui/separator"
+import { useClubsById } from "@/hooks/useClubsQuery"
 import type { BusinessData } from "@/models/business.model"
 import { BusinessHours } from "./BusinessHours"
-
-const businessData: BusinessData = {
-	id: "1",
-	address: "Calle Falsa 123, Padelandia",
-	phone: "123-456-7890",
-	email: "contacto@reservo.com",
-}
 
 function FooterSection({
 	title,
@@ -89,8 +83,11 @@ function LegalLinks() {
 }
 
 export function Footer() {
-	const isLoading = false
-	const isError = false
+	const { clubsByIdQuery } = useClubsById("1")
+
+	const businessData = clubsByIdQuery.data
+	const isLoading = clubsByIdQuery.isLoading
+	const isError = clubsByIdQuery.isError
 
 	return (
 		<footer className="border-t bg-muted/50 mb-4">
@@ -109,7 +106,7 @@ export function Footer() {
 					</FooterSection>
 
 					<FooterSection title="Horarios">
-						<BusinessHours businessId={businessData.id} />
+						<BusinessHours businessId={businessData?.id} />
 					</FooterSection>
 				</div>
 
