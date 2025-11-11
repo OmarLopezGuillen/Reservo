@@ -83,7 +83,9 @@ function LegalLinks() {
 }
 
 export function Footer() {
-	const { clubsByIdQuery } = useClubsById("1")
+	const { clubsByIdQuery } = useClubsById(
+		"a32a865d-3ecc-448b-a38d-9da8a10cca59",
+	)
 
 	const businessData = clubsByIdQuery.data
 	const isLoading = clubsByIdQuery.isLoading

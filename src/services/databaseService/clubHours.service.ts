@@ -6,8 +6,9 @@ import type {
 	Position,
 	WeekDay,
 } from "@/models/dbTypes"
+import { clubHoursAdapter } from "@/services/adapters/clubHours.adapter"
 
-export async function getClubHours(clubId: string): Promise<ClubHoursRow[]> {
+export async function getClubHours(clubId: string) {
 	try {
 		const { data, error } = await supabase
 			.from("club_hours")
@@ -16,7 +17,7 @@ export async function getClubHours(clubId: string): Promise<ClubHoursRow[]> {
 
 		if (error) throw error
 
-		return data
+		return clubHoursAdapter(data)
 	} catch (error: any) {
 		console.error("Error fetching club hours:", error.message)
 		throw new Error("No se pudieron obtener los horarios del club.")

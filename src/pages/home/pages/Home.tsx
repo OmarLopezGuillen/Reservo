@@ -29,14 +29,13 @@ import { ROUTES } from "@/ROUTES"
 const NavLinks = () => {
 	const { user } = useAuthStore()
 	const role = user?.userRole
-	console.log("User role in NavLinks:", user)
 	const { signOut } = useAuthActions()
 
 	if (user) {
 		return (
 			<>
 				<Link
-					to={ROUTES.MIS_RESERVAS}
+					to={ROUTES.CREAR_RESERVA.ROOT}
 					className="text-sm font-medium hover:text-primary transition-colors duration-200"
 				>
 					Mis reservas
@@ -63,7 +62,7 @@ const NavLinks = () => {
 	return (
 		<>
 			<Link
-				to={ROUTES.CREAR_RESERVA.DATOS}
+				to={ROUTES.CREAR_RESERVA.ROOT}
 				className="text-sm font-medium hover:text-primary transition-colors duration-200"
 			>
 				Reservar
@@ -167,7 +166,7 @@ const Home = () => {
 							</p>
 							<div className="flex flex-col sm:flex-row gap-4">
 								<Button asChild size="lg" className="text-xl px-8">
-									<Link to={ROUTES.CREAR_RESERVA.DATOS}>Reservar ahora</Link>
+									<Link to={ROUTES.CREAR_RESERVA.ROOT}>Reservar ahora</Link>
 								</Button>
 							</div>
 						</div>
@@ -417,7 +416,7 @@ const Home = () => {
 							variant="secondary"
 							className="text-lg px-8 transition-colors duration-200"
 						>
-							<Link to={ROUTES.CREAR_RESERVA.DATOS}>Reservar pista</Link>
+							<Link to={ROUTES.CREAR_RESERVA.ROOT}>Reservar pista</Link>
 						</Button>
 					</div>
 				</div>

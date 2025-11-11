@@ -1,60 +1,9 @@
-import type { BusinessDay, TimeRange } from "@/models/business.model"
+import { useClubHours } from "@/hooks/useClubHoursQuery"
+import type { TimeRange } from "@/models/business.model"
 
 export interface BusinessHoursProps {
 	businessId?: string
 }
-
-const schedule: BusinessDay[] = [
-	{
-		day: "Lunes",
-		hours: [
-			{ start: "08:00", end: "13:00" },
-			{ start: "15:00", end: "21:00" },
-		],
-	},
-	{
-		day: "Martes",
-		hours: [
-			{ start: "08:00", end: "13:00" },
-			{ start: "15:00", end: "21:00" },
-		],
-	},
-	{
-		day: "Miércoles",
-		hours: [
-			{ start: "08:00", end: "13:00" },
-			{ start: "15:00", end: "21:00" },
-		],
-	},
-	{
-		day: "Jueves",
-		hours: [
-			{ start: "08:00", end: "13:00" },
-			{ start: "15:00", end: "21:00" },
-		],
-	},
-	{
-		day: "Viernes",
-		hours: [
-			{ start: "08:00", end: "13:00" },
-			{ start: "15:00", end: "21:00" },
-		],
-	},
-	{
-		day: "Sábado",
-		hours: [{ start: "09:00", end: "14:00" }],
-	},
-	{
-		day: "Domingo",
-		closed: true,
-		hours: [],
-	},
-	{
-		day: "*Festivos",
-		closed: true,
-		hours: [],
-	},
-]
 
 const formatHours = (hours: TimeRange[]) => {
 	if (hours.length === 0) return "Cerrado"
@@ -67,9 +16,11 @@ const formatHours = (hours: TimeRange[]) => {
 }
 
 export function BusinessHours({ businessId }: BusinessHoursProps) {
-	console.log(businessId)
-	const isLoading = false
-	const isError = false
+	const { clubHoursQuery } = useClubHours(businessId)
+
+	const schedule = clubHoursQuery.data
+	const isLoading = clubHoursQuery.isLoading
+	const isError = clubHoursQuery.isError
 
 	if (isLoading)
 		return <p className="text-sm text-muted-foreground">Cargando...</p>
