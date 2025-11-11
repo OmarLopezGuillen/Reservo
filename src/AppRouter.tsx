@@ -13,16 +13,16 @@ import { ROUTES } from "@/ROUTES"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
-const Reserva = lazy(() => import("@/pages/reserva/pages/Reserva"))
-const MisReservas = lazy(() => import("@/pages/reserva/pages/MisReservas"))
+const Reservas = lazy(() => import("@/pages/reservas/pages/Reservas"))
+const ReservasId = lazy(() => import("@/pages/reservas/pages/ReservasId"))
+
+const Clubs = lazy(() => import("@/pages/clubs/pages/Clubs"))
+const ClubsId = lazy(() => import("@/pages/clubs/pages/ClubsId"))
 
 const CrearReserva = lazy(
 	() => import("@/pages/crear-reserva/layout/CrearReservaLayout"),
 )
-const CrearReservaDatos = lazy(
-	() => import("@/pages/crear-reserva/pages/Datos"),
-)
-const CrearReservaPago = lazy(() => import("@/pages/crear-reserva/pages/Pago"))
+
 const CrearReservaExito = lazy(
 	() => import("@/pages/crear-reserva/pages/Exito"),
 )
@@ -48,6 +48,23 @@ export default function AppRouter() {
 				{/* Rutas públicas */}
 				<Route path={ROUTES.HOME} element={<Home />} />
 				<Route path={"/landing"} element={<Landing />} />
+				<Route
+					path={ROUTES.CLUBS.ROOT}
+					element={
+						<Suspense fallback={<Loading />}>
+							<Clubs />
+						</Suspense>
+					}
+				/>
+
+				<Route
+					path={ROUTES.CLUBS.ID(":clubId")}
+					element={
+						<Suspense fallback={<Loading />}>
+							<ClubsId />
+						</Suspense>
+					}
+				/>
 
 				<Route element={<NoAuthRoute />}>
 					<Route path={ROUTES.LOGIN} element={<Login />} />
@@ -115,19 +132,19 @@ export default function AppRouter() {
 				{/* Reservas */}
 				<Route element={<PrivateRoute roles={[ROLES.USER, ROLES.ADMIN]} />}>
 					<Route
-						path={ROUTES.MIS_RESERVAS}
+						path={ROUTES.RESERVAS.ROOT}
 						element={
 							<Suspense fallback={<Loading />}>
-								<MisReservas />
+								<Reservas />
 							</Suspense>
 						}
 					/>
 
 					<Route
-						path={ROUTES.RESERVA(":reservaId")}
+						path={ROUTES.RESERVAS.ID(":reservaId")}
 						element={
 							<Suspense fallback={<Loading />}>
-								<Reserva />
+								<ReservasId />
 							</Suspense>
 						}
 					/>
@@ -140,27 +157,6 @@ export default function AppRouter() {
 							</Suspense>
 						}
 					>
-						{/* Redirección por defecto */}
-						<Route
-							index
-							element={<Navigate to={ROUTES.CREAR_RESERVA.DATOS} replace />}
-						/>
-						<Route
-							path={ROUTES.CREAR_RESERVA.DATOS}
-							element={
-								<Suspense fallback={<Loading />}>
-									<CrearReservaDatos />
-								</Suspense>
-							}
-						/>
-						<Route
-							path={ROUTES.CREAR_RESERVA.PAGO}
-							element={
-								<Suspense fallback={<Loading />}>
-									<CrearReservaPago />
-								</Suspense>
-							}
-						/>
 						<Route
 							path={ROUTES.CREAR_RESERVA.EXITO}
 							element={

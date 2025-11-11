@@ -4,7 +4,7 @@ export const ROUTES = {
 	LOGIN: "/login",
 	REGISTER: "/register",
 
-	// Admin
+	// TODO: Revisar estas rutas
 	ADMIN: {
 		ROOT: "/admin",
 		AGENDA: "/admin/agenda",
@@ -22,14 +22,19 @@ export const ROUTES = {
 		TERMINOS: "/legal/terminos",
 	},
 
+	CLUBS: {
+		ROOT: "/clubs",
+		ID: (id: string | number) => `/clubs/${id}`,
+	},
+
 	// Reservas
-	RESERVA: (id: string | number) => `/reserva/${id}`,
-	MIS_RESERVAS: "/reserva/mis-reservas",
+	RESERVAS: {
+		ROOT: "/reservas",
+		ID: (id: string | number) => `/reservas/${id}`,
+	},
 
 	CREAR_RESERVA: {
 		ROOT: "/crear-reserva",
-		DATOS: "/crear-reserva/datos",
-		PAGO: "/crear-reserva/pago",
 		EXITO: "/crear-reserva/exito",
 	},
 
