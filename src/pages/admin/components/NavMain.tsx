@@ -34,14 +34,15 @@ export function NavMain({
 										buttonVariants({
 											variant: "ghost",
 											size: "default",
+											className:
+												"w-full justify-start transition-colors text-muted-foreground text-base",
 										}),
-										"w-full justify-start transition-colors",
 										isActive && "bg-accent text-accent-foreground",
 									)
 								}
 							>
-								{item.icon && <item.icon className="mr-2 h-4 w-4" />}
-								<span>{item.title}</span>
+								{item.icon && <item.icon className="mr-2 size-5" />}
+								{item.title}
 							</NavLink>
 						</SidebarMenuItem>
 					))}

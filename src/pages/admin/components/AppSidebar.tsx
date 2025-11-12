@@ -3,13 +3,18 @@ import {
 	Calendar,
 	File,
 	Files,
+	Home,
 	ListChecks,
+	LogOut,
 	Trophy,
 	Users,
 } from "lucide-react"
 import type * as React from "react"
+import { Link } from "react-router"
+import { useAuthActions } from "@/auth/hooks/useAuthActions"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
-
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import {
 	Sidebar,
 	SidebarContent,
@@ -76,6 +81,7 @@ const navMain = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const user = useAuthUser()
+	const { signOut } = useAuthActions()
 
 	//TODO. A: Objener los datos del profile
 	const profile: Profile = {
@@ -89,18 +95,38 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
 		<Sidebar {...props}>
 			<SidebarHeader>
-				<div className="flex items-center space-x-2">
+				<div className="flex items-center space-x-2 p-2">
 					<div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
 						<span className="text-primary-foreground font-bold text-sm">R</span>
 					</div>
-					<span className="text-xl font-semibold">GoReservo</span>
+					<span className="text-xl font-semibold">GoReservo Admin</span>
 				</div>
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={navMain} />
 			</SidebarContent>
 			<SidebarFooter>
+				<Separator />
 				<NavUser profile={profile} />
+				<Separator />
+				<div className="space-y-2 m-2">
+					<Button variant="ghost" className="w-full justify-start" asChild>
+						<Link to={ROUTES.HOME}>
+							<Home className="mr-3 size-4" />
+							Ver sitio público
+						</Link>
+					</Button>
+					<Button
+						variant="destructive"
+						className="w-full justify-start text-sm font-medium transition-colors cursor-pointer"
+						onClick={() => {
+							signOut()
+						}}
+					>
+						<LogOut className="mr-3 size-4" />
+						Cerrar sesión
+					</Button>
+				</div>
 			</SidebarFooter>
 			<SidebarRail />
 		</Sidebar>
