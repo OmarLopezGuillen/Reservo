@@ -42,7 +42,7 @@ const NavLinks = () => {
 				</Link>
 				{role && [ROLES.ADMIN, ROLES.ADMIN].includes(role) && (
 					<Link
-						to={ROUTES.ADMIN.AGENDA}
+						to={ROUTES.ADMIN.ROOT}
 						className="text-sm font-medium hover:text-primary"
 					>
 						Panel de administración
@@ -68,7 +68,7 @@ const NavLinks = () => {
 				Reservar
 			</Link>
 			<Link
-				to={ROUTES.ADMIN.AGENDA}
+				to={ROUTES.ADMIN.ROOT}
 				className="text-sm font-medium bg-primary text-primary-foreground transition-colors duration-200 p-2 rounded-md"
 			>
 				Iniciar sesión

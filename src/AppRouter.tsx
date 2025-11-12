@@ -29,7 +29,7 @@ const CrearReservaExito = lazy(
 
 const AdminLayout = lazy(() => import("@/pages/admin/layout/AdminLayout"))
 
-const AdminAgenda = lazy(() => import("@/pages/admin/pages/Agenda"))
+const Calendar = lazy(() => import("@/pages/admin/pages/Calendar"))
 const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes"))
 const AdminEstadisticas = lazy(() => import("@/pages/admin/pages/Estadisticas"))
 const AdminLiga = lazy(() => import("@/pages/admin/pages/Liga"))
@@ -102,15 +102,16 @@ export default function AppRouter() {
 						{/* Redirección por defecto */}
 						<Route
 							index
-							element={<Navigate to={ROUTES.ADMIN.AGENDA} replace />}
+							element={<Navigate to={ROUTES.ADMIN.CALENDAR} replace />}
 						/>
-						<Route path={ROUTES.ADMIN.AGENDA} element={<AdminAgenda />} />
-						<Route path={ROUTES.ADMIN.AJUSTES} element={<AdminAjustes />} />º
+
+						<Route path={ROUTES.ADMIN.CALENDAR} element={<Calendar />} />
+						<Route path={ROUTES.ADMIN.AJUSTES} element={<AdminAjustes />} />
 						<Route
 							element={
 								<PrivateRoute
 									roles={[ROLES.OWNER]}
-									redirectTo={ROUTES.ADMIN.AGENDA}
+									redirectTo={ROUTES.ADMIN.ROOT}
 								/>
 							}
 						>

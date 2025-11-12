@@ -7,7 +7,7 @@ export const ROUTES = {
 	// TODO: Revisar estas rutas
 	ADMIN: {
 		ROOT: "/admin",
-		AGENDA: "/admin/agenda",
+		CALENDAR: "/admin/calendar",
 		AJUSTES: "/admin/ajustes",
 		ESTADISTICAS: "/admin/estadisticas",
 		LIGA: "/admin/liga",
