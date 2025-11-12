@@ -23,12 +23,12 @@ export const clubHoursAdapter = (
 
 	// Convierte cada grupo a BusinessDay
 	return Array.from(groupedByDay.entries()).map(([weekday, rows]) => {
-		const day = WEEKDAYS[Number(weekday)]
+		const weekdayName = WEEKDAYS[Number(weekday)]
 
 		const isClosed = rows.every((r) => !r.is_open)
 
 		return {
-			day,
+			weekday: weekdayName,
 			hours: isClosed
 				? []
 				: rows

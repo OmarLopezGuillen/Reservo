@@ -4,7 +4,7 @@ export interface TimeRange {
 }
 
 export interface BusinessDay {
-	day: string
+	weekday: string
 	hours: TimeRange[]
 	closed?: boolean
 }

@@ -1,7 +1,9 @@
 import { supabase } from "@/lib/supabase"
-import type { CourtsInsert, CourtsRow, CourtsUpdate } from "@/models/dbTypes"
+import type { Court } from "@/models/court.model"
+import type { CourtsInsert, CourtsUpdate } from "@/models/dbTypes"
+import { courtAdapter, courtsAdapter } from "../adapters/courts.adapter"
 
-export async function getCourts(clubId: string): Promise<CourtsRow[]> {
+export async function getCourts(clubId: string): Promise<Court[]> {
 	try {
 		const { data, error } = await supabase
 			.from("courts")
@@ -10,14 +12,14 @@ export async function getCourts(clubId: string): Promise<CourtsRow[]> {
 
 		if (error) throw error
 
-		return data
+		return courtsAdapter(data)
 	} catch (error: any) {
 		console.error("Error fetching courts:", error.message)
 		throw new Error("No se pudieron obtener las canchas.")
 	}
 }
 
-export async function getCourtById(id: string): Promise<CourtsRow> {
+export async function getCourtById(id: string): Promise<Court> {
 	try {
 		const { data, error } = await supabase
 			.from("courts")
@@ -27,14 +29,14 @@ export async function getCourtById(id: string): Promise<CourtsRow> {
 
 		if (error) throw error
 
-		return data
+		return courtAdapter(data)
 	} catch (error: any) {
 		console.error("Error fetching court by id:", error.message)
 		throw new Error("No se pudo obtener la cancha.")
 	}
 }
 
-export async function createCourt(courtData: CourtsInsert): Promise<CourtsRow> {
+export async function createCourt(courtData: CourtsInsert): Promise<Court> {
 	try {
 		const { data, error } = await supabase
 			.from("courts")
@@ -44,7 +46,7 @@ export async function createCourt(courtData: CourtsInsert): Promise<CourtsRow> {
 
 		if (error) throw error
 
-		return data
+		return courtAdapter(data)
 	} catch (error: any) {
 		console.error("Error creating court:", error.message)
 		throw new Error("No se pudo crear la cancha.")
@@ -54,7 +56,7 @@ export async function createCourt(courtData: CourtsInsert): Promise<CourtsRow> {
 export async function updateCourt(
 	id: string,
 	courtData: CourtsUpdate,
-): Promise<CourtsRow> {
+): Promise<Court> {
 	try {
 		const { data, error } = await supabase
 			.from("courts")
@@ -65,7 +67,7 @@ export async function updateCourt(
 
 		if (error) throw error
 
-		return data
+		return courtAdapter(data)
 	} catch (error: any) {
 		console.error("Error updating court:", error.message)
 		throw new Error("No se pudo actualizar la cancha.")

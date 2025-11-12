@@ -36,3 +36,18 @@ export function getInitials(name: string): string {
 
 	return firstInitial + lastInitial
 }
+export function formatDate(date: string): string {
+	return new Intl.DateTimeFormat("es-ES", {
+		weekday: "long",
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	}).format(new Date(date))
+}
+
+export function formatPrice(price: number, currency = "EUR"): string {
+	return new Intl.NumberFormat("es-ES", {
+		style: "currency",
+		currency,
+	}).format(price)
+}

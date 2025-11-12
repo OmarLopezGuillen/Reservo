@@ -20,7 +20,7 @@ const Clubs = lazy(() => import("@/pages/clubs/pages/Clubs"))
 const ClubsId = lazy(() => import("@/pages/clubs/pages/ClubsId"))
 
 const CrearReserva = lazy(
-	() => import("@/pages/crear-reserva/pages/CrearReserva"),
+	() => import("@/pages/crear-reserva/pages/CrearReserva/CrearReserva"),
 )
 
 const CrearReservaExito = lazy(

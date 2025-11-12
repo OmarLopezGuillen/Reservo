@@ -7,18 +7,20 @@ import {
 export const BOOKINGS_QUERY_KEY = "bookings"
 
 export const useBookings = (clubId: string) => {
-	return useQuery({
+	const bookingsQuery = useQuery({
 		queryKey: [BOOKINGS_QUERY_KEY, clubId],
 		queryFn: () => getBookings(clubId),
 		enabled: !!clubId, // La consulta solo se ejecuta si clubId tiene un valor.
 	})
+	return { bookingsQuery }
 }
 
 //TODO: Traer los bookings de useBookings si estan en cache
 export const useBookingById = (id: string | null) => {
-	return useQuery({
+	const bookingByIdQuery = useQuery({
 		queryKey: [BOOKINGS_QUERY_KEY, id],
 		queryFn: () => getBookingById(id!), // El '!' es seguro gracias a la opción 'enabled'.
 		enabled: !!id, // La consulta solo se ejecuta si el id tiene un valor.
 	})
+	return { bookingByIdQuery }
 }

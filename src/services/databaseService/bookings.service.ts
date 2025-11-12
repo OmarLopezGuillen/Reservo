@@ -1,11 +1,9 @@
 import { supabase } from "@/lib/supabase"
-import type {
-	BookingsInsert,
-	BookingsRow,
-	BookingsUpdate,
-} from "@/models/dbTypes"
+import type { Booking } from "@/models/booking.model"
+import type { BookingsInsert, BookingsUpdate } from "@/models/dbTypes"
+import { bookingAdapter, bookingsAdapter } from "../adapters/bookings.adapter"
 
-export async function getBookings(clubId: string): Promise<BookingsRow[]> {
+export async function getBookings(clubId: string): Promise<Booking[]> {
 	try {
 		const { data, error } = await supabase
 			.from("bookings")
@@ -14,14 +12,14 @@ export async function getBookings(clubId: string): Promise<BookingsRow[]> {
 
 		if (error) throw error
 
-		return data
+		return bookingsAdapter(data)
 	} catch (error: any) {
 		console.error("Error fetching bookings:", error.message)
 		throw new Error("No se pudieron obtener las reservas.")
 	}
 }
 
-export async function getBookingById(id: string): Promise<BookingsRow> {
+export async function getBookingById(id: string): Promise<Booking> {
 	try {
 		const { data, error } = await supabase
 			.from("bookings")
@@ -31,7 +29,7 @@ export async function getBookingById(id: string): Promise<BookingsRow> {
 
 		if (error) throw error
 
-		return data
+		return bookingAdapter(data)
 	} catch (error: any) {
 		console.error("Error fetching booking by id:", error.message)
 		throw new Error("No se pudo obtener la reserva.")
@@ -40,7 +38,7 @@ export async function getBookingById(id: string): Promise<BookingsRow> {
 
 export async function createBooking(
 	bookingData: BookingsInsert,
-): Promise<BookingsRow> {
+): Promise<Booking> {
 	try {
 		const { data, error } = await supabase
 			.from("bookings")
@@ -50,7 +48,7 @@ export async function createBooking(
 
 		if (error) throw error
 
-		return data
+		return bookingAdapter(data)
 	} catch (error: any) {
 		console.error("Error creating booking:", error.message)
 		throw new Error("No se pudo crear la reserva.")
@@ -60,7 +58,7 @@ export async function createBooking(
 export async function updateBooking(
 	id: string,
 	bookingData: BookingsUpdate,
-): Promise<BookingsRow> {
+): Promise<Booking> {
 	try {
 		const { data, error } = await supabase
 			.from("bookings")
@@ -71,7 +69,7 @@ export async function updateBooking(
 
 		if (error) throw error
 
-		return data
+		return bookingAdapter(data)
 	} catch (error: any) {
 		console.error("Error updating booking:", error.message)
 		throw new Error("No se pudo actualizar la reserva.")
