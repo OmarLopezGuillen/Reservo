@@ -31,11 +31,11 @@ export function BusinessHours({ businessId }: BusinessHoursProps) {
 		<div className="space-y-2">
 			{schedule.map((item) => (
 				<div
-					key={item.day}
+					key={item.weekday}
 					className="flex flex-wrap items-center justify-between py-2 border-b border-border last:border-b-0"
 				>
 					<span className="text-sm font-medium text-foreground">
-						{item.day}
+						{item.weekday}
 					</span>
 					<span className="text-sm text-muted-foreground font-mono">
 						{item.closed ? "Cerrado" : formatHours(item.hours)}
