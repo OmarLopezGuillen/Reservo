@@ -35,7 +35,7 @@ export function NavMain({
 											variant: "ghost",
 											size: "default",
 											className:
-												"w-full justify-start transition-colors text-muted-foreground text-base",
+												"w-full justify-start transition-colors text-accent-foreground text-base",
 										}),
 										isActive && "bg-accent text-accent-foreground",
 									)
