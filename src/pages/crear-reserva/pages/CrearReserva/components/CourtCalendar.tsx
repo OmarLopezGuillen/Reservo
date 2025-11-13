@@ -1,4 +1,4 @@
-import { AlertCircle, Calendar, ChevronLeft, ChevronRight } from "lucide-react"
+import { AlertCircle, Calendar } from "lucide-react"
 import { useMemo, useState } from "react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -10,11 +10,6 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog"
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover"
-import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
@@ -23,6 +18,7 @@ import {
 import type { Booking } from "@/models/booking.model"
 import type { BusinessDay } from "@/models/business.model"
 import type { Court } from "@/models/court.model"
+import { CalendarNavigator } from "./CalendarNavigator"
 
 type SlotStatus = "available" | "not-available" | "your-booking" | "past"
 
@@ -40,8 +36,6 @@ export default function CourtCalendar({
 	currentUserId,
 }: CourtCalendarProps) {
 	const [selectedDate, setSelectedDate] = useState(new Date())
-	const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-	const [calendarMonth, setCalendarMonth] = useState(new Date())
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 	const [selectedSlot, setSelectedSlot] = useState<{
 		courtId: string
@@ -71,13 +65,13 @@ export default function CourtCalendar({
 		let minHour = 24
 		let maxHour = 0
 
-		businessDay.hours.forEach((timeRange) => {
+		for (const timeRange of businessDay.hours) {
 			const [openHour] = timeRange.start.split(":").map(Number)
 			const [closeHour] = timeRange.end.split(":").map(Number)
 			ranges.push({ start: openHour, end: closeHour })
 			minHour = Math.min(minHour, openHour)
 			maxHour = Math.max(maxHour, closeHour)
-		})
+		}
 
 		// Generate all hours from min to max
 		const allHours: number[] = []
@@ -96,66 +90,6 @@ export default function CourtCalendar({
 			const rangeEnd = range.end * 60
 			return minutes >= rangeStart && minutes < rangeEnd
 		})
-	}
-
-	const formatHour = (hour: number) => {
-		if (hour === 12) return "12 PM"
-		if (hour > 12) return `${hour - 12} PM`
-		return `${hour} AM`
-	}
-
-	const formatDate = (date: Date) => {
-		return date.toLocaleDateString("es-ES", {
-			weekday: "short",
-			month: "short",
-			day: "numeric",
-		})
-	}
-
-	const handlePrevDay = () => {
-		const newDate = new Date(selectedDate)
-		newDate.setDate(newDate.getDate() - 1)
-		setSelectedDate(newDate)
-	}
-	const getDaysInMonth = (date: Date) => {
-		const year = date.getFullYear()
-		const month = date.getMonth()
-		const firstDay = new Date(year, month, 1)
-		const lastDay = new Date(year, month + 1, 0)
-		const daysInMonth = lastDay.getDate()
-		const startingDayOfWeek = firstDay.getDay()
-
-		return { daysInMonth, startingDayOfWeek, year, month }
-	}
-	const isSelectedDay = (day: number) => {
-		return (
-			day === selectedDate.getDate() &&
-			calendarMonth.getMonth() === selectedDate.getMonth() &&
-			calendarMonth.getFullYear() === selectedDate.getFullYear()
-		)
-	}
-	const isToday = (day: number) => {
-		const today = new Date()
-		return (
-			day === today.getDate() &&
-			calendarMonth.getMonth() === today.getMonth() &&
-			calendarMonth.getFullYear() === today.getFullYear()
-		)
-	}
-	const handlePrevMonth = () => {
-		const newMonth = new Date(calendarMonth)
-		newMonth.setMonth(newMonth.getMonth() - 1)
-		setCalendarMonth(newMonth)
-	}
-	const handleNextMonth = () => {
-		const newMonth = new Date(calendarMonth)
-		newMonth.setMonth(newMonth.getMonth() + 1)
-		setCalendarMonth(newMonth)
-	}
-	const handleNextDay = () => {
-		const newDate = new Date(selectedDate)
-		newDate.setDate(newDate.getDate() + 1)
-		setSelectedDate(newDate)
 	}
 
 	const isSlotInPast = (
@@ -221,16 +155,6 @@ export default function CourtCalendar({
 		}
 
 		return "not-available"
-	}
-
-	const handleDateSelect = (day: number) => {
-		const newDate = new Date(
-			calendarMonth.getFullYear(),
-			calendarMonth.getMonth(),
-			day,
-		)
-		setSelectedDate(newDate)
-		setIsPopoverOpen(false)
 	}
 
 	const checkAvailability = (
@@ -319,6 +243,12 @@ export default function CourtCalendar({
 		return `${startTime} - ${endTime}`
 	}
 
+	const formatHour = (hour: number) => {
+		if (hour === 12) return "12 PM"
+		if (hour > 12) return `${hour - 12} PM`
+		return `${hour} AM`
+	}
+
 	const activeCourts = courts.filter((court) => court.isActive)
 
 	return (
@@ -333,142 +263,10 @@ export default function CourtCalendar({
 						</h2>
 					</div>
 
-					<div className="flex items-center gap-2">
-						<Button
-							variant="outline"
-							size="icon"
-							onClick={handlePrevDay}
-							className="h-9 w-9 rounded-lg hover:bg-slate-100 border-slate-200 bg-transparent"
-						>
-							<ChevronLeft className="w-4 h-4" />
-						</Button>
-
-						<Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-							<PopoverTrigger asChild>
-								<button className="min-w-40 text-center px-4 py-2 bg-white rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all cursor-pointer">
-									<span className="text-sm font-medium text-slate-900">
-										{formatDate(selectedDate)}
-									</span>
-								</button>
-							</PopoverTrigger>
-							<PopoverContent className="w-80 p-0" align="center">
-								<div className="p-4 space-y-4">
-									{/* Calendar Header */}
-									<div className="flex items-center justify-between">
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={handlePrevMonth}
-											className="h-8 w-8"
-										>
-											<ChevronLeft className="w-4 h-4" />
-										</Button>
-										<h3 className="text-sm font-semibold text-slate-900">
-											{calendarMonth.toLocaleDateString("es-ES", {
-												month: "long",
-												year: "numeric",
-											})}
-										</h3>
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={handleNextMonth}
-											className="h-8 w-8"
-										>
-											<ChevronRight className="w-4 h-4" />
-										</Button>
-									</div>
-
-									{/* Days of week */}
-									<div className="grid grid-cols-7 gap-1 text-center">
-										{["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"].map(
-											(day) => (
-												<div
-													key={day}
-													className="text-xs font-medium text-slate-500 py-2"
-												>
-													{day}
-												</div>
-											),
-										)}
-									</div>
-
-									{/* Calendar Days */}
-									<div className="grid grid-cols-7 gap-1">
-										{(() => {
-											const { daysInMonth, startingDayOfWeek } =
-												getDaysInMonth(calendarMonth)
-											const days = []
-
-											// Empty cells for days before month starts
-											for (let i = 0; i < startingDayOfWeek; i++) {
-												days.push(<div key={`empty-${i}`} className="h-9" />)
-											}
-
-											// Actual days of the month
-											for (let day = 1; day <= daysInMonth; day++) {
-												const dayNum = day
-												const selected = isSelectedDay(dayNum)
-												const today = isToday(dayNum)
-
-												days.push(
-													<button
-														key={day}
-														onClick={() => handleDateSelect(dayNum)}
-														className={`h-9 rounded-lg text-sm font-medium transition-all ${
-															selected
-																? "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
-																: today
-																	? "bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold"
-																	: "text-slate-700 hover:bg-slate-100"
-														}`}
-													>
-														{dayNum}
-													</button>,
-												)
-											}
-
-											return days
-										})()}
-									</div>
-
-									{/* Quick actions */}
-									<div className="pt-3 border-t border-slate-200 flex justify-between">
-										<Button
-											variant="ghost"
-											size="sm"
-											onClick={() => {
-												const today = new Date()
-												setSelectedDate(today)
-												setCalendarMonth(today)
-												setIsPopoverOpen(false)
-											}}
-											className="text-xs hover:bg-blue-50 hover:text-blue-600"
-										>
-											Hoy
-										</Button>
-										<Button
-											variant="ghost"
-											size="sm"
-											onClick={() => setIsPopoverOpen(false)}
-											className="text-xs hover:bg-slate-100"
-										>
-											Cerrar
-										</Button>
-									</div>
-								</div>
-							</PopoverContent>
-						</Popover>
-
-						<Button
-							variant="outline"
-							size="icon"
-							onClick={handleNextDay}
-							className="h-9 w-9 rounded-lg hover:bg-slate-100 border-slate-200 bg-transparent"
-						>
-							<ChevronRight className="w-4 h-4" />
-						</Button>
-					</div>
+					<CalendarNavigator
+						selectedDate={selectedDate}
+						onDateChange={setSelectedDate}
+					/>
 				</div>
 
 				{/* Calendar Grid */}
