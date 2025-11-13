@@ -1,11 +1,22 @@
+import {
+	addDays,
+	addMonths,
+	format,
+	isSameDay,
+	isToday as isTodayFns,
+	subDays,
+	subMonths,
+} from "date-fns"
+import { es } from "date-fns/locale"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover"
+import { getDaysInMonth } from "@/lib/utils"
 
 interface CalendarNavigatorProps {
 	selectedDate: Date
@@ -19,64 +30,37 @@ export function CalendarNavigator({
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 	const [calendarMonth, setCalendarMonth] = useState(selectedDate)
 
+	useEffect(() => {
+		setCalendarMonth(selectedDate)
+	}, [selectedDate])
+
 	const formatDate = (date: Date) => {
-		return date.toLocaleDateString("es-ES", {
-			weekday: "short",
-			month: "short",
-			day: "numeric",
-		})
+		return format(date, "E, d MMM", { locale: es })
 	}
 
 	const handlePrevDay = () => {
-		const newDate = new Date(selectedDate)
-		newDate.setDate(newDate.getDate() - 1)
-		onDateChange(newDate)
+		onDateChange(subDays(selectedDate, 1))
 	}
 
 	const handleNextDay = () => {
-		const newDate = new Date(selectedDate)
-		newDate.setDate(newDate.getDate() + 1)
-		onDateChange(newDate)
-	}
-
-	const getDaysInMonth = (date: Date) => {
-		const year = date.getFullYear()
-		const month = date.getMonth()
-		const firstDay = new Date(year, month, 1)
-		const lastDay = new Date(year, month + 1, 0)
-		const daysInMonth = lastDay.getDate()
-		const startingDayOfWeek = (firstDay.getDay() + 6) % 7 // 0 = Lunes, 1 = Martes, etc.
-
-		return { daysInMonth, startingDayOfWeek }
+		onDateChange(addDays(selectedDate, 1))
 	}
 
 	const isSelectedDay = (day: number) => {
-		return (
-			day === selectedDate.getDate() &&
-			calendarMonth.getMonth() === selectedDate.getMonth() &&
-			calendarMonth.getFullYear() === selectedDate.getFullYear()
+		const dateToCheck = new Date(
+			calendarMonth.getFullYear(),
+			calendarMonth.getMonth(),
+			day,
 		)
-	}
-
-	const isToday = (day: number) => {
-		const today = new Date()
-		return (
-			day === today.getDate() &&
-			calendarMonth.getMonth() === today.getMonth() &&
-			calendarMonth.getFullYear() === today.getFullYear()
-		)
+		return isSameDay(dateToCheck, selectedDate)
 	}
 
 	const handlePrevMonth = () => {
-		const newMonth = new Date(calendarMonth)
-		newMonth.setMonth(newMonth.getMonth() - 1)
-		setCalendarMonth(newMonth)
+		setCalendarMonth(subMonths(calendarMonth, 1))
 	}
 
 	const handleNextMonth = () => {
-		const newMonth = new Date(calendarMonth)
-		newMonth.setMonth(newMonth.getMonth() + 1)
-		setCalendarMonth(newMonth)
+		setCalendarMonth(addMonths(calendarMonth, 1))
 	}
 
 	const handleDateSelect = (day: number) => {
@@ -122,7 +106,7 @@ export function CalendarNavigator({
 							</Button>
 							<h3 className="text-sm font-semibold text-slate-900">
 								{calendarMonth.toLocaleDateString("es-ES", {
-									month: "long",
+									month: "long", // Mantenemos esto para capitalizar el mes
 									year: "numeric",
 								})}
 							</h3>
@@ -164,7 +148,13 @@ export function CalendarNavigator({
 								for (let day = 1; day <= daysInMonth; day++) {
 									const dayNum = day
 									const selected = isSelectedDay(dayNum)
-									const today = isToday(dayNum)
+									const today = isTodayFns(
+										new Date(
+											calendarMonth.getFullYear(),
+											calendarMonth.getMonth(),
+											dayNum,
+										),
+									)
 
 									days.push(
 										<button

@@ -1,32 +1,24 @@
 import { AlertCircle, Calendar } from "lucide-react"
 import { useMemo, useState } from "react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog"
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip"
 import type { Booking } from "@/models/booking.model"
 import type { BusinessDay } from "@/models/business.model"
 import type { Court } from "@/models/court.model"
+import { SLOT_STATUS_STYLES, type SlotStatus } from "@/models/Slots.model"
+import { CalendarLegend } from "./CalendarLegend"
 import { CalendarNavigator } from "./CalendarNavigator"
-
-type SlotStatus = "available" | "not-available" | "your-booking" | "past"
+import { DurationSelectionDialog } from "./DurationSelectionDialog"
+import { SlotButton } from "./SlotButton"
 
 interface CourtCalendarProps {
 	courts: Court[]
 	bookings: Booking[]
 	clubHours: BusinessDay[] | undefined
 	currentUserId?: string
+}
+
+export function getSlotColor(status: SlotStatus) {
+	return SLOT_STATUS_STYLES[status]
 }
 
 export default function CourtCalendar({
@@ -224,19 +216,6 @@ export default function CourtCalendar({
 		}
 	}
 
-	const getSlotColor = (status: SlotStatus) => {
-		switch (status) {
-			case "available":
-				return "bg-white hover:bg-blue-50 cursor-pointer border-border"
-			case "not-available":
-				return "bg-slate-100 cursor-not-allowed"
-			case "your-booking":
-				return "bg-blue-500 hover:bg-blue-600 cursor-pointer"
-			case "past":
-				return "bg-gradient-to-br from-slate-50 to-slate-100 cursor-not-allowed opacity-50 relative overflow-hidden after:absolute after:inset-0 after:bg-[linear-gradient(45deg,transparent_48%,rgba(148,163,184,0.15)_48%,rgba(148,163,184,0.15)_52%,transparent_52%)] after:bg-[length:8px_8px]"
-		}
-	}
-
 	const getTimeRange = (hour: number, halfHour: "first" | "second") => {
 		const startTime = halfHour === "first" ? `${hour}:00` : `${hour}:30`
 		const endTime = halfHour === "first" ? `${hour}:30` : `${hour + 1}:00`
@@ -252,10 +231,10 @@ export default function CourtCalendar({
 	const activeCourts = courts.filter((court) => court.isActive)
 
 	return (
-		<TooltipProvider>
+		<>
 			<div className="w-full bg-white rounded-xl shadow-sm border border-border overflow-hidden">
 				{/* Header */}
-				<div className="flex items-center justify-between px-6 py-4 border-b border-border bg-gradient-to-r from-slate-50 to-white">
+				<div className="flex items-center justify-between px-6 py-4 border-b border-border bg-linear-to-r from-slate-50 to-white">
 					<div className="flex items-center gap-3">
 						<Calendar className="w-5 h-5 text-slate-600" />
 						<h2 className="text-lg font-semibold text-slate-900">
@@ -310,97 +289,26 @@ export default function CourtCalendar({
 											key={hour}
 											className="flex-1 shrink-0 border-r border-border flex"
 										>
-											<Tooltip>
-												<TooltipTrigger asChild>
-													<button
-														className={`w-1/2 h-16 border-r border-border transition-all duration-200 ${getSlotColor(firstHalfStatus)}`}
-														onClick={() =>
-															handleSlotClick(
-																court.id,
-																court.name,
-																hour,
-																"first",
-															)
-														}
-														disabled={
-															firstHalfStatus === "not-available" ||
-															firstHalfStatus === "past"
-														}
-													/>
-												</TooltipTrigger>
-												<TooltipContent
-													side="top"
-													className="bg-slate-900 text-white border-slate-800"
-												>
-													<div className="space-y-1">
-														<p className="font-semibold text-sm">
-															{court.name}
-														</p>
-														<p className="text-xs text-slate-300">
-															{getTimeRange(hour, "first")}
-														</p>
-														<p className="text-xs">
-															{firstHalfStatus === "available" &&
-																"✓ Disponible"}
-															{firstHalfStatus === "not-available" &&
-																!isHourOpen(hour, "first") &&
-																"✕ Cerrado"}
-															{firstHalfStatus === "not-available" &&
-																isHourOpen(hour, "first") &&
-																"✕ No disponible"}
-															{firstHalfStatus === "your-booking" &&
-																"★ Tu reserva"}
-															{firstHalfStatus === "past" && "⌚ Hora pasada"}
-														</p>
-													</div>
-												</TooltipContent>
-											</Tooltip>
-
-											<Tooltip>
-												<TooltipTrigger asChild>
-													<button
-														className={`w-1/2 h-16 transition-all duration-200 ${getSlotColor(secondHalfStatus)}`}
-														onClick={() =>
-															handleSlotClick(
-																court.id,
-																court.name,
-																hour,
-																"second",
-															)
-														}
-														disabled={
-															secondHalfStatus === "not-available" ||
-															secondHalfStatus === "past"
-														}
-													/>
-												</TooltipTrigger>
-												<TooltipContent
-													side="top"
-													className="bg-slate-900 text-white border-slate-800"
-												>
-													<div className="space-y-1">
-														<p className="font-semibold text-sm">
-															{court.name}
-														</p>
-														<p className="text-xs text-slate-300">
-															{getTimeRange(hour, "second")}
-														</p>
-														<p className="text-xs">
-															{secondHalfStatus === "available" &&
-																"✓ Disponible"}
-															{secondHalfStatus === "not-available" &&
-																!isHourOpen(hour, "second") &&
-																"✕ Cerrado"}
-															{secondHalfStatus === "not-available" &&
-																isHourOpen(hour, "second") &&
-																"✕ No disponible"}
-															{secondHalfStatus === "your-booking" &&
-																"★ Tu reserva"}
-															{secondHalfStatus === "past" && "⌚ Hora pasada"}
-														</p>
-													</div>
-												</TooltipContent>
-											</Tooltip>
+											<SlotButton
+												courtId={court.id}
+												courtName={court.name}
+												hour={hour}
+												halfHour="first"
+												status={firstHalfStatus}
+												isHourOpen={isHourOpen(hour, "first")}
+												onSlotClick={handleSlotClick}
+												getTimeRange={getTimeRange}
+											/>
+											<SlotButton
+												courtId={court.id}
+												courtName={court.name}
+												hour={hour}
+												halfHour="second"
+												status={secondHalfStatus}
+												isHourOpen={isHourOpen(hour, "second")}
+												onSlotClick={handleSlotClick}
+												getTimeRange={getTimeRange}
+											/>
 										</div>
 									)
 								})}
@@ -409,104 +317,17 @@ export default function CourtCalendar({
 					</div>
 				</div>
 
-				{/* Legend */}
-				<div className="flex items-center justify-end gap-6 px-6 py-4 border-t border-border bg-slate-50/50">
-					<div className="flex items-center gap-2">
-						<div className="w-4 h-4 rounded border border-slate-300 bg-white shadow-sm" />
-						<span className="text-xs font-medium text-slate-600">
-							Disponible
-						</span>
-					</div>
-					<div className="flex items-center gap-2">
-						<div className="w-4 h-4 rounded bg-slate-100 shadow-sm" />
-						<span className="text-xs font-medium text-slate-600">
-							No disponible
-						</span>
-					</div>
-					<div className="flex items-center gap-2">
-						<div className="w-4 h-4 rounded bg-blue-500 shadow-sm" />
-						<span className="text-xs font-medium text-slate-600">
-							Tu reserva
-						</span>
-					</div>
-					<div className="flex items-center gap-2">
-						<div className="w-4 h-4 rounded bg-gradient-to-br from-slate-50 to-slate-100 opacity-50 shadow-sm" />
-						<span className="text-xs font-medium text-slate-600">
-							Hora pasada
-						</span>
-					</div>
-				</div>
+				<CalendarLegend />
 			</div>
 
-			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-				<DialogContent className="sm:max-w-md">
-					<DialogHeader className="space-y-3">
-						<DialogTitle className="text-xl font-semibold">
-							Duración de la reserva
-						</DialogTitle>
-						<DialogDescription className="text-base">
-							{selectedSlot && (
-								<div className="space-y-1">
-									<div className="font-semibold text-slate-900">
-										{selectedSlot.courtName}
-									</div>
-									<div className="text-sm text-slate-600">
-										{getTimeRange(selectedSlot.hour, selectedSlot.halfHour)}
-									</div>
-								</div>
-							)}
-						</DialogDescription>
-					</DialogHeader>
-
-					<div className="grid gap-3 py-4">
-						<Button
-							variant="outline"
-							className="h-14 text-base font-semibold transition-all bg-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
-							onClick={() => handleDurationSelect(90)}
-							disabled={
-								!availableDurations.find((d) => d.duration === 90)?.available
-							}
-						>
-							90 minutos
-							<span className="text-sm font-normal text-slate-500 ml-2">
-								(1h 30min)
-							</span>
-						</Button>
-						{!availableDurations.find((d) => d.duration === 90)?.available && (
-							<Alert className="border-amber-200 bg-amber-50">
-								<AlertCircle className="h-4 w-4 text-amber-600" />
-								<AlertDescription className="text-xs text-amber-800">
-									No hay disponibilidad para 90 minutos desde esta hora (hay
-									reservas que se solaparían)
-								</AlertDescription>
-							</Alert>
-						)}
-
-						<Button
-							variant="outline"
-							className="h-14 text-base font-semibold transition-all bg-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
-							onClick={() => handleDurationSelect(120)}
-							disabled={
-								!availableDurations.find((d) => d.duration === 120)?.available
-							}
-						>
-							120 minutos
-							<span className="text-sm font-normal text-slate-500 ml-2">
-								(2h)
-							</span>
-						</Button>
-						{!availableDurations.find((d) => d.duration === 120)?.available && (
-							<Alert className="border-amber-200 bg-amber-50">
-								<AlertCircle className="h-4 w-4 text-amber-600" />
-								<AlertDescription className="text-xs text-amber-800">
-									No hay disponibilidad para 120 minutos desde esta hora (hay
-									reservas que se solaparían)
-								</AlertDescription>
-							</Alert>
-						)}
-					</div>
-				</DialogContent>
-			</Dialog>
-		</TooltipProvider>
+			<DurationSelectionDialog
+				isOpen={isDialogOpen}
+				onOpenChange={setIsDialogOpen}
+				selectedSlot={selectedSlot}
+				availableDurations={availableDurations}
+				onDurationSelect={handleDurationSelect}
+				getTimeRange={getTimeRange}
+			/>
+		</>
 	)
 }

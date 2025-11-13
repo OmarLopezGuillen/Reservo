@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { formatDate, formatPrice } from "@/lib/utils"
-import type { UISlot } from "@/models/UI.models"
+import type { UISlot } from "@/models/Slots.model"
 
 interface BookingSummaryProps {
 	selectedSlot: UISlot | null

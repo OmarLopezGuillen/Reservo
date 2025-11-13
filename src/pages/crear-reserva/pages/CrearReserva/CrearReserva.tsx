@@ -6,18 +6,16 @@ import { Button } from "@/components/ui/button"
 import { useBookings } from "@/hooks/useBookingsQuery"
 import { useClubHours } from "@/hooks/useClubHoursQuery"
 import { useCourts } from "@/hooks/useCourtsQuery"
-import type { UISlot } from "@/models/UI.models"
+import type { UISlot } from "@/models/Slots.model"
 import { ROUTES } from "@/ROUTES"
 import BookingSummary from "./components/BookingSummary"
 import CourtCalendar from "./components/CourtCalendar"
-import DateNavigator from "./components/DateNavigator"
 
 const CrearReserva = () => {
 	const user = useAuthUser()
 	// TODO: Traer el id de la URL y si es admin de la variable club_id.
 	const clubId = "a32a865d-3ecc-448b-a38d-9da8a10cca59"
 
-	const [selectedDate, setSelectedDate] = useState<Date>(new Date())
 	const [selectedSlot] = useState<UISlot | null>(null)
 
 	const { bookingsQuery } = useBookings(clubId)
@@ -62,13 +60,6 @@ const CrearReserva = () => {
 
 			<div className="container mx-auto px-4 py-8">
 				<div className="grid lg:grid-cols-3 gap-8">
-					<div className="lg:col-span-2 space-y-6">
-						<DateNavigator
-							selectedDate={selectedDate}
-							onSelectDate={setSelectedDate}
-						/>
-					</div>
-
 					<div className="lg:col-span-1">
 						<BookingSummary
 							selectedSlot={selectedSlot}

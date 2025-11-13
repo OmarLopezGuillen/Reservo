@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx"
+import { getDaysInMonth as getDaysInMonthFns, startOfMonth } from "date-fns"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -50,4 +51,12 @@ export function formatPrice(price: number, currency = "EUR"): string {
 		style: "currency",
 		currency,
 	}).format(price)
+}
+
+export function getDaysInMonth(date: Date) {
+	const firstDay = startOfMonth(date)
+	const daysInMonth = getDaysInMonthFns(date)
+	const startingDayOfWeek = (firstDay.getDay() + 6) % 7 // 0 = Lunes
+
+	return { daysInMonth, startingDayOfWeek }
 }
