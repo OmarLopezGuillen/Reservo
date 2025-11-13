@@ -22,7 +22,9 @@ const AdminLayout = () => {
 				</header>
 
 				<Suspense key={location.pathname} fallback={<Loading />}>
-					<Outlet />
+					<div className="mx-2">
+						<Outlet />
+					</div>
 				</Suspense>
 			</SidebarInset>
 		</SidebarProvider>

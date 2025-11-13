@@ -29,7 +29,7 @@ const CrearReservaExito = lazy(
 
 const AdminLayout = lazy(() => import("@/pages/admin/layout/AdminLayout"))
 
-const Calendar = lazy(() => import("@/pages/admin/pages/Calendar"))
+const Calendar = lazy(() => import("@/pages/admin/pages/Calendar/Calendar"))
 const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes"))
 const AdminEstadisticas = lazy(() => import("@/pages/admin/pages/Estadisticas"))
 const AdminLiga = lazy(() => import("@/pages/admin/pages/Liga"))
