@@ -1,3 +1,4 @@
+import { NuqsAdapter } from "nuqs/adapters/react-router/v7"
 import { Suspense } from "react"
 import { Outlet, useLocation } from "react-router"
 import { Loading } from "@/components/Loading"
@@ -23,7 +24,9 @@ const AdminLayout = () => {
 
 				<Suspense key={location.pathname} fallback={<Loading />}>
 					<div className="mx-2">
-						<Outlet />
+						<NuqsAdapter>
+							<Outlet />
+						</NuqsAdapter>
 					</div>
 				</Suspense>
 			</SidebarInset>

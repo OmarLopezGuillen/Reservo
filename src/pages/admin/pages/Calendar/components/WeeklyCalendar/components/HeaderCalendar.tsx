@@ -16,10 +16,21 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
+import {
+	useCurrentDayQueryState,
+	useViewModeQueryState,
+} from "@/pages/admin/pages/Calendar/hooks/useCalendarQueryState"
 
 export const HeaderCalendar = () => {
-	const [viewMode, setViewMode] = useState<"week" | "day">("week")
-	const [currentDate, setCurrentDate] = useState(new Date())
+	const { viewMode, setViewMode } = useViewModeQueryState()
+	const { currentDate, setCurrentDate } = useCurrentDayQueryState()
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
 	const handleSelectDate = (date: Date) => {
@@ -31,9 +42,9 @@ export const HeaderCalendar = () => {
 	return (
 		<div className="m-2">
 			{/* Controls */}
-			<div className="flex flex-col sm:flex-col gap-4 ">
+			<div className="flex flex-col-reverse gap-4 sm:flex-row sm:flex-wrap items-center">
 				{/* Date Navigation */}
-				<div className="flex items-center gap-2 mx-auto">
+				<div className="flex items-center gap-2 mx-auto md:mx-0">
 					<Button
 						variant="outline"
 						size="sm"
@@ -88,26 +99,13 @@ export const HeaderCalendar = () => {
 				</div>
 
 				{/* Filters */}
-				{/* 				<div className="flex items-center gap-2">
-					<Select value={selectedCourt} onValueChange={setSelectedCourt}>
-						<SelectTrigger className="w-full sm:w-[180px]">
-							<SelectValue placeholder="Filtrar por pista" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="all">Todas las pistas</SelectItem>
-							{courts?.map((court: any) => (
-								<SelectItem key={court.id} value={court.id}>
-									{court.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
 
+				<div className="flex-1 flex gap-2 flex-wrap justify-center sm:justify-start">
 					<Select
 						value={viewMode}
 						onValueChange={(value: "week" | "day") => setViewMode(value)}
 					>
-						<SelectTrigger className="w-full sm:w-[120px]">
+						<SelectTrigger className="w-full max-w-[150px]">
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
@@ -115,7 +113,7 @@ export const HeaderCalendar = () => {
 							<SelectItem value="day">Día</SelectItem>
 						</SelectContent>
 					</Select>
-				</div> */}
+				</div>
 			</div>
 		</div>
 	)
