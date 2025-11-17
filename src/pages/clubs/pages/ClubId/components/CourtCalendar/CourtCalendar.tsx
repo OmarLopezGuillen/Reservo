@@ -18,6 +18,16 @@ interface CourtCalendarProps {
 	currentUserId?: string
 }
 
+/**
+ * @component CourtCalendar
+ * @description Renders a full calendar view for a specific club, allowing users to see court availability and select a time slot to book.
+ * It handles business hours, existing bookings, and past slots.
+ * @param {Court[]} courts - List of court objects for the club.
+ * @param {string} clubId - The ID of the club.
+ * @param {Booking[]} bookings - A list of existing bookings for the club.
+ * @param {BusinessDay[]} [clubHours] - The opening hours for the club.
+ * @param {string} [currentUserId] - The ID of the currently logged-in user, to identify their own bookings.
+ */
 export default function CourtCalendar({
 	courts,
 	clubId,
@@ -38,6 +48,12 @@ export default function CourtCalendar({
 		{ duration: number; available: boolean }[]
 	>([])
 
+	/**
+	 * @description Memoized calculation to determine the operating hours for the selected date.
+	 * It finds the business day corresponding to the selected date, extracts the opening and closing times,
+	 * and generates an array of hours within the operating range.
+	 * @returns {{hours: number[], openRanges: {start: number, end: number}[]}} An object containing an array of operating hours and the time ranges.
+	 */
 	const { hours, openRanges } = useMemo(() => {
 		if (!clubHours) {
 			return { hours: [], openRanges: [] }
@@ -73,6 +89,12 @@ export default function CourtCalendar({
 		return { hours: allHours, openRanges: ranges }
 	}, [selectedDate, clubHours])
 
+	/**
+	 * @description Checks if a specific 30-minute slot is within the club's open hours for the selected day.
+	 * @param {number} hour - The hour of the slot (0-23).
+	 * @param {"first" | "second"} halfHour - Which half of the hour the slot is in.
+	 * @returns {boolean} True if the slot is within open hours, false otherwise.
+	 */
 	const isHourOpen = (hour: number, halfHour: "first" | "second"): boolean => {
 		const minutes = hour * 60 + (halfHour === "second" ? 30 : 0)
 
@@ -83,6 +105,12 @@ export default function CourtCalendar({
 		})
 	}
 
+	/**
+	 * @description Determines if a given time slot is in the past relative to the current time.
+	 * @param {number} hour - The hour of the slot (0-23).
+	 * @param {"first" | "second"} halfHour - Which half of the hour the slot is in.
+	 * @returns {boolean} True if the slot is in the past, false otherwise.
+	 */
 	const isSlotInPast = (
 		hour: number,
 		halfHour: "first" | "second",
@@ -103,6 +131,14 @@ export default function CourtCalendar({
 		return slotMinutes < currentMinutes
 	}
 
+	/**
+	 * @description Determines the status of a single 30-minute slot.
+	 * It checks if the slot is open, in the past, or already booked.
+	 * @param {string} courtId - The ID of the court to check.
+	 * @param {number} hour - The hour of the slot.
+	 * @param {"first" | "second"} halfHour - The half-hour segment of the slot.
+	 * @returns {SlotStatus} The calculated status of the slot ('available', 'not-available', 'past', 'your-booking').
+	 */
 	const getSlotStatus = (
 		courtId: string,
 		hour: number,
@@ -147,6 +183,14 @@ export default function CourtCalendar({
 		return "not-available"
 	}
 
+	/**
+	 * @description Checks if a continuous block of time is available for a given duration, starting from a specific slot.
+	 * @param {string} courtId - The ID of the court to check.
+	 * @param {number} startHour - The starting hour of the potential booking.
+	 * @param {"first" | "second"} startHalf - The starting half-hour of the potential booking.
+	 * @param {number} durationMinutes - The total duration in minutes to check for availability (e.g., 90 or 120).
+	 * @returns {boolean} True if the entire duration is available, false otherwise.
+	 */
 	const checkAvailability = (
 		courtId: string,
 		startHour: number,
@@ -176,6 +220,15 @@ export default function CourtCalendar({
 		return true
 	}
 
+	/**
+	 * @description Handles the click event on a time slot.
+	 * It checks for the availability of 90 and 120-minute durations starting from the clicked slot,
+	 * sets the state for the duration selection dialog, and opens it.
+	 * @param {string} courtId - The ID of the clicked court.
+	 * @param {string} courtName - The name of the clicked court.
+	 * @param {number} hour - The hour of the clicked slot.
+	 * @param {"first" | "second"} halfHour - The half-hour segment of the clicked slot.
+	 */
 	const handleSlotClick = (
 		courtId: string,
 		courtName: string,
@@ -194,6 +247,12 @@ export default function CourtCalendar({
 		setIsDialogOpen(true)
 	}
 
+	/**
+	 * @description Handles the selection of a booking duration from the dialog.
+	 * It constructs the final slot object with all necessary details (times, price, etc.)
+	 * and navigates the user to the booking creation page, passing the slot data as a URL parameter.
+	 * @param {number} duration - The selected duration in minutes.
+	 */
 	const handleDurationSelect = (duration: number) => {
 		if (!selectedSlot) return
 
@@ -223,12 +282,23 @@ export default function CourtCalendar({
 		setIsDialogOpen(false)
 	}
 
+	/**
+	 * @description Generates a string representation of a 30-minute time range.
+	 * @param {number} hour - The hour of the slot.
+	 * @param {"first" | "second"} halfHour - The half-hour segment.
+	 * @returns {string} A formatted time range string (e.g., "9:00 - 9:30").
+	 */
 	const getTimeRange = (hour: number, halfHour: "first" | "second") => {
 		const startTime = halfHour === "first" ? `${hour}:00` : `${hour}:30`
 		const endTime = halfHour === "first" ? `${hour}:30` : `${hour + 1}:00`
 		return `${startTime} - ${endTime}`
 	}
 
+	/**
+	 * @description Formats an hour number into a 12-hour AM/PM format for display.
+	 * @param {number} hour - The hour to format (0-23).
+	 * @returns {string} The formatted hour string (e.g., "9 AM", "12 PM", "3 PM").
+	 */
 	const formatHour = (hour: number) => {
 		if (hour === 12) return "12 PM"
 		if (hour > 12) return `${hour - 12} PM`
