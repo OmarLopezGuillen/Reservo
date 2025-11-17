@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
+import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import {
 	getBookingById,
 	getBookings,
+	getMyBookingById,
+	getMyBookings,
 } from "@/services/databaseService/bookings.service"
 
 export const BOOKINGS_QUERY_KEY = "bookings"
@@ -23,4 +26,26 @@ export const useBookingById = (id: string | null) => {
 		enabled: !!id, // La consulta solo se ejecuta si el id tiene un valor.
 	})
 	return { bookingByIdQuery }
+}
+
+/**
+ * Hook para obtener todas las reservas del usuario actualmente autenticado.
+ */
+export const useMyBookings = () => {
+	const user = useAuthUser()
+	const myBookingsQuery = useQuery({
+		queryKey: [BOOKINGS_QUERY_KEY, "me", user?.id],
+		queryFn: () => getMyBookings(user!.id),
+		enabled: !!user, // La consulta solo se ejecuta si hay un usuario logueado.
+	})
+	return { myBookingsQuery }
+}
+
+export const useMyBookingById = (id: string | null) => {
+	const myBookingQuery = useQuery({
+		queryKey: [BOOKINGS_QUERY_KEY, "me", id],
+		queryFn: () => getMyBookingById(id!),
+		enabled: !!id, // La consulta solo se ejecuta si hay un usuario logueado.
+	})
+	return { myBookingQuery }
 }

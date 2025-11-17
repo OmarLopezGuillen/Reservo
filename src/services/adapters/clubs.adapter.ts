@@ -9,6 +9,9 @@ export const clubsAdapterBase = (clubDB: ClubsRow): BusinessData => {
 		email: clubDB.email,
 		name: clubDB.name,
 		whatsappNumber: clubDB.whatsapp_number,
+		cancelHoursBefore: clubDB.cancel_hours_before,
+		penaltyPercentage: clubDB.penalty_percentage,
+		cancellationBlockHours: clubDB.cancellation_block_hours,
 	}
 }
 

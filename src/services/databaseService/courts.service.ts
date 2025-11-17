@@ -18,6 +18,16 @@ export async function getCourts(clubId: string): Promise<Court[]> {
 		throw new Error("No se pudieron obtener las canchas.")
 	}
 }
+export async function getCourtsByIds(ids: string[]): Promise<Court[]> {
+	const { data, error } = await supabase
+		.from("courts")
+		.select("*")
+		.in("id", ids)
+
+	if (error) throw error
+
+	return courtsAdapter(data)
+}
 
 export async function getCourtById(id: string): Promise<Court> {
 	try {

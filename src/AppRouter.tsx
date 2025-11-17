@@ -13,8 +13,10 @@ import { ROUTES } from "@/ROUTES"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
-const Reservas = lazy(() => import("@/pages/reservas/pages/Reservas"))
-const ReservasId = lazy(() => import("@/pages/reservas/pages/ReservasId"))
+const Reservas = lazy(() => import("@/pages/reservas/pages/Reservas/Reservas"))
+const ReservasId = lazy(
+	() => import("@/pages/reservas/pages/ReservaId/ReservasId"),
+)
 
 const Clubs = lazy(() => import("@/pages/clubs/pages/Clubs"))
 const ClubsId = lazy(() => import("@/pages/clubs/pages/ClubsId"))

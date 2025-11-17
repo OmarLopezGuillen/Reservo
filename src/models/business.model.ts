@@ -16,4 +16,7 @@ export interface BusinessData {
 	email: string
 	name: string
 	whatsappNumber: string
+	cancelHoursBefore: number
+	penaltyPercentage: number
+	cancellationBlockHours: number
 }

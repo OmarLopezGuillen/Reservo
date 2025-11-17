@@ -31,3 +31,8 @@ export type PaymentStatus = Enums<"payment_status">
 export type PaymentMode = Enums<"type_payment_mode">
 export type WeekDay = Enums<"weekday">
 export type Position = Enums<"position">
+
+export type BookingWithRelations = BookingsRow & {
+	court: CourtsRow
+	club: ClubsRow
+}

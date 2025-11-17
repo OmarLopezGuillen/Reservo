@@ -1,6 +1,5 @@
 import { ArrowLeft, Home, Search } from "lucide-react"
 import { Link } from "react-router"
-import { ROUTES } from "@/ROUTES"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
@@ -9,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
+import { ROUTES } from "@/ROUTES"
 
 const NotFound = () => {
 	return (
@@ -41,7 +41,7 @@ const NotFound = () => {
 								asChild
 								className="w-full bg-transparent"
 							>
-								<Link to={ROUTES.CREAR_RESERVA.ROOT}>
+								<Link to={ROUTES.CLUBS.ROOT}>
 									<ArrowLeft className="h-4 w-4 mr-2" />
 									Hacer una reserva
 								</Link>

@@ -39,9 +39,13 @@ const CrearReserva = () => {
 				setSelectedSlot(parsedSlot)
 			} catch (error) {
 				console.error("Error al parsear el slot de la URL:", error)
+				navigate(ROUTES.HOME, { replace: true })
 			}
+		} else {
+			// Si no hay slot en la URL, redirigir al home
+			navigate(ROUTES.HOME, { replace: true })
 		}
-	}, [slotParam]) // Dependencia para que se ejecute cuando cambie el parámetro 'slot'
+	}, [slotParam, navigate]) // Dependencia para que se ejecute cuando cambie el parámetro 'slot'
 	const [acceptsTerms, setAcceptsTerms] = useState(false)
 	const [isProcessing, setIsProcessing] = useState(false)
 

@@ -1,3 +1,5 @@
+import type { BusinessData } from "./business.model"
+import type { Court } from "./court.model"
 import type { PaymentMode, PaymentStatus, StatusBooking } from "./dbTypes"
 
 export interface Booking {
@@ -19,4 +21,9 @@ export interface Booking {
 	status: StatusBooking
 	updatedAt: string | null
 	userId: string | null
+}
+
+export interface BookingManagement extends Booking {
+	court: Court
+	club: BusinessData
 }
