@@ -24,7 +24,7 @@ const CrearReserva = lazy(
 )
 
 const CrearReservaExito = lazy(
-	() => import("@/pages/crear-reserva/pages/Exito"),
+	() => import("@/pages/crear-reserva/pages/Exito/Exito"),
 )
 
 const AdminLayout = lazy(() => import("@/pages/admin/layout/AdminLayout"))
@@ -150,6 +150,7 @@ export default function AppRouter() {
 						}
 					/>
 
+					{/* Crear Reserva */}
 					<Route
 						path={ROUTES.CREAR_RESERVA.ROOT}
 						element={
@@ -157,16 +158,15 @@ export default function AppRouter() {
 								<CrearReserva />
 							</Suspense>
 						}
-					>
-						<Route
-							path={ROUTES.CREAR_RESERVA.EXITO}
-							element={
-								<Suspense fallback={<Loading />}>
-									<CrearReservaExito />
-								</Suspense>
-							}
-						/>
-					</Route>
+					/>
+					<Route
+						path={ROUTES.CREAR_RESERVA.EXITO}
+						element={
+							<Suspense fallback={<Loading />}>
+								<CrearReservaExito />
+							</Suspense>
+						}
+					/>
 				</Route>
 
 				{/* Errores */}

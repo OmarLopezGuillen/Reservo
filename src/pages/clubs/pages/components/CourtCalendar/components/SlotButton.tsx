@@ -3,8 +3,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip"
-import type { SlotStatus } from "@/models/Slots.model"
-import { getSlotColor } from "./CourtCalendar"
+import { SLOT_STATUS_STYLES, type SlotStatus } from "@/models/slots.model"
 
 interface SlotButtonProps {
 	courtId: string
@@ -20,6 +19,10 @@ interface SlotButtonProps {
 		halfHour: "first" | "second",
 	) => void
 	getTimeRange: (hour: number, halfHour: "first" | "second") => string
+}
+
+export function getSlotColor(status: SlotStatus) {
+	return SLOT_STATUS_STYLES[status]
 }
 
 export function SlotButton({

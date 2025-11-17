@@ -35,7 +35,7 @@ const NavLinks = () => {
 		return (
 			<>
 				<Link
-					to={ROUTES.CREAR_RESERVA.ROOT}
+					to={ROUTES.RESERVAS.ROOT}
 					className="text-sm font-medium hover:text-primary transition-colors duration-200"
 				>
 					Mis reservas
@@ -166,7 +166,7 @@ const Home = () => {
 							</p>
 							<div className="flex flex-col sm:flex-row gap-4">
 								<Button asChild size="lg" className="text-xl px-8">
-									<Link to={ROUTES.CREAR_RESERVA.ROOT}>Reservar ahora</Link>
+									<Link to={ROUTES.CLUBS.ROOT}>Reservar ahora</Link>
 								</Button>
 							</div>
 						</div>

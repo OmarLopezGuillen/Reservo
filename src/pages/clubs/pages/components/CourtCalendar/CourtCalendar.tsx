@@ -1,33 +1,32 @@
-import { AlertCircle, Calendar } from "lucide-react"
+import { Calendar } from "lucide-react"
 import { useMemo, useState } from "react"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useNavigate } from "react-router"
 import type { Booking } from "@/models/booking.model"
 import type { BusinessDay } from "@/models/business.model"
 import type { Court } from "@/models/court.model"
-import { SLOT_STATUS_STYLES, type SlotStatus } from "@/models/Slots.model"
-import { CalendarLegend } from "./CalendarLegend"
-import { CalendarNavigator } from "./CalendarNavigator"
-import { DurationSelectionDialog } from "./DurationSelectionDialog"
-import { SlotButton } from "./SlotButton"
+import type { SlotStatus, UISlot } from "@/models/slots.model"
+import { CalendarLegend } from "./components/CalendarLegend"
+import { CalendarNavigator } from "./components/CalendarNavigator"
+import { DurationSelectionDialog } from "./components/DurationSelectionDialog"
+import { SlotButton } from "./components/SlotButton"
 
 interface CourtCalendarProps {
 	courts: Court[]
+	clubId: string
 	bookings: Booking[]
 	clubHours: BusinessDay[] | undefined
 	currentUserId?: string
 }
 
-export function getSlotColor(status: SlotStatus) {
-	return SLOT_STATUS_STYLES[status]
-}
-
 export default function CourtCalendar({
 	courts,
+	clubId,
 	bookings,
 	clubHours,
 	currentUserId,
 }: CourtCalendarProps) {
 	const [selectedDate, setSelectedDate] = useState(new Date())
+	const navigate = useNavigate()
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 	const [selectedSlot, setSelectedSlot] = useState<{
 		courtId: string
@@ -125,16 +124,15 @@ export default function CourtCalendar({
 			if (booking.courtId !== courtId || booking.date !== dateStr) return false
 			if (booking.status === "cancelled") return false
 
-			const [bookingStartHour, bookingStartMinute] = booking.startTime
-				.split(":")
-				.map(Number)
-			const [bookingEndHour, bookingEndMinute] = booking.endTime
-				.split(":")
-				.map(Number)
+			// Convertir las fechas ISO a objetos Date
+			const bookingStartDate = new Date(booking.startTime)
+			const bookingEndDate = new Date(booking.endTime)
 
-			const bookingStartMinutes = bookingStartHour * 60 + bookingStartMinute
-			const bookingEndMinutes = bookingEndHour * 60 + bookingEndMinute
-
+			// Obtener los minutos totales desde el inicio del día
+			const bookingStartMinutes =
+				bookingStartDate.getHours() * 60 + bookingStartDate.getMinutes()
+			const bookingEndMinutes =
+				bookingEndDate.getHours() * 60 + bookingEndDate.getMinutes()
 			return (
 				startMinutes >= bookingStartMinutes && endMinutes <= bookingEndMinutes
 			)
@@ -184,10 +182,6 @@ export default function CourtCalendar({
 		hour: number,
 		halfHour: "first" | "second",
 	) => {
-		const startTime = halfHour === "first" ? `${hour}:00` : `${hour}:30`
-		const endTime = halfHour === "first" ? `${hour}:30` : `${hour + 1}:00`
-		console.log(`Clicked: ${courtName} - ${startTime} to ${endTime}`)
-
 		const duration90Available = checkAvailability(courtId, hour, halfHour, 90)
 		const duration120Available = checkAvailability(courtId, hour, halfHour, 120)
 
@@ -203,17 +197,30 @@ export default function CourtCalendar({
 	const handleDurationSelect = (duration: number) => {
 		if (!selectedSlot) return
 
-		const isAvailable = checkAvailability(
-			selectedSlot.courtId,
-			selectedSlot.hour,
-			selectedSlot.halfHour,
-			duration,
-		)
+		const { courtId, hour, halfHour } = selectedSlot
+		const court = courts.find((c) => c.id === courtId)
+		if (!court) return
 
-		if (isAvailable) {
-			console.log(`Reserva confirmada: ${duration} minutos`)
-			setIsDialogOpen(false)
+		const startDate = new Date(selectedDate)
+		startDate.setHours(hour, halfHour === "first" ? 0 : 30, 0, 0)
+
+		const endDate = new Date(startDate)
+		endDate.setMinutes(endDate.getMinutes() + duration)
+
+		const finalSlot: UISlot = {
+			clubId,
+			courtId,
+			price: court.price,
+			date: selectedDate.toISOString().split("T")[0],
+			startTime: startDate,
+			endTime: endDate,
+			duration,
+			courtName: court.name,
 		}
+		// Codificar el objeto finalSlot y navegar
+		const encodedSlot = encodeURIComponent(JSON.stringify(finalSlot))
+		navigate(`/crear-reserva?slot=${encodedSlot}`)
+		setIsDialogOpen(false)
 	}
 
 	const getTimeRange = (hour: number, halfHour: "first" | "second") => {

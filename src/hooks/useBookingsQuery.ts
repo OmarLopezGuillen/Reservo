@@ -6,10 +6,10 @@ import {
 
 export const BOOKINGS_QUERY_KEY = "bookings"
 
-export const useBookings = (clubId: string) => {
+export const useBookings = (clubId?: string) => {
 	const bookingsQuery = useQuery({
 		queryKey: [BOOKINGS_QUERY_KEY, clubId],
-		queryFn: () => getBookings(clubId),
+		queryFn: () => getBookings(clubId!),
 		enabled: !!clubId, // La consulta solo se ejecuta si clubId tiene un valor.
 	})
 	return { bookingsQuery }

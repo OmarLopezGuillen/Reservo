@@ -6,10 +6,10 @@ import {
 
 export const COURTS_QUERY_KEY = "courts"
 
-export const useCourts = (clubId: string) => {
+export const useCourts = (clubId?: string) => {
 	const courtsQuery = useQuery({
 		queryKey: [COURTS_QUERY_KEY, clubId],
-		queryFn: () => getCourts(clubId),
+		queryFn: () => getCourts(clubId!),
 		enabled: !!clubId, // La consulta solo se ejecuta si clubId tiene un valor.
 	})
 	return { courtsQuery }

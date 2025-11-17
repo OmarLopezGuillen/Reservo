@@ -37,7 +37,18 @@ export function getInitials(name: string): string {
 
 	return firstInitial + lastInitial
 }
-export function formatDate(date: string): string {
+
+/**
+ * Formatea una fecha a una cadena corta con el día de la semana, día del mes y mes abreviado.
+ *
+ * @param {Date} date - El objeto Date a formatear.
+ * @returns {string} La fecha formateada.
+ *
+ * @example
+ * // Devuelve "lun, 5 ago"
+ * formatDateWeekDayMonthShort(new Date("2024-08-05"))
+ */
+export function formatDateWeekDayMonthShort(date: string): string {
 	return new Intl.DateTimeFormat("es-ES", {
 		weekday: "long",
 		year: "numeric",
@@ -53,10 +64,32 @@ export function formatPrice(price: number, currency = "EUR"): string {
 	}).format(price)
 }
 
-export function getDaysInMonth(date: Date) {
-	const firstDay = startOfMonth(date)
-	const daysInMonth = getDaysInMonthFns(date)
-	const startingDayOfWeek = (firstDay.getDay() + 6) % 7 // 0 = Lunes
+/**
+ * Extrae la hora en formato "HH:mm" de un objeto Date o una cadena ISO.
+ *
+ * @param {Date | string | null} date - El objeto Date o la cadena en formato ISO.
+ * @returns {string | null} La hora en formato "HH:mm" o null si la entrada es nula.
+ *
+ * @example
+ * // Devuelve "18:00"
+ * formatTimeToHourMinute(new Date("2025-11-12T18:00:00+00:00"))
+ */
+export function formatTimeToHourMinute(
+	date: Date | string | null,
+): string | null {
+	if (!date) return null
+	const dateObj = typeof date === "string" ? new Date(date) : date
+	return dateObj.toLocaleTimeString("es-ES", {
+		hour: "2-digit",
+		minute: "2-digit",
+	})
+}
 
-	return { daysInMonth, startingDayOfWeek }
+export function formatPhoneForDisplay(phone: string): string {
+	if (phone.startsWith("+34")) {
+		// Spanish phone number formatting
+		const number = phone.slice(3)
+		return `+34 ${number.slice(0, 3)} ${number.slice(3, 6)} ${number.slice(6)}`
+	}
+	return phone
 }

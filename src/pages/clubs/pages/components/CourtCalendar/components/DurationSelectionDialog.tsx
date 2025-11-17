@@ -37,7 +37,7 @@ export function DurationSelectionDialog({
 					<DialogTitle className="text-xl font-semibold">
 						Duración de la reserva
 					</DialogTitle>
-					<DialogDescription className="text-base">
+					<DialogDescription className="text-base" asChild>
 						{selectedSlot && (
 							<div className="space-y-1">
 								<div className="font-semibold text-slate-900">

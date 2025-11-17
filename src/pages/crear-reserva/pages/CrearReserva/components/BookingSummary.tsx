@@ -1,40 +1,39 @@
-import { Clock } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
-import { formatDate, formatPrice } from "@/lib/utils"
-import type { UISlot } from "@/models/Slots.model"
+import { SidebarSeparator } from "@/components/ui/sidebar"
+import {
+	formatDateWeekDayMonthShort,
+	formatPrice,
+	formatTimeToHourMinute,
+} from "@/lib/utils"
+import type { UISlot } from "@/models/slots.model"
 
 interface BookingSummaryProps {
 	selectedSlot: UISlot | null
-	onSubmit: () => void
 }
 
-const BookingSummary = ({ selectedSlot, onSubmit }: BookingSummaryProps) => {
+const BookingSummary = ({ selectedSlot }: BookingSummaryProps) => {
 	return (
 		<Card className="sticky top-4">
 			<CardHeader>
-				<CardTitle>Resumen de reserva</CardTitle>
+				<CardTitle>Resumen final</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-4">
 				{selectedSlot ? (
 					<>
+						{/* Detalles de la reserva */}
 						<div className="space-y-2">
 							<div className="flex justify-between">
 								<span className="text-muted-foreground">Fecha:</span>
 								<span className="font-medium">
-									{formatDate(selectedSlot.date)}
+									{formatDateWeekDayMonthShort(selectedSlot.date)}
 								</span>
 							</div>
 							<div className="flex justify-between">
 								<span className="text-muted-foreground">Horario:</span>
 								<span className="font-medium">
-									{selectedSlot.startTime} - {selectedSlot.endTime}
+									{formatTimeToHourMinute(selectedSlot.startTime)} -{" "}
+									{formatTimeToHourMinute(selectedSlot.endTime)}
 								</span>
-							</div>
-							<div className="flex justify-between">
-								<span className="text-muted-foreground">Pista:</span>
-								<span className="font-medium">{selectedSlot.courtName}</span>
 							</div>
 							<div className="flex justify-between">
 								<span className="text-muted-foreground">Duración:</span>
@@ -42,25 +41,32 @@ const BookingSummary = ({ selectedSlot, onSubmit }: BookingSummaryProps) => {
 							</div>
 						</div>
 
-						<div className="border-t pt-4">
-							<div className="flex justify-between text-lg font-semibold">
-								<span>Total:</span>
+						<SidebarSeparator />
+
+						{/* Precios */}
+						<div className="space-y-2">
+							<div className="flex justify-between">
+								<span className="text-muted-foreground">Precio pista:</span>
 								<span>{formatPrice(selectedSlot.price)}</span>
 							</div>
 						</div>
 
-						<Button
-							className="w-full cursor-pointer"
-							size="lg"
-							onClick={onSubmit}
-						>
-							Continuar
-						</Button>
+						<SidebarSeparator />
+
+						<div className="space-y-2">
+							<div className="flex justify-between text-lg font-semibold">
+								<span>Total en pista:</span>
+								<span>{formatPrice(selectedSlot.price)}</span>
+							</div>
+
+							<strong className="text-xs text-muted-foreground">
+								Sin pago por adelantado
+							</strong>
+						</div>
 					</>
 				) : (
 					<div className="text-center py-8 text-muted-foreground">
-						<Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
-						<p>Selecciona un horario para continuar</p>
+						Cargando detalles de la reserva...
 					</div>
 				)}
 			</CardContent>
