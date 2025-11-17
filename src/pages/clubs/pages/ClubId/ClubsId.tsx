@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button"
 import { useBookings } from "@/hooks/useBookingsQuery"
 import { useClubHours } from "@/hooks/useClubHoursQuery"
 import { useCourts } from "@/hooks/useCourtsQuery"
-import CourtCalendar from "@/pages/clubs/pages/components/CourtCalendar/CourtCalendar"
 import { ROUTES } from "@/ROUTES"
+import CourtCalendar from "./components/CourtCalendar/CourtCalendar"
 
 const ClubsId = () => {
 	const { clubId: clubIdFromUrl } = useParams<{ clubId: string }>()
@@ -49,7 +49,7 @@ const ClubsId = () => {
 				<div className="container mx-auto px-4 py-4">
 					<div className="flex items-center gap-4">
 						<Button variant="ghost" size="sm" asChild>
-							<Link to={ROUTES.HOME}>
+							<Link to={ROUTES.CLUBS.ROOT}>
 								<ArrowLeft className="h-4 w-4 mr-2" />
 								Volver
 							</Link>

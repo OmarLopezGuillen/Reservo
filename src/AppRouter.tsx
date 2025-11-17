@@ -18,8 +18,8 @@ const ReservasId = lazy(
 	() => import("@/pages/reservas/pages/ReservaId/ReservasId"),
 )
 
-const Clubs = lazy(() => import("@/pages/clubs/pages/Clubs"))
-const ClubsId = lazy(() => import("@/pages/clubs/pages/ClubsId"))
+const Clubs = lazy(() => import("@/pages/clubs/pages/Clubs/Clubs"))
+const ClubsId = lazy(() => import("@/pages/clubs/pages/ClubId/ClubsId"))
 
 const CrearReserva = lazy(
 	() => import("@/pages/crear-reserva/pages/CrearReserva/CrearReserva"),
