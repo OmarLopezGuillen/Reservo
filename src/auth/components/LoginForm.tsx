@@ -1,8 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Mail } from "lucide-react"
+import { AlertCircle, Mail } from "lucide-react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router"
 import { useAuthActions } from "@/auth/hooks/useAuthActions"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
@@ -26,6 +28,7 @@ import { type LoginFormSchema, loginFormSchema } from "@/schemas/login.schema"
 
 export default function LoginForm() {
 	const { logIn } = useAuthActions()
+	const [error, setError] = useState<string | null>(null)
 
 	const form = useForm<LoginFormSchema>({
 		resolver: zodResolver(loginFormSchema),
@@ -36,11 +39,14 @@ export default function LoginForm() {
 	})
 
 	async function onSubmit(values: LoginFormSchema) {
+		setError(null)
 		try {
 			const { email, password } = values
 			await logIn({ email, password })
-		} catch (error) {
-			console.error("Form submission error", error)
+		} catch (error: any) {
+			setError("No se pudo iniciar sesión. Por favor, inténtalo de nuevo.")
+
+			console.error("Login error:", error)
 		}
 	}
 
@@ -58,6 +64,13 @@ export default function LoginForm() {
 			<CardContent>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+						{error && (
+							<Alert variant="destructive">
+								<AlertCircle className="h-4 w-4" />
+								<AlertTitle>Error de autenticación</AlertTitle>
+								<AlertDescription>{error}</AlertDescription>
+							</Alert>
+						)}
 						<div className="grid gap-4">
 							<FormField
 								control={form.control}
@@ -104,8 +117,14 @@ export default function LoginForm() {
 									</FormItem>
 								)}
 							/>
-							<Button type="submit" className="w-full">
-								Iniciar sesión
+							<Button
+								type="submit"
+								className="w-full"
+								disabled={form.formState.isSubmitting}
+							>
+								{form.formState.isSubmitting
+									? "Iniciando sesión..."
+									: "Iniciar sesión"}
 							</Button>
 						</div>
 					</form>

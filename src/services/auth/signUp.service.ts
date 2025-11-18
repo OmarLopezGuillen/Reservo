@@ -1,14 +1,23 @@
 import { supabase } from "@/lib/supabase"
 
+type SignUpOptions = {
+	data?: {
+		full_name?: string
+		phone_number?: string
+	}
+}
+
 interface Props {
 	email: string
 	password: string
+	options?: SignUpOptions
 }
 
-export async function signUp({ email, password }: Props) {
+export async function signUp({ email, password, options }: Props) {
 	const { data, error } = await supabase.auth.signUp({
 		email,
 		password,
+		options,
 	})
 
 	if (error) {

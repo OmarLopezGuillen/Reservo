@@ -1,8 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { UserPlus } from "lucide-react"
+import { AlertCircle, UserPlus } from "lucide-react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router"
 import { useAuthActions } from "@/auth/hooks/useAuthActions"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
@@ -29,6 +31,7 @@ import {
 
 export default function RegisterForm() {
 	const { signUp } = useAuthActions()
+	const [error, setError] = useState<string | null>(null)
 
 	const form = useForm<RegisterFormSchema>({
 		resolver: zodResolver(registerFormSchema),
@@ -42,11 +45,16 @@ export default function RegisterForm() {
 	})
 
 	async function onSubmit(values: RegisterFormSchema) {
+		setError(null)
 		try {
-			const { email, password } = values
-			await signUp({ email, password })
-		} catch (error) {
-			console.error("Form submission error", error)
+			const { email, password, name, phone } = values
+			await signUp({
+				email,
+				password,
+				options: { data: { full_name: name, phone_number: phone } },
+			})
+		} catch (error: any) {
+			setError("No se pudo crear la cuenta. Por favor, inténtalo de nuevo.")
 		}
 	}
 
@@ -62,6 +70,13 @@ export default function RegisterForm() {
 			<CardContent>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+						{error && (
+							<Alert variant="destructive">
+								<AlertCircle className="h-4 w-4" />
+								<AlertTitle>Error en el registro</AlertTitle>
+								<AlertDescription>{error}</AlertDescription>
+							</Alert>
+						)}
 						<div className="grid gap-4">
 							{/* Name Field */}
 							<FormField
@@ -109,7 +124,7 @@ export default function RegisterForm() {
 								name="phone"
 								render={({ field }) => (
 									<FormItem className="grid gap-2">
-										<FormLabel htmlFor="phone">Teléfono (opcional)</FormLabel>
+										<FormLabel htmlFor="phone">Teléfono</FormLabel>
 										<FormControl>
 											<Input
 												id="phone"
@@ -166,8 +181,14 @@ export default function RegisterForm() {
 								)}
 							/>
 
-							<Button type="submit" className="w-full">
-								Crear cuenta
+							<Button
+								type="submit"
+								className="w-full"
+								disabled={form.formState.isSubmitting}
+							>
+								{form.formState.isSubmitting
+									? "Creando cuenta..."
+									: "Crear cuenta"}
 							</Button>
 						</div>
 					</form>

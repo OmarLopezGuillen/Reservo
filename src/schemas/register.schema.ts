@@ -4,7 +4,7 @@ export const registerFormSchema = z
 	.object({
 		name: z.string().min(1, "El nombre es obligatorio"),
 		email: z.email("El email no es válido").min(1, "El email es obligatorio"),
-		phone: z.string().optional(),
+		phone: z.string().min(1, "El teléfono es obligatorio"),
 		password: z
 			.string()
 			.min(6, "La contraseña debe tener al menos 6 caracteres"),
