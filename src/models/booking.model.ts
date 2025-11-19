@@ -11,13 +11,13 @@ export interface Booking {
 	createdAt: string
 	date: string // "yyyy-MM-dd"
 	depositPercentage: number
-	endTime: Date // "HH:mm"
+	endTime: Date
 	id: string
 	note: string | null
 	paymentMode: PaymentMode
 	paymentStatus: PaymentStatus
 	price: number
-	startTime: Date // "HH:mm"
+	startTime: Date
 	status: StatusBooking
 	updatedAt: string | null
 	userId: string | null

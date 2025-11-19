@@ -11,6 +11,7 @@ export const useCourts = (clubId?: string) => {
 		queryKey: [COURTS_QUERY_KEY, clubId],
 		queryFn: () => getCourts(clubId!),
 		enabled: !!clubId, // La consulta solo se ejecuta si clubId tiene un valor.
+		staleTime: 5 * 60 * 1000, // 5 minutos
 	})
 	return { courtsQuery }
 }

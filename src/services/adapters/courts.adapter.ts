@@ -16,5 +16,10 @@ export const courtAdapter = (courtDB: CourtsRow): Court => {
 }
 
 export const courtsAdapter = (courtsDB: CourtsRow[]): Court[] => {
-	return courtsDB.map((court) => courtAdapter(court))
+	return [...courtsDB]
+		.sort(
+			(a, b) =>
+				new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+		)
+		.map((court) => courtAdapter(court))
 }

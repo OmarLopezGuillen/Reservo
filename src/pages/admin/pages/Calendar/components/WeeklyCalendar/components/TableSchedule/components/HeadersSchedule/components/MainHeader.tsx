@@ -1,40 +1,42 @@
 import { format, isToday } from "date-fns"
 import { es } from "date-fns/locale"
 import { cn } from "@/lib/utils"
-import { WEEKDAYS } from "@/models/calendar.model"
 
 interface Props {
 	weekDates: Date[]
 }
 
-export const HeaderGridHours = ({ weekDates }: Props) => {
+export const MainHeader = ({ weekDates }: Props) => {
 	return (
 		<div
-			className="border-b bg-muted/50 rounded-t-lg border-t"
+			className={cn(
+				"border-b bg-muted rounded-t-lg border-t grid grid-cols-[60px_repeat(7,minmax(250px,1fr))] min-w-[1810px]",
+			)}
 			style={{
-				display: "grid",
-				gridTemplateColumns: "60px repeat(7, minmax(120px, 200px)",
-				minWidth: "900px",
+				gridTemplateColumns: `60px repeat(${weekDates.length},minmax(250px,1fr))`,
+				minWidth: 250 * weekDates.length + 60,
 			}}
 		>
 			<div className="p-2 text-sm font-medium text-muted-foreground border-r flex items-end justify-end">
 				Hora
 			</div>
-			{WEEKDAYS.map((day, index) => {
-				const date = weekDates[index]
-				const today = isToday(date)
+			{weekDates.map((day) => {
+				const today = isToday(day)
 				return (
 					<div
-						key={day}
+						key={day.getDay()}
 						className={cn(
 							"p-2 text-center border-r last:border-r-0",
 							today && "bg-primary/10",
 						)}
 					>
 						<div
-							className={cn("text-sm font-semibold", today && "text-primary")}
+							className={cn(
+								"text-sm font-semibold capitalize",
+								today && "text-primary",
+							)}
 						>
-							{day}
+							{format(day, "EEEE", { locale: es })}
 						</div>
 						<div
 							className={cn(
@@ -42,7 +44,7 @@ export const HeaderGridHours = ({ weekDates }: Props) => {
 								today && "text-primary font-medium",
 							)}
 						>
-							{format(date, "d MMM", { locale: es })}
+							{format(day, "MMM d", { locale: es })}
 						</div>
 					</div>
 				)

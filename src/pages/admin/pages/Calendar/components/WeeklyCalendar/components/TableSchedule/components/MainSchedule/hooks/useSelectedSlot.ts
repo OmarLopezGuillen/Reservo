@@ -1,7 +1,7 @@
 import { useState } from "react"
 
-const START_HOUR = 5
-const END_HOUR = 22
+const START_HOUR = 8
+const END_HOUR = 24
 const TIME_SLOTS = Array.from(
 	{ length: (END_HOUR - START_HOUR) * 2 },
 	(_, i) => {

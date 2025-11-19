@@ -8,9 +8,16 @@ import {
 } from "date-fns"
 import { es } from "date-fns/locale"
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CalendarPicker } from "@/components/CalendarPicker/CalendarPicker"
 import { Button } from "@/components/ui/button"
+import {
+	MultiSelect,
+	MultiSelectContent,
+	MultiSelectItem,
+	MultiSelectTrigger,
+	MultiSelectValue,
+} from "@/components/ui/multi-select"
 import {
 	Popover,
 	PopoverContent,
@@ -23,6 +30,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
+import { useCourts } from "@/hooks/useCourtsQuery"
+import { useCourtsStore } from "@/pages/admin/pages/Calendar/components/WeeklyCalendar/store/courtsSelectedStore"
 import {
 	useCurrentDayQueryState,
 	useViewModeQueryState,
@@ -33,6 +42,19 @@ export const HeaderCalendar = () => {
 	const { currentDate, setCurrentDate } = useCurrentDayQueryState()
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
+	const { courtsQuery } = useCourts("a32a865d-3ecc-448b-a38d-9da8a10cca59")
+	const courts = courtsQuery.data
+
+	const courtsSelected = useCourtsStore((state) => state.courtsSelected)
+	const setCourtsSelected = useCourtsStore((state) => state.setCourtsSelected)
+
+	useEffect(() => {
+		if (!courtsQuery.isLoading && courts) {
+			const defaultValues = courts.map((court) => court.id)
+			setCourtsSelected(defaultValues)
+		}
+	}, [courtsQuery.isLoading])
+
 	const handleSelectDate = (date: Date) => {
 		setCurrentDate(date)
 		setIsPopoverOpen(false)
@@ -40,9 +62,9 @@ export const HeaderCalendar = () => {
 
 	const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 })
 	return (
-		<div className="m-2">
+		<div className="pb-2">
 			{/* Controls */}
-			<div className="flex flex-col-reverse gap-4 sm:flex-row sm:flex-wrap items-center">
+			<div className="flex flex-col-reverse gap-2 sm:flex-row sm:flex-wrap items-center">
 				{/* Date Navigation */}
 				<div className="flex items-center gap-2 mx-auto md:mx-0">
 					<Button
@@ -113,6 +135,24 @@ export const HeaderCalendar = () => {
 							<SelectItem value="day">Día</SelectItem>
 						</SelectContent>
 					</Select>
+					<MultiSelect
+						values={courtsSelected}
+						onValuesChange={setCourtsSelected}
+					>
+						<MultiSelectTrigger className="w-full max-w-[400px]">
+							<MultiSelectValue
+								placeholder="Selecciona las pistas"
+								overflowBehavior="cutoff"
+							/>
+						</MultiSelectTrigger>
+						<MultiSelectContent search={false} className="w-full max-w-[400px]">
+							{courts?.map((court) => (
+								<MultiSelectItem value={court.id} key={court.id}>
+									{court.name}
+								</MultiSelectItem>
+							))}
+						</MultiSelectContent>
+					</MultiSelect>
 				</div>
 			</div>
 		</div>
