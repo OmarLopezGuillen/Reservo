@@ -21,7 +21,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
-import { ROLES } from "@/models/roles.model"
+import { ROLES } from "@/models/ROLES.model"
 import { CourtCard } from "@/pages/home/components/CourtCard"
 import { Footer } from "@/pages/home/components/Footer"
 import { ROUTES } from "@/ROUTES"

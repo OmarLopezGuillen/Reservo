@@ -1,5 +1,13 @@
-import type { Booking, BookingManagement } from "@/models/booking.model"
-import type { BookingsRow, BookingWithRelations } from "@/models/dbTypes"
+import type {
+	Booking,
+	BookingCalendar,
+	BookingManagement,
+} from "@/models/booking.model"
+import type {
+	BookingsCalendarRow,
+	BookingsRow,
+	BookingWithRelations,
+} from "@/models/dbTypes"
 import { clubsAdapterBase } from "./clubs.adapter"
 import { courtAdapter } from "./courts.adapter"
 
@@ -61,4 +69,25 @@ export const bookingsManagementAdapter = (
 	bookingsDB: BookingWithRelations[],
 ): BookingManagement[] => {
 	return bookingsDB.map((booking) => bookingManagementAdapter(booking))
+}
+
+export const bookingCalendarAdapter = (
+	bookingDB: BookingsCalendarRow,
+): BookingCalendar => {
+	return {
+		id: bookingDB.id,
+		courtId: bookingDB.court_id,
+		clubId: bookingDB.club_id,
+		startTime: new Date(bookingDB.start_time),
+		endTime: new Date(bookingDB.end_time),
+		date: bookingDB.date, // formato "yyyy-MM-dd"
+		status: bookingDB.status,
+		isMine: bookingDB.is_mine,
+	}
+}
+
+export const bookingsCalendarAdapter = (
+	bookingsDB: BookingsCalendarRow[],
+): BookingCalendar[] => {
+	return bookingsDB.map((booking) => bookingCalendarAdapter(booking))
 }

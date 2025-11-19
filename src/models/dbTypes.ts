@@ -10,6 +10,7 @@ export type BookingsRow = Tables<"bookings">
 export type ClubsRow = Tables<"clubs">
 export type ClubHoursRow = Tables<"club_hours">
 export type CourtsRow = Tables<"courts">
+export type BookingsCalendarRow = Tables<"bookings_calendar">
 
 // INSERT (crear)
 export type BookingsInsert = TablesInsert<"bookings">

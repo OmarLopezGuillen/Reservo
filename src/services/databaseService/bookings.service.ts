@@ -1,10 +1,19 @@
 import { supabase } from "@/lib/supabase"
-import type { Booking, BookingManagement } from "@/models/booking.model"
-import type { BookingsInsert, BookingsUpdate } from "@/models/dbTypes"
+import type {
+	Booking,
+	BookingCalendar,
+	BookingManagement,
+} from "@/models/booking.model"
+import type {
+	BookingsCalendarRow,
+	BookingsInsert,
+	BookingsUpdate,
+} from "@/models/dbTypes"
 import {
 	bookingAdapter,
 	bookingManagementAdapter,
 	bookingsAdapter,
+	bookingsCalendarAdapter,
 	bookingsManagementAdapter,
 } from "../adapters/bookings.adapter"
 
@@ -18,6 +27,24 @@ export async function getBookings(clubId: string): Promise<Booking[]> {
 		if (error) throw error
 
 		return bookingsAdapter(data)
+	} catch (error: any) {
+		console.error("Error fetching bookings:", error.message)
+		throw new Error("No se pudieron obtener las reservas.")
+	}
+}
+
+export async function getBookingsCalendar(
+	clubId: string,
+): Promise<BookingCalendar[]> {
+	try {
+		const { data, error } = await supabase
+			.from("bookings_calendar")
+			.select("*")
+			.eq("club_id", clubId)
+
+		if (error) throw error
+
+		return bookingsCalendarAdapter(data)
 	} catch (error: any) {
 		console.error("Error fetching bookings:", error.message)
 		throw new Error("No se pudieron obtener las reservas.")

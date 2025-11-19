@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react"
 import { Link, Navigate, useParams } from "react-router"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
-import { useBookings } from "@/hooks/useBookingsQuery"
+import { useBookingsCalendar } from "@/hooks/useBookingsQuery"
 import { useClubHours } from "@/hooks/useClubHoursQuery"
 import { useCourts } from "@/hooks/useCourtsQuery"
 import { ROUTES } from "@/ROUTES"
@@ -14,8 +14,9 @@ const ClubsId = () => {
 
 	const clubId = clubIdFromUrl
 
-	const { bookingsQuery } = useBookings(clubId)
-	const { data: bookingsData, isLoading: isLoadingBookings } = bookingsQuery
+	const { bookingCalendarQuery } = useBookingsCalendar(clubId)
+	const { data: bookingsData, isLoading: isLoadingBookings } =
+		bookingCalendarQuery
 
 	const { courtsQuery } = useCourts(clubId)
 	const { data: courtsData, isLoading: isLoadingCourts } = courtsQuery

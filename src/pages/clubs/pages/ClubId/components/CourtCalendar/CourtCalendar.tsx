@@ -1,7 +1,7 @@
 import { Calendar } from "lucide-react"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router"
-import type { Booking } from "@/models/booking.model"
+import type { BookingCalendar } from "@/models/booking.model"
 import type { BusinessDay } from "@/models/business.model"
 import type { Court } from "@/models/court.model"
 import type { SlotStatus, UISlot } from "@/models/slots.model"
@@ -13,7 +13,7 @@ import { SlotButton } from "./components/SlotButton"
 interface CourtCalendarProps {
 	courts: Court[]
 	clubId: string
-	bookings: Booking[]
+	bookings: BookingCalendar[]
 	clubHours: BusinessDay[] | undefined
 	currentUserId?: string
 }
@@ -24,7 +24,7 @@ interface CourtCalendarProps {
  * It handles business hours, existing bookings, and past slots.
  * @param {Court[]} courts - List of court objects for the club.
  * @param {string} clubId - The ID of the club.
- * @param {Booking[]} bookings - A list of existing bookings for the club.
+ * @param {BookingCalendar[]} bookings - A list of existing bookings for the club.
  * @param {BusinessDay[]} [clubHours] - The opening hours for the club.
  * @param {string} [currentUserId] - The ID of the currently logged-in user, to identify their own bookings.
  */
@@ -33,7 +33,6 @@ export default function CourtCalendar({
 	clubId,
 	bookings,
 	clubHours,
-	currentUserId,
 }: CourtCalendarProps) {
 	const [selectedDate, setSelectedDate] = useState(new Date())
 	const navigate = useNavigate()
@@ -176,7 +175,7 @@ export default function CourtCalendar({
 
 		if (!slotBooking) return "available"
 
-		if (currentUserId && slotBooking.userId === currentUserId) {
+		if (slotBooking.isMine) {
 			return "your-booking"
 		}
 

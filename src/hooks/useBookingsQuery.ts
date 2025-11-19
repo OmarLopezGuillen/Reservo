@@ -3,6 +3,7 @@ import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import {
 	getBookingById,
 	getBookings,
+	getBookingsCalendar,
 	getMyBookingById,
 	getMyBookings,
 } from "@/services/databaseService/bookings.service"
@@ -16,6 +17,15 @@ export const useBookings = (clubId?: string) => {
 		enabled: !!clubId, // La consulta solo se ejecuta si clubId tiene un valor.
 	})
 	return { bookingsQuery }
+}
+
+export const useBookingsCalendar = (clubId?: string) => {
+	const bookingCalendarQuery = useQuery({
+		queryKey: [BOOKINGS_QUERY_KEY, "calendar", clubId],
+		queryFn: () => getBookingsCalendar(clubId!),
+		enabled: !!clubId, // La consulta solo se ejecuta si hay un usuario logueado.
+	})
+	return { bookingCalendarQuery }
 }
 
 //TODO: Traer los bookings de useBookings si estan en cache

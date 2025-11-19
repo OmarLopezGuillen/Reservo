@@ -27,3 +27,14 @@ export interface BookingManagement extends Booking {
 	court: Court
 	club: BusinessData
 }
+
+export interface BookingCalendar {
+	id: string
+	courtId: string
+	clubId: string
+	startTime: Date
+	endTime: Date
+	date: string
+	status: StatusBooking
+	isMine: boolean
+}
