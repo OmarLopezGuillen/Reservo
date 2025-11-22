@@ -36,13 +36,15 @@ import {
 	useCurrentDayQueryState,
 	useViewModeQueryState,
 } from "@/pages/admin/pages/Calendar/hooks/useCalendarQueryState"
+import { useAuthUser } from "@/auth/hooks/useAuthUser"
 
 export const HeaderCalendar = () => {
 	const { viewMode, setViewMode } = useViewModeQueryState()
 	const { currentDate, setCurrentDate } = useCurrentDayQueryState()
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-
-	const { courtsQuery } = useCourts("a32a865d-3ecc-448b-a38d-9da8a10cca59")
+	const user = useAuthUser()
+	
+	const { courtsQuery } = useCourts(user.clubId!)
 	const courts = courtsQuery.data
 
 	const courtsSelected = useCourtsStore((state) => state.courtsSelected)
