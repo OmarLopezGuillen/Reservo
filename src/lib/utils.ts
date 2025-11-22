@@ -92,3 +92,12 @@ export function formatPhoneForDisplay(phone: string): string {
 	}
 	return phone
 }
+
+export function toTitleCase(name: string): string {
+	return name
+		.toLowerCase()
+		.split(" ")
+		.filter(Boolean) // elimina espacios dobles
+		.map((word) => word[0]?.toUpperCase() + word.slice(1))
+		.join(" ")
+}

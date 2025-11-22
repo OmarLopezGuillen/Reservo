@@ -22,6 +22,7 @@ import {
 	SidebarHeader,
 	SidebarRail,
 } from "@/components/ui/sidebar"
+import { toTitleCase } from "@/lib/utils"
 import type { Profile } from "@/models/profile.model"
 import { NavMain } from "@/pages/admin/components/NavMain"
 import { NavUser } from "@/pages/admin/components/NavUser"
@@ -82,11 +83,11 @@ const navMain = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const user = useAuthUser()
 	const { signOut } = useAuthActions()
-
+	
 	//TODO. A: Objener los datos del profile
 	const profile: Profile = {
 		email: user.email ?? "",
-		name: "Aridane Rodríguez",
+		name: toTitleCase(user.user_metadata?.full_name) ?? "Usuario Admin",
 		avatarUrl: "",
 		id: user.id,
 		userRole: user.userRole ?? "user",

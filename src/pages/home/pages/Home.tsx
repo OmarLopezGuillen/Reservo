@@ -40,7 +40,7 @@ const NavLinks = () => {
 				>
 					Mis reservas
 				</Link>
-				{role && [ROLES.ADMIN, ROLES.ADMIN].includes(role) && (
+				{role && [ROLES.ADMIN, ROLES.OWNER].includes(role) && (
 					<Link
 						to={ROUTES.ADMIN.ROOT}
 						className="text-sm font-medium hover:text-primary"

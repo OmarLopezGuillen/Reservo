@@ -8,8 +8,8 @@ import { Spinner } from "@/components/ui/spinner"
 import { useBookingsMutation } from "@/hooks/useBookingsMutations"
 import { useMyBookingById } from "@/hooks/useBookingsQuery"
 import { ROUTES } from "@/ROUTES"
+import { CancellationPolicyCard } from "../../../../components/CancelationCard"
 import { BookingDetailsCard } from "./components/BookingDetailsCard/BookingDetailsCard"
-import { CancellationPolicyCard } from "./components/CancelationCard"
 import { CancelBookingDialog } from "./components/CancelBookingDialog"
 import { useCancellationRules } from "./hooks/useCancellationRules"
 
@@ -141,7 +141,11 @@ const ReservaId = () => {
 					)}
 
 					{/* Política */}
-					<CancellationPolicyCard booking={booking} />
+					<CancellationPolicyCard
+						cancelHoursBefore={booking.club.cancelHoursBefore}
+						penaltyPercentage={booking.club.penaltyPercentage}
+						cancellationBlockHours={booking.club.cancellationBlockHours}
+					/>
 				</div>
 			</div>
 

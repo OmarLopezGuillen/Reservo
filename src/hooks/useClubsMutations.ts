@@ -42,7 +42,7 @@ export const useClubsMutation = () => {
 	})
 
 	return {
-		createClub: createClubMutation.mutate,
-		updateClub: updateClubMutation.mutate,
+		createClub: createClubMutation,
+		updateClub: updateClubMutation,
 	}
 }

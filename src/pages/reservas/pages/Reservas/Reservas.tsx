@@ -19,7 +19,7 @@ import {
 	formatPrice,
 	formatTimeToHourMinute,
 } from "@/lib/utils"
-import type { Booking, BookingManagement } from "@/models/booking.model"
+import type { BookingManagement } from "@/models/booking.model"
 import { ROUTES } from "@/ROUTES"
 
 const Reservas = () => {
@@ -30,7 +30,6 @@ const Reservas = () => {
 		isError,
 		error,
 	} = myBookingsQuery
-	console.log("Bookings:", bookings)
 
 	const { completedBookings, otherBookings } = useMemo(() => {
 		const completed = bookings?.filter((b) => b.status === "completed") ?? []

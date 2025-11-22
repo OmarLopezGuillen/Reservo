@@ -32,7 +32,7 @@ const CrearReservaExito = lazy(
 const AdminLayout = lazy(() => import("@/pages/admin/layout/AdminLayout"))
 
 const Calendar = lazy(() => import("@/pages/admin/pages/Calendar/Calendar"))
-const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes"))
+const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes/Ajustes"))
 const AdminEstadisticas = lazy(() => import("@/pages/admin/pages/Estadisticas"))
 const AdminLiga = lazy(() => import("@/pages/admin/pages/Liga"))
 const AdminListaEspera = lazy(() => import("@/pages/admin/pages/ListaEspera"))
@@ -92,7 +92,7 @@ export default function AppRouter() {
 				/>
 
 				{/* Admin */}
-				<Route element={<PrivateRoute roles={[ROLES.ADMIN]} />}>
+				<Route element={<PrivateRoute roles={[ROLES.ADMIN, ROLES.OWNER]} />}>
 					<Route
 						path={ROUTES.ADMIN.ROOT}
 						element={
