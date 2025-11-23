@@ -13,8 +13,12 @@ export async function getClubs() {
 		if (error || !data) throw error
 
 		return clubsAdapter(data)
-	} catch (error: any) {
-		console.error("Error fetching clubs:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error fetching clubs:", error.message)
+		} else {
+			console.error("Error fetching clubs:", error)
+		}
 		throw new Error("No se pudieron obtener los clubes.")
 	}
 }
@@ -29,8 +33,12 @@ export async function getClubsById(clubId: string) {
 		if (error || !data) throw error
 
 		return clubsAdapterBase(data)
-	} catch (error: any) {
-		console.error("Error fetching clubs:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error fetching club by id:", error.message)
+		} else {
+			console.error("Error fetching club by id:", error)
+		}
 		throw new Error("No se pudieron obtener los clubes.")
 	}
 }
@@ -46,8 +54,12 @@ export async function createClub(clubData: ClubsInsert): Promise<ClubsRow> {
 		if (error) throw error
 
 		return data
-	} catch (error: any) {
-		console.error("Error creating club:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error creating club:", error.message)
+		} else {
+			console.error("Error creating club:", error)
+		}
 		throw new Error("No se pudo crear el club.")
 	}
 }
@@ -67,8 +79,12 @@ export async function updateClub(
 		if (error) throw error
 
 		return data
-	} catch (error: any) {
-		console.error("Error updating club:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error updating club:", error.message)
+		} else {
+			console.error("Error updating club:", error)
+		}
 		throw new Error("No se pudo actualizar el club.")
 	}
 }

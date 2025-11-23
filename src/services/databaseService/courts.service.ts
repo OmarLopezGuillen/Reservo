@@ -13,20 +13,33 @@ export async function getCourts(clubId: string): Promise<Court[]> {
 		if (error) throw error
 
 		return courtsAdapter(data)
-	} catch (error: any) {
-		console.error("Error fetching courts:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error fetching courts:", error.message)
+		} else {
+			console.error("Error fetching courts:", error)
+		}
 		throw new Error("No se pudieron obtener las canchas.")
 	}
 }
 export async function getCourtsByIds(ids: string[]): Promise<Court[]> {
-	const { data, error } = await supabase
-		.from("courts")
-		.select("*")
-		.in("id", ids)
+	try {
+		const { data, error } = await supabase
+			.from("courts")
+			.select("*")
+			.in("id", ids)
 
-	if (error) throw error
+		if (error) throw error
 
-	return courtsAdapter(data)
+		return courtsAdapter(data)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error fetching courts by ids:", error.message)
+		} else {
+			console.error("Error fetching courts by ids:", error)
+		}
+		throw new Error("No se pudieron obtener las canchas.")
+	}
 }
 
 export async function getCourtById(id: string): Promise<Court> {
@@ -40,8 +53,12 @@ export async function getCourtById(id: string): Promise<Court> {
 		if (error) throw error
 
 		return courtAdapter(data)
-	} catch (error: any) {
-		console.error("Error fetching court by id:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error fetching court by id:", error.message)
+		} else {
+			console.error("Error fetching court by id:", error)
+		}
 		throw new Error("No se pudo obtener la cancha.")
 	}
 }
@@ -57,8 +74,12 @@ export async function createCourt(courtData: CourtsInsert): Promise<Court> {
 		if (error) throw error
 
 		return courtAdapter(data)
-	} catch (error: any) {
-		console.error("Error creating court:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error creating court:", error.message)
+		} else {
+			console.error("Error creating court:", error)
+		}
 		throw new Error("No se pudo crear la cancha.")
 	}
 }
@@ -78,8 +99,12 @@ export async function updateCourt(
 		if (error) throw error
 
 		return courtAdapter(data)
-	} catch (error: any) {
-		console.error("Error updating court:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error updating court:", error.message)
+		} else {
+			console.error("Error updating court:", error)
+		}
 		throw new Error("No se pudo actualizar la cancha.")
 	}
 }
@@ -90,8 +115,12 @@ export async function deleteCourt(id: string): Promise<boolean> {
 
 		if (error) throw error
 		return true
-	} catch (error: any) {
-		console.error("Error deleting court:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error deleting court:", error.message)
+		} else {
+			console.error("Error deleting court:", error)
+		}
 		throw new Error("No se pudo eliminar la cancha.")
 	}
 }

@@ -18,8 +18,12 @@ export async function getClubHours(clubId: string) {
 		if (error) throw error
 
 		return clubHoursAdapter(data)
-	} catch (error: any) {
-		console.error("Error fetching club hours:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error fetching club hours:", error.message)
+		} else {
+			console.error("Error fetching club hours:", error)
+		}
 		throw new Error("No se pudieron obtener los horarios del club.")
 	}
 }
@@ -37,8 +41,12 @@ export async function createClubHour(
 		if (error) throw error
 
 		return data
-	} catch (error: any) {
-		console.error("Error creating club hour:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error creating club hour:", error.message)
+		} else {
+			console.error("Error creating club hour:", error)
+		}
 		throw new Error("No se pudo crear el horario del club.")
 	}
 }
@@ -62,8 +70,12 @@ export async function updateClubHour(
 		if (error) throw error
 
 		return data
-	} catch (error: any) {
-		console.error("Error updating club hour:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error updating club hour:", error.message)
+		} else {
+			console.error("Error updating club hour:", error)
+		}
 		throw new Error("No se pudo actualizar el horario del club.")
 	}
 }
@@ -83,8 +95,12 @@ export async function deleteClubHour(
 
 		if (error) throw error
 		return true
-	} catch (error: any) {
-		console.error("Error deleting club hour:", error.message)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error deleting club hour:", error.message)
+		} else {
+			console.error("Error deleting club hour:", error)
+		}
 		throw new Error("No se pudo eliminar el horario del club.")
 	}
 }
