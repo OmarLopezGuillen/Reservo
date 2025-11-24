@@ -74,3 +74,7 @@ export type BookingWithRelations = BookingsRow & {
 	court: CourtsRow
 	club: ClubsRow
 }
+
+export type CompetitionTeamWithAvailabilityDB = CompetitionTeamsRow & {
+	team_availabilities: TeamAvailabilitiesRow[]
+}
