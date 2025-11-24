@@ -17,8 +17,8 @@ export interface Competition {
 	description: string | null
 	type: CompetitionsType
 	status: CompetitionsStatus
-	startDate: string | null
-	endDate: string | null
+	startDate: string
+	endDate: string
 	registrationStartsAt: string | null
 	registrationEndsAt: string | null
 	createdAt: string
@@ -44,8 +44,6 @@ export interface CompetitionCategory {
 	maxTeams: number | null
 	createdAt: string
 	description: string | null
-	minLevel: number | null
-	maxLevel: number | null
 }
 
 export interface CompetitionRuleTemplate {

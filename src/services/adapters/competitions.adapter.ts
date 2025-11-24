@@ -62,8 +62,6 @@ export const competitionCategoryAdapter = (
 	maxTeams: db.max_teams,
 	createdAt: db.created_at,
 	description: db.description,
-	minLevel: db.min_level,
-	maxLevel: db.max_level,
 })
 
 export const competitionCategoriesAdapter = (

@@ -1,8 +1,9 @@
-import type {
-	Enums,
-	Tables,
-	TablesInsert,
-	TablesUpdate,
+import {
+	Constants,
+	type Enums,
+	type Tables,
+	type TablesInsert,
+	type TablesUpdate,
 } from "@/services/types/database.ts"
 
 // ROWS (lectura)
@@ -53,7 +54,7 @@ export type CompetitionParticipantsUpdate =
 	TablesUpdate<"competition_participants">
 export type MatchesUpdate = TablesUpdate<"matches">
 
-// Enums útiles
+// Enums type útiles
 export type AppRole = Enums<"app_role">
 export type TypeCourt = Enums<"type_court">
 export type StatusBooking = Enums<"status_booking">
@@ -69,6 +70,12 @@ export type StatusRegistration = Enums<"status_registration">
 export type KindMatches = Enums<"kind_matches">
 export type PlayoffRound = Enums<"playoff_round">
 export type StatusMatches = Enums<"status_matches">
+
+export const CompetitionsTypeConst = Constants.public.Enums.competitions_type
+export const CompetitionRoundTypeConst =
+	Constants.public.Enums.competition_round_type
+
+export const PlayoffTypeConst = Constants.public.Enums.playoff_type
 
 export type BookingWithRelations = BookingsRow & {
 	court: CourtsRow

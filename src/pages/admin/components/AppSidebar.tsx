@@ -44,12 +44,12 @@ const navMain = [
 		items: [], //? Si hay subrutas se colocan aquí
 	},
 	{
-		title: "Ligas",
-		url: ROUTES.ADMIN.LIGA,
+		title: "Competiciones",
+		url: ROUTES.ADMIN.COMPETICIONES,
 		icon: Trophy,
 		isActive: true,
 		items: [], //? Si hay subrutas se colocan aquí
-	},
+	} /*
 	{
 		title: "Lista de espera",
 		url: ROUTES.ADMIN.LISTA_ESPERA,
@@ -77,13 +77,13 @@ const navMain = [
 		icon: BarChart3,
 		isActive: true,
 		items: [], //? Si hay subrutas se colocan aquí
-	},
+	},*/,
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const user = useAuthUser()
 	const { signOut } = useAuthActions()
-	
+
 	//TODO. A: Objener los datos del profile
 	const profile: Profile = {
 		email: user.email ?? "",

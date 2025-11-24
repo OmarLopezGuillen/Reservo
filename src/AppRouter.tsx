@@ -34,7 +34,21 @@ const AdminLayout = lazy(() => import("@/pages/admin/layout/AdminLayout"))
 const Calendar = lazy(() => import("@/pages/admin/pages/Calendar/Calendar"))
 const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes/Ajustes"))
 const AdminEstadisticas = lazy(() => import("@/pages/admin/pages/Estadisticas"))
-const AdminLiga = lazy(() => import("@/pages/admin/pages/Liga"))
+const AdminCompeticiones = lazy(
+	() => import("@/pages/admin/pages/Competiciones/Competiciones"),
+)
+const AdminCompeticionesId = lazy(
+	() =>
+		import(
+			"@/pages/admin/pages/Competiciones/pages/CompeticionesId/CompeticionesId"
+		),
+)
+const CrearCompeticion = lazy(
+	() =>
+		import(
+			"@/pages/admin/pages/Competiciones/pages/crear-competicion/CrearCompeticion"
+		),
+)
 const AdminListaEspera = lazy(() => import("@/pages/admin/pages/ListaEspera"))
 const AdminRecursos = lazy(() => import("@/pages/admin/pages/Recursos"))
 const AdminReportes = lazy(() => import("@/pages/admin/pages/Reportes"))
@@ -122,7 +136,18 @@ export default function AppRouter() {
 								element={<AdminEstadisticas />}
 							/>
 						</Route>
-						<Route path={ROUTES.ADMIN.LIGA} element={<AdminLiga />} />
+						<Route
+							path={ROUTES.ADMIN.COMPETICIONES}
+							element={<AdminCompeticiones />}
+						/>
+						<Route
+							path={ROUTES.ADMIN.ID(":competicionId")}
+							element={<AdminCompeticionesId />}
+						/>
+						<Route
+							path={ROUTES.ADMIN.CREAR_COMPETICION}
+							element={<CrearCompeticion />}
+						/>
 						<Route
 							path={ROUTES.ADMIN.LISTA_ESPERA}
 							element={<AdminListaEspera />}

@@ -190,9 +190,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
-          max_level: number | null
           max_teams: number | null
-          min_level: number | null
           name: string
         }
         Insert: {
@@ -200,9 +198,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          max_level?: number | null
           max_teams?: number | null
-          min_level?: number | null
           name: string
         }
         Update: {
@@ -210,9 +206,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          max_level?: number | null
           max_teams?: number | null
-          min_level?: number | null
           name?: string
         }
         Relationships: [
@@ -429,7 +423,7 @@ export type Database = {
           club_id: string
           created_at: string
           description: string | null
-          end_date: string | null
+          end_date: string
           has_playoff: boolean
           id: string
           max_teams_per_category: number
@@ -447,7 +441,7 @@ export type Database = {
             | Database["public"]["Enums"]["competition_round_type"]
             | null
           rules_id: string | null
-          start_date: string | null
+          start_date: string
           status: Database["public"]["Enums"]["competitions_status"]
           type: Database["public"]["Enums"]["competitions_type"]
           updated_at: string | null
@@ -457,7 +451,7 @@ export type Database = {
           club_id: string
           created_at?: string
           description?: string | null
-          end_date?: string | null
+          end_date: string
           has_playoff?: boolean
           id?: string
           max_teams_per_category?: number
@@ -475,7 +469,7 @@ export type Database = {
             | Database["public"]["Enums"]["competition_round_type"]
             | null
           rules_id?: string | null
-          start_date?: string | null
+          start_date: string
           status: Database["public"]["Enums"]["competitions_status"]
           type: Database["public"]["Enums"]["competitions_type"]
           updated_at?: string | null
@@ -485,7 +479,7 @@ export type Database = {
           club_id?: string
           created_at?: string
           description?: string | null
-          end_date?: string | null
+          end_date?: string
           has_playoff?: boolean
           id?: string
           max_teams_per_category?: number
@@ -503,7 +497,7 @@ export type Database = {
             | Database["public"]["Enums"]["competition_round_type"]
             | null
           rules_id?: string | null
-          start_date?: string | null
+          start_date?: string
           status?: Database["public"]["Enums"]["competitions_status"]
           type?: Database["public"]["Enums"]["competitions_type"]
           updated_at?: string | null
