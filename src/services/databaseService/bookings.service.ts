@@ -4,11 +4,7 @@ import type {
 	BookingCalendar,
 	BookingManagement,
 } from "@/models/booking.model"
-import type {
-	BookingsCalendarRow,
-	BookingsInsert,
-	BookingsUpdate,
-} from "@/models/dbTypes"
+import type { BookingsInsert, BookingsUpdate } from "@/models/dbTypes"
 import {
 	bookingAdapter,
 	bookingManagementAdapter,

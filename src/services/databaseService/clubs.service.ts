@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabase"
-import type { BusinessData } from "@/models/business.model"
 import type { ClubsInsert, ClubsRow, ClubsUpdate } from "@/models/dbTypes"
 import {
 	clubsAdapter,

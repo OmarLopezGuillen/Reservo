@@ -75,14 +75,14 @@ export const bookingCalendarAdapter = (
 	bookingDB: BookingsCalendarRow,
 ): BookingCalendar => {
 	return {
-		id: bookingDB.id,
-		courtId: bookingDB.court_id,
-		clubId: bookingDB.club_id,
-		startTime: new Date(bookingDB.start_time),
-		endTime: new Date(bookingDB.end_time),
-		date: bookingDB.date, // formato "yyyy-MM-dd"
-		status: bookingDB.status,
-		isMine: bookingDB.is_mine,
+		id: bookingDB.id!,
+		courtId: bookingDB.court_id!,
+		clubId: bookingDB.club_id!,
+		startTime: new Date(bookingDB.start_time!),
+		endTime: new Date(bookingDB.end_time!),
+		date: bookingDB.date!, // formato "yyyy-MM-dd"
+		status: bookingDB.status!,
+		isMine: bookingDB.is_mine!,
 	}
 }
 
