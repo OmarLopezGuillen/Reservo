@@ -1,15 +1,7 @@
-import { Loader2, Pencil, Plus, Trash2 } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table"
 import { useCompetitionCategoriesMutation } from "@/hooks/competitions/useCompetitionCategoriesMutations"
 import { useCompetitionCategoriesByCompetitionId } from "@/hooks/competitions/useCompetitionCategoriesQuery"
 import type { CompetitionCategory } from "@/models/competition.model"
@@ -17,6 +9,7 @@ import type {
 	CompetitionCategoriesInsert,
 	CompetitionCategoriesUpdate,
 } from "@/models/dbTypes"
+import { CategoriesTable } from "../../../../../../../components/CategoriesTable"
 import DialogCrearCategoria from "./DialogCrearCategoria"
 
 interface Step3Props {
@@ -99,69 +92,13 @@ const Step3 = ({
 			</div>
 
 			<div className="border rounded-md">
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead>Nombre</TableHead>
-							<TableHead>Descripción</TableHead>
-							<TableHead>Equipos Máx.</TableHead>
-							<TableHead>Nivel</TableHead>
-							<TableHead className="text-right">Acciones</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{isLoading ? (
-							<TableRow>
-								<TableCell
-									colSpan={5}
-									className="text-center h-24 text-muted-foreground"
-								>
-									<div className="flex justify-center items-center">
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-										Cargando categorías...
-									</div>
-								</TableCell>
-							</TableRow>
-						) : categories.length === 0 ? (
-							<TableRow>
-								<TableCell
-									colSpan={5}
-									className="text-center h-24 text-muted-foreground"
-								>
-									No hay categorías definidas. Añade al menos una para
-									continuar.
-								</TableCell>
-							</TableRow>
-						) : (
-							categories.map((category) => (
-								<TableRow key={category.id}>
-									<TableCell className="font-medium">{category.name}</TableCell>
-									<TableCell>{category.description || "—"}</TableCell>
-									<TableCell>{category.maxTeams || defaultMaxTeams}</TableCell>
-									<TableCell className="text-right">
-										<div className="flex justify-end gap-2">
-											<Button
-												variant="ghost"
-												size="icon"
-												onClick={() => handleEdit(category)}
-											>
-												<Pencil className="size-4" />
-											</Button>
-											<Button
-												variant="ghost"
-												size="icon"
-												className="text-destructive hover:text-destructive"
-												onClick={() => handleDelete(category.id)}
-											>
-												<Trash2 className="size-4" />
-											</Button>
-										</div>
-									</TableCell>
-								</TableRow>
-							))
-						)}
-					</TableBody>
-				</Table>
+				<CategoriesTable
+					categories={categories}
+					isLoading={isLoading}
+					onEdit={handleEdit}
+					onDelete={handleDelete}
+					defaultMaxTeams={defaultMaxTeams}
+				/>
 			</div>
 
 			<div className="flex justify-between pt-4">
