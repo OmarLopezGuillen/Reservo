@@ -158,7 +158,11 @@ export default function AppRouter() {
 				</Route>
 
 				{/* Reservas */}
-				<Route element={<PrivateRoute roles={[ROLES.USER, ROLES.ADMIN]} />}>
+				<Route
+					element={
+						<PrivateRoute roles={[ROLES.USER, ROLES.ADMIN, ROLES.OWNER]} />
+					}
+				>
 					<Route
 						path={ROUTES.RESERVAS.ROOT}
 						element={

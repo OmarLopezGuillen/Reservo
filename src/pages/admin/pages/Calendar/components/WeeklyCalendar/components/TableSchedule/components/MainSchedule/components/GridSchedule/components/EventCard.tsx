@@ -31,14 +31,20 @@ const getEventHeight = (event: Booking) =>
 export function EventCard({
 	booking,
 	court,
+	onClick,
 }: {
 	booking: Booking
 	court: Court
+	onClick: () => void
 }) {
 	const height = getEventHeight(booking)
 
 	return (
-		<div className="@container w-full overflow-hidden">
+		<button
+			type="button"
+			className="@container w-full overflow-hidden text-left absolute top-0 left-0 right-0 z-10"
+			onClick={onClick}
+		>
 			<div
 				style={{ height, borderColor: court?.color ?? "" }}
 				className="@[150px]:hidden flex flex-col items-center gap-1.5 p-2 rounded-lg bg-card transition-colors cursor-pointer border-2 relative mx-0.5"
@@ -66,7 +72,7 @@ export function EventCard({
 			</div>
 
 			<Card
-				className="hidden @[150px]:block py-0 border-2 mx-0.5"
+				className="hidden @[150px]:block py-0 border-2 mx-0.5 cursor-pointer"
 				style={{ height, borderColor: court?.color ?? "" }}
 			>
 				<CardContent className="p-2 h-full">
@@ -104,6 +110,6 @@ export function EventCard({
 					</div>
 				</CardContent>
 			</Card>
-		</div>
+		</button>
 	)
 }

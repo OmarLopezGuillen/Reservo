@@ -7,6 +7,7 @@ import { useCourts } from "@/hooks/useCourtsQuery"
 import type { Booking } from "@/models/booking.model"
 import { EventCard } from "@/pages/admin/pages/Calendar/components/WeeklyCalendar/components/TableSchedule/components/MainSchedule/components/GridSchedule/components/EventCard"
 import { useCourtsStore } from "@/pages/admin/pages/Calendar/components/WeeklyCalendar/store/courtsSelectedStore"
+import { EditBookingDialog } from "./EditBookingDialog"
 import { NewBookingDialog } from "./NewBookingDialog"
 
 const isEventStart = (event: Booking, time: Date) => {
@@ -29,27 +30,37 @@ export const CellsSchedule = ({ weekDates, dayIndex, time }: Props) => {
 	const timeDate = addMinutes(date, time)
 
 	//TODO: O. Crear un useQuery que traiga los bookings por semana?
-	const { bookingsQuery } = useBookings(user.clubId!,)
+	const { bookingsQuery } = useBookings(user.clubId!)
 
 	const bookings = useMemo(() => {
-		return (bookingsQuery.data ?? []).map((booking) => ({
-			...booking,
-			startTime: new Date(booking.startTime),
-			endTime: new Date(booking.endTime),
-		}))
+		return (bookingsQuery.data ?? [])
+			.filter((booking) => booking.status !== "cancelled")
+			.map((booking) => ({
+				...booking,
+				startTime: new Date(booking.startTime),
+				endTime: new Date(booking.endTime),
+			}))
 	}, [bookingsQuery.data])
 
 	const { courtsQuery } = useCourts(user.clubId!)
-	const [isDialogOpen, setIsDialogOpen] = useState(false)
+	const [isNewBookingDialogOpen, setIsNewBookingDialogOpen] = useState(false)
+	const [isEditBookingDialogOpen, setIsEditBookingDialogOpen] = useState(false)
 	const [selectedSlot, setSelectedSlot] = useState<{
 		date: Date
 		courtId: string
 	} | null>(null)
+	const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
 
 	const handleSlotClick = (date: Date, courtId: string) => {
 		setSelectedSlot({ date, courtId })
-		setIsDialogOpen(true)
+		setIsNewBookingDialogOpen(true)
 	}
+
+	const handleEventClick = (booking: Booking) => {
+		setSelectedBooking(booking)
+		setIsEditBookingDialogOpen(true)
+	}
+
 	const courtsSelected = useCourtsStore((state) => state.courtsSelected)
 
 	const courts = courtsQuery.data?.filter((court) =>
@@ -123,6 +134,7 @@ export const CellsSchedule = ({ weekDates, dayIndex, time }: Props) => {
 										key={eventCourt.id}
 										booking={eventCourt}
 										court={court}
+										onClick={() => handleEventClick(eventCourt)}
 									/>
 								) : isInsideEventCourt ? null : (
 									<Button
@@ -139,10 +151,15 @@ export const CellsSchedule = ({ weekDates, dayIndex, time }: Props) => {
 					})}
 			</div>
 			<NewBookingDialog
-				isOpen={isDialogOpen}
-				onOpenChange={setIsDialogOpen}
+				isOpen={isNewBookingDialogOpen}
+				onOpenChange={setIsNewBookingDialogOpen}
 				slot={selectedSlot}
 				clubId={user.clubId!}
+			/>
+			<EditBookingDialog
+				booking={selectedBooking}
+				isOpen={isEditBookingDialogOpen}
+				onOpenChange={setIsEditBookingDialogOpen}
 			/>
 		</>
 	)

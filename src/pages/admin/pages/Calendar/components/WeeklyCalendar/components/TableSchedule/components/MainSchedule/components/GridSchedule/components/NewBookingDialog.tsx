@@ -1,3 +1,5 @@
+import { addMinutes, format } from "date-fns"
+import { useEffect, useState } from "react"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,14 +22,12 @@ import {
 import { useBookingsMutation } from "@/hooks/useBookingsMutations"
 import { useCourts } from "@/hooks/useCourtsQuery"
 import type { BookingsInsert } from "@/models/dbTypes"
-import { addMinutes, format } from "date-fns"
-import { useEffect, useState } from "react"
 
 interface NewBookingDialogProps {
 	isOpen: boolean
 	onOpenChange: (open: boolean) => void
 	slot: { date: Date; courtId: string } | null
-  clubId: string
+	clubId: string
 }
 
 export function NewBookingDialog({
@@ -43,6 +43,8 @@ export function NewBookingDialog({
 	const { createBooking } = useBookingsMutation()
 	const [selectedCourtId, setSelectedCourtId] = useState<string | null>(null)
 	const [duration, setDuration] = useState(90) // Duración por defecto de 90 min
+	const [userName, setUserName] = useState("")
+	const [userPhone, setUserPhone] = useState("")
 
 	useEffect(() => {
 		if (slot && slot.courtId !== "multiple-courts-selected") {
@@ -50,8 +52,10 @@ export function NewBookingDialog({
 		} else {
 			setSelectedCourtId(null) // Resetear si es selección múltiple
 		}
-		// Resetear duración al abrir un nuevo slot
+		// Resetear estado al abrir un nuevo slot
 		setDuration(90)
+		setUserName("")
+		setUserPhone("")
 	}, [slot])
 
 	if (!slot) return null
@@ -66,21 +70,22 @@ export function NewBookingDialog({
 			return
 		}
 
-    const booking: BookingsInsert = {
-            club_id: clubId,
-            court_id: selectedCourtId!,
-            price: selectedCourt.price,
-            start_time: slot.date.toISOString(),
-            date: format(slot.date, "yyyy-MM-dd"),
-            end_time: endTime.toISOString(),
-            user_id: user.id,
-            accepts_maketing: false, 
-            accepts_whatsup: false, 
-            deposit_percentage: 0,
-            payment_mode: "none",
-            payment_status: "pending",
-            status: "confirmed",
-          }
+		const booking: BookingsInsert = {
+			club_id: clubId,
+			court_id: selectedCourtId!,
+			price: selectedCourt.price,
+			start_time: slot.date.toISOString(),
+			date: format(slot.date, "yyyy-MM-dd"),
+			end_time: endTime.toISOString(),
+			user_id: user.id,
+			accepts_maketing: false,
+			accepts_whatsup: false,
+			deposit_percentage: 0,
+			payment_mode: "none",
+			payment_status: "pending",
+			status: "confirmed",
+			note: JSON.stringify({ clientName: userName, clientPhone: userPhone }),
+		}
 
 		createBooking.mutate(booking)
 		onOpenChange(false)
@@ -120,7 +125,10 @@ export function NewBookingDialog({
 					)}
 					<div className="space-y-2">
 						<Label htmlFor="duration">Duración</Label>
-						<Select value={String(duration)} onValueChange={(v) => setDuration(Number(v))}>
+						<Select
+							value={String(duration)}
+							onValueChange={(v) => setDuration(Number(v))}
+						>
 							<SelectTrigger id="duration">
 								<SelectValue />
 							</SelectTrigger>
@@ -133,11 +141,21 @@ export function NewBookingDialog({
 					</div>
 					<div className="space-y-2">
 						<Label htmlFor="userName">Nombre del cliente</Label>
-						<Input id="userName" placeholder="Ej: Juan Pérez" />
+						<Input
+							id="userName"
+							placeholder="Ej: Juan Pérez"
+							value={userName}
+							onChange={(e) => setUserName(e.target.value)}
+						/>
 					</div>
 					<div className="space-y-2">
 						<Label htmlFor="userPhone">Teléfono</Label>
-						<Input id="userPhone" placeholder="Ej: 600 000 000" />
+						<Input
+							id="userPhone"
+							placeholder="Ej: 600 000 000"
+							value={userPhone}
+							onChange={(e) => setUserPhone(e.target.value)}
+						/>
 					</div>
 				</div>
 
@@ -148,7 +166,8 @@ export function NewBookingDialog({
 					<Button
 						onClick={handleSave}
 						disabled={
-							(isMultipleCourtSelection && !selectedCourtId) || createBooking.isPending
+							(isMultipleCourtSelection && !selectedCourtId) ||
+							createBooking.isPending
 						}
 					>
 						Guardar Reserva
