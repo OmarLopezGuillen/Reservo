@@ -5,7 +5,9 @@ import type {
 	CompetitionRule,
 	CompetitionRuleTemplate,
 	CompetitionTeam,
-	CompetitionTeamWithAvailability,
+	CompetitionTeamInvite,
+	CompetitionTeamMember,
+	CompetitionTeamWithMemberAndAvailability,
 	Match,
 	TeamAvailability,
 } from "@/models/competition.model"
@@ -15,8 +17,10 @@ import type {
 	CompetitionRulesRow,
 	CompetitionRuleTemplatesRow,
 	CompetitionsRow,
+	CompetitionTeamInvitesRow,
+	CompetitionTeamMembersRow,
 	CompetitionTeamsRow,
-	CompetitionTeamWithAvailabilityDB,
+	CompetitionTeamWithMembersAndAvailabilityDB,
 	MatchesRow,
 	TeamAvailabilitiesRow,
 } from "@/models/dbTypes"
@@ -121,38 +125,65 @@ export const teamAvailabilitiesAdapter = (
 export const competitionTeamAdapter = (
 	db: CompetitionTeamsRow,
 ): CompetitionTeam => ({
-	captainUserId: db.captain_user_id,
 	categoryId: db.category_id,
 	competitionId: db.competition_id,
 	createdAt: db.created_at,
 	id: db.id,
 	name: db.name,
-	player1Name: db.player1_name,
-	player1Phone: db.player1_phone,
-	player1UserId: db.player1_user_id,
-	player2Name: db.player2_name,
-	player2Phone: db.player2_phone,
-	player2UserId: db.player2_user_id,
 	rulesAcceptedAt: db.rules_accepted_at,
 	status: db.status,
-	updatedAt: db.updated_at,
+	createdBy: db.created_by,
 })
 
 export const competitionTeamsAdapter = (
 	db: CompetitionTeamsRow[],
 ): CompetitionTeam[] => db.map(competitionTeamAdapter)
 
-export const competitionTeamWithAvailabilityAdapter = (
-	db: CompetitionTeamWithAvailabilityDB,
-): CompetitionTeamWithAvailability => ({
-	...competitionTeamAdapter(db),
-	availabilities: teamAvailabilitiesAdapter(db.team_availabilities),
+// CompetitionTeamMembers
+export const competitionTeamMemberAdapter = (
+	db: CompetitionTeamMembersRow,
+): CompetitionTeamMember => ({
+	id: db.id,
+	teamId: db.team_id,
+	userId: db.user_id,
+	role: db.role,
+	joinedAt: db.joined_at,
 })
 
-export const competitionTeamsWithAvailabilityAdapter = (
-	db: CompetitionTeamWithAvailabilityDB[],
-): CompetitionTeamWithAvailability[] =>
-	db.map(competitionTeamWithAvailabilityAdapter)
+export const competitionTeamMembersAdapter = (
+	db: CompetitionTeamMembersRow[],
+): CompetitionTeamMember[] => db.map(competitionTeamMemberAdapter)
+
+export const competitionTeamWithMemberAndAvailabilityAdapter = (
+	db: CompetitionTeamWithMembersAndAvailabilityDB,
+): CompetitionTeamWithMemberAndAvailability => ({
+	...competitionTeamAdapter(db),
+	availabilities: teamAvailabilitiesAdapter(db.team_availabilities),
+	members: competitionTeamMembersAdapter(db.competition_team_members),
+})
+
+export const competitionTeamWithMemberAndAvailabilitiesAdapter = (
+	db: CompetitionTeamWithMembersAndAvailabilityDB[],
+): CompetitionTeamWithMemberAndAvailability[] =>
+	db.map(competitionTeamWithMemberAndAvailabilityAdapter)
+
+// CompetitionTeamMembers
+export const competitionTeamInviteAdapter = (
+	db: CompetitionTeamInvitesRow,
+): CompetitionTeamInvite => ({
+	id: db.id,
+	teamId: db.team_id,
+	email: db.email,
+	role: db.role,
+	token: db.token,
+	status: db.status,
+	createdAt: db.created_at,
+	expiresAt: db.expires_at,
+})
+
+export const competitionTeamInvitesAdapter = (
+	db: CompetitionTeamInvitesRow[],
+): CompetitionTeamInvite[] => db.map(competitionTeamInviteAdapter)
 
 // CompetitionParticipant
 export const competitionParticipantAdapter = (

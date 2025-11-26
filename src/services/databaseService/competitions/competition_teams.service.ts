@@ -1,29 +1,29 @@
 //Tengo que traer los equipos junto con su disponibilidad que esta en la otra tabla
 import { supabase } from "@/lib/supabase"
-import type { CompetitionTeamWithAvailability } from "@/models/competition.model"
+import type { CompetitionTeamWithMemberAndAvailability } from "@/models/competition.model"
 import type {
 	CompetitionTeamsInsert,
 	CompetitionTeamsUpdate,
 } from "@/models/dbTypes"
 import {
-	competitionTeamsWithAvailabilityAdapter,
-	competitionTeamWithAvailabilityAdapter,
+	competitionTeamWithMemberAndAvailabilitiesAdapter,
+	competitionTeamWithMemberAndAvailabilityAdapter,
 } from "@/services/adapters/competitions.adapter"
 
 const TABLE_NAME = "competition_teams"
 
 export async function getCompetitionTeamById(
 	id: string,
-): Promise<CompetitionTeamWithAvailability> {
+): Promise<CompetitionTeamWithMemberAndAvailability> {
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
-			.select(`*, team_availabilities(*)`)
+			.select(`*, team_availabilities(*), competition_team_members(*)`)
 			.eq("id", id)
 			.single()
 
 		if (error) throw error
-		return competitionTeamWithAvailabilityAdapter(data)
+		return competitionTeamWithMemberAndAvailabilityAdapter(data)
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error("Error getting competition team by id:", error.message)
@@ -36,15 +36,15 @@ export async function getCompetitionTeamById(
 
 export async function getCompetitionTeamsByCompetitionId(
 	competitionId: string,
-): Promise<CompetitionTeamWithAvailability[]> {
+): Promise<CompetitionTeamWithMemberAndAvailability[]> {
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
-			.select(`*, team_availabilities(*)`)
+			.select(`*, team_availabilities(*), competition_team_members(*)`)
 			.eq("competition_id", competitionId)
 
 		if (error) throw error
-		return competitionTeamsWithAvailabilityAdapter(data)
+		return competitionTeamWithMemberAndAvailabilitiesAdapter(data)
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error(
@@ -60,15 +60,15 @@ export async function getCompetitionTeamsByCompetitionId(
 
 export async function getCompetitionTeamsByCategoryId(
 	categoryId: string,
-): Promise<CompetitionTeamWithAvailability[]> {
+): Promise<CompetitionTeamWithMemberAndAvailability[]> {
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
-			.select(`*, team_availabilities(*)`)
+			.select(`*, team_availabilities(*), competition_team_members(*)`)
 			.eq("category_id", categoryId)
 
 		if (error) throw error
-		return competitionTeamsWithAvailabilityAdapter(data)
+		return competitionTeamWithMemberAndAvailabilitiesAdapter(data)
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error(
@@ -84,17 +84,17 @@ export async function getCompetitionTeamsByCategoryId(
 
 export async function createCompetitionTeam(
 	teamData: CompetitionTeamsInsert,
-): Promise<CompetitionTeamWithAvailability> {
+): Promise<CompetitionTeamWithMemberAndAvailability> {
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
 			.insert(teamData)
-			.select("*, team_availabilities(*)")
+			.select("*, team_availabilities(*), competition_team_members(*)")
 			.single()
 
 		if (error) throw error
 
-		return competitionTeamWithAvailabilityAdapter(data)
+		return competitionTeamWithMemberAndAvailabilityAdapter(data)
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error("Error creating competition team:", error.message)
@@ -108,17 +108,17 @@ export async function createCompetitionTeam(
 export async function updateCompetitionTeam(
 	teamId: string,
 	teamData: CompetitionTeamsUpdate,
-): Promise<CompetitionTeamWithAvailability> {
+): Promise<CompetitionTeamWithMemberAndAvailability> {
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
 			.update(teamData)
 			.eq("id", teamId)
-			.select("*, team_availabilities(*)")
+			.select("*, team_availabilities(*), competition_team_members(*)")
 			.single()
 
 		if (error) throw error
-		return competitionTeamWithAvailabilityAdapter(data)
+		return competitionTeamWithMemberAndAvailabilityAdapter(data)
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error("Error updating competition team:", error.message)

@@ -21,6 +21,8 @@ export type CompetitionTeamsRow = Tables<"competition_teams">
 export type TeamAvailabilitiesRow = Tables<"team_availabilities">
 export type CompetitionParticipantsRow = Tables<"competition_participants">
 export type MatchesRow = Tables<"matches">
+export type CompetitionTeamMembersRow = Tables<"competition_team_members">
+export type CompetitionTeamInvitesRow = Tables<"competition_team_invites">
 
 // INSERT (crear)
 export type BookingsInsert = TablesInsert<"bookings">
@@ -37,6 +39,10 @@ export type TeamAvailabilitiesInsert = TablesInsert<"team_availabilities">
 export type CompetitionParticipantsInsert =
 	TablesInsert<"competition_participants">
 export type MatchesInsert = TablesInsert<"matches">
+export type CompetitionTeamMembersInsert =
+	TablesInsert<"competition_team_members">
+export type CompetitionTeamInvitesInsert =
+	TablesInsert<"competition_team_invites">
 
 // UPDATE (parcial)
 export type BookingsUpdate = TablesUpdate<"bookings">
@@ -53,6 +59,10 @@ export type TeamAvailabilitiesUpdate = TablesUpdate<"team_availabilities">
 export type CompetitionParticipantsUpdate =
 	TablesUpdate<"competition_participants">
 export type MatchesUpdate = TablesUpdate<"matches">
+export type CompetitionTeamMembersUpdate =
+	TablesUpdate<"competition_team_members">
+export type CompetitionTeamInvitesUpdate =
+	TablesUpdate<"competition_team_invites">
 
 // Enums type útiles
 export type AppRole = Enums<"app_role">
@@ -70,6 +80,8 @@ export type StatusRegistration = Enums<"status_registration">
 export type KindMatches = Enums<"kind_matches">
 export type PlayoffRound = Enums<"playoff_round">
 export type StatusMatches = Enums<"status_matches">
+export type MemberTeamRole = Enums<"member_team_role">
+export type StatusInvitation = Enums<"status_invitation">
 
 export const CompetitionsTypeConst = Constants.public.Enums.competitions_type
 export const CompetitionRoundTypeConst =
@@ -82,6 +94,8 @@ export type BookingWithRelations = BookingsRow & {
 	club: ClubsRow
 }
 
-export type CompetitionTeamWithAvailabilityDB = CompetitionTeamsRow & {
-	team_availabilities: TeamAvailabilitiesRow[]
-}
+export type CompetitionTeamWithMembersAndAvailabilityDB =
+	CompetitionTeamsRow & {
+		team_availabilities: TeamAvailabilitiesRow[]
+		competition_team_members: CompetitionTeamMembersRow[]
+	}

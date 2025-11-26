@@ -348,57 +348,109 @@ export type Database = {
           },
         ]
       }
+      competition_team_invites: {
+        Row: {
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          role: Database["public"]["Enums"]["member_team_role"]
+          status: Database["public"]["Enums"]["status_invitation"]
+          team_id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["member_team_role"]
+          status: Database["public"]["Enums"]["status_invitation"]
+          team_id: string
+          token: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["member_team_role"]
+          status?: Database["public"]["Enums"]["status_invitation"]
+          team_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_team_invites_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "competition_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_team_members: {
+        Row: {
+          id: string
+          joined_at: string
+          role: Database["public"]["Enums"]["member_team_role"]
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role: Database["public"]["Enums"]["member_team_role"]
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: Database["public"]["Enums"]["member_team_role"]
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "competition_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competition_teams: {
         Row: {
-          captain_user_id: string
           category_id: string
           competition_id: string
           created_at: string
+          created_by: string
           id: string
           name: string
-          player1_name: string
-          player1_phone: string
-          player1_user_id: string | null
-          player2_name: string
-          player2_phone: string
-          player2_user_id: string
-          rules_accepted_at: string | null
-          status: string
-          updated_at: string | null
+          rules_accepted_at: string
+          status: Database["public"]["Enums"]["status_registration"]
         }
         Insert: {
-          captain_user_id: string
           category_id: string
           competition_id: string
           created_at?: string
+          created_by: string
           id?: string
           name: string
-          player1_name: string
-          player1_phone: string
-          player1_user_id?: string | null
-          player2_name: string
-          player2_phone: string
-          player2_user_id: string
-          rules_accepted_at?: string | null
-          status: string
-          updated_at?: string | null
+          rules_accepted_at: string
+          status: Database["public"]["Enums"]["status_registration"]
         }
         Update: {
-          captain_user_id?: string
           category_id?: string
           competition_id?: string
           created_at?: string
+          created_by?: string
           id?: string
           name?: string
-          player1_name?: string
-          player1_phone?: string
-          player1_user_id?: string | null
-          player2_name?: string
-          player2_phone?: string
-          player2_user_id?: string
-          rules_accepted_at?: string | null
-          status?: string
-          updated_at?: string | null
+          rules_accepted_at?: string
+          status?: Database["public"]["Enums"]["status_registration"]
         }
         Relationships: [
           {
@@ -872,18 +924,25 @@ export type Database = {
         | "finished"
       competitions_type: "league" | "americano" | "tournament"
       kind_matches: "regular" | "playoff"
+      member_team_role: "player1" | "player2" | "substitute"
       payment_status: "pending" | "paid" | "refunded"
       playoff_round: "round_of_16" | "quarterfinal" | "semifinal" | "final"
       playoff_type: "single_elimination" | "double_elimination" | "final_match"
       position: "first" | "second"
       status_booking: "pending" | "confirmed" | "cancelled" | "completed"
+      status_invitation: "pending" | "accepted" | "expired"
       status_matches:
         | "pending"
         | "scheduled"
         | "played"
         | "cancelled"
         | "walkover"
-      status_registration: "pending" | "accepted" | "rejected" | "withdrawn"
+      status_registration:
+        | "pending"
+        | "enrolled"
+        | "rejected"
+        | "withdrawn"
+        | "completed"
       type_court: "indoor" | "outdoor"
       type_payment_mode: "deposit" | "none" | "full" | "both"
       weekday: "0" | "1" | "2" | "3" | "4" | "5" | "6"
@@ -1043,11 +1102,13 @@ export const Constants = {
       ],
       competitions_type: ["league", "americano", "tournament"],
       kind_matches: ["regular", "playoff"],
+      member_team_role: ["player1", "player2", "substitute"],
       payment_status: ["pending", "paid", "refunded"],
       playoff_round: ["round_of_16", "quarterfinal", "semifinal", "final"],
       playoff_type: ["single_elimination", "double_elimination", "final_match"],
       position: ["first", "second"],
       status_booking: ["pending", "confirmed", "cancelled", "completed"],
+      status_invitation: ["pending", "accepted", "expired"],
       status_matches: [
         "pending",
         "scheduled",
@@ -1055,7 +1116,13 @@ export const Constants = {
         "cancelled",
         "walkover",
       ],
-      status_registration: ["pending", "accepted", "rejected", "withdrawn"],
+      status_registration: [
+        "pending",
+        "enrolled",
+        "rejected",
+        "withdrawn",
+        "completed",
+      ],
       type_court: ["indoor", "outdoor"],
       type_payment_mode: ["deposit", "none", "full", "both"],
       weekday: ["0", "1", "2", "3", "4", "5", "6"],

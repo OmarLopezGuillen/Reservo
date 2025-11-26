@@ -3,6 +3,7 @@ import type {
 	CompetitionsStatus,
 	CompetitionsType,
 	KindMatches,
+	MemberTeamRole,
 	PlayoffRound,
 	PlayoffType,
 	StatusMatches,
@@ -75,25 +76,39 @@ export interface TeamAvailability {
 }
 
 export interface CompetitionTeam {
-	captainUserId: string
-	categoryId: string
-	competitionId: string
-	createdAt: string
 	id: string
+	competitionId: string
+	categoryId: string
 	name: string
-	player1Name: string
-	player1Phone: string
-	player1UserId: string | null
-	player2Name: string
-	player2Phone: string
-	player2UserId: string
-	rulesAcceptedAt: string | null
 	status: string
-	updatedAt: string | null
+	rulesAcceptedAt: string
+	createdAt: string
+	createdBy: string
 }
 
-export interface CompetitionTeamWithAvailability extends CompetitionTeam {
+export interface CompetitionTeamMember {
+	id: string
+	teamId: string
+	userId: string
+	role: MemberTeamRole
+	joinedAt: string
+}
+
+export interface CompetitionTeamWithMemberAndAvailability
+	extends CompetitionTeam {
 	availabilities: TeamAvailability[]
+	members: CompetitionTeamMember[]
+}
+
+export interface CompetitionTeamInvite {
+	id: string
+	teamId: string
+	email: string
+	role: MemberTeamRole
+	token: string
+	status: "pending" | "accepted" | "expired"
+	createdAt: string
+	expiresAt: string
 }
 
 export interface CompetitionParticipant {
