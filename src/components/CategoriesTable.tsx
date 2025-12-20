@@ -9,6 +9,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 import type { CompetitionCategory } from "@/models/competition.model"
 
 interface CategoriesTableProps {
@@ -16,6 +17,7 @@ interface CategoriesTableProps {
 	isLoading: boolean
 	onEdit: (category: CompetitionCategory) => void
 	onDelete: (id: string) => void
+	onView?: (category: CompetitionCategory) => void
 	defaultMaxTeams?: number
 }
 
@@ -24,6 +26,7 @@ export const CategoriesTable = ({
 	isLoading,
 	onEdit,
 	onDelete,
+	onView,
 	defaultMaxTeams,
 }: CategoriesTableProps) => {
 	return (
@@ -60,16 +63,28 @@ export const CategoriesTable = ({
 					</TableRow>
 				) : (
 					categories.map((category) => (
-						<TableRow key={category.id}>
+						<TableRow
+							key={category.id}
+							onClick={() => onView?.(category)}
+							className={cn(onView && "cursor-pointer")}
+						>
 							<TableCell className="font-medium">{category.name}</TableCell>
 							<TableCell>{category.description || "—"}</TableCell>
 							<TableCell>{category.maxTeams || defaultMaxTeams}</TableCell>
 							<TableCell className="text-right">
 								<div className="flex justify-end gap-2">
 									<Button
+										aria-label="Editar categoría"
 										variant="ghost"
 										size="icon"
-										onClick={() => onEdit(category)}
+										onClick={
+											onView
+												? (e) => {
+														e.stopPropagation()
+														onEdit(category)
+													}
+												: () => onEdit(category)
+										}
 									>
 										<Pencil className="size-4" />
 									</Button>
@@ -77,7 +92,15 @@ export const CategoriesTable = ({
 										variant="ghost"
 										size="icon"
 										className="text-destructive hover:text-destructive"
-										onClick={() => onDelete(category.id)}
+										aria-label="Eliminar categoría"
+										onClick={
+											onView
+												? (e) => {
+														e.stopPropagation()
+														onDelete(category.id)
+													}
+												: () => onDelete(category.id)
+										}
 									>
 										<Trash2 className="size-4" />
 									</Button>

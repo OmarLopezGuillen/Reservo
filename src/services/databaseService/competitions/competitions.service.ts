@@ -28,6 +28,22 @@ export async function getCompetitionById(id: string): Promise<Competition> {
 	}
 }
 
+export async function getAllCompetitions(): Promise<Competition[]> {
+	try {
+		const { data, error } = await supabase.from(TABLE_NAME).select("*")
+
+		if (error) throw error
+		return competitionsAdapter(data)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error getting competitions:", error.message)
+		} else {
+			console.error("Error getting competitions:", error)
+		}
+		throw new Error("No se pudo obtener las competiciónes.")
+	}
+}
+
 export async function getCompetitionsByClubId(
 	clubId: string,
 ): Promise<Competition[]> {

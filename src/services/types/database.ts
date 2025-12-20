@@ -365,7 +365,7 @@ export type Database = {
           expires_at?: string
           id?: string
           role: Database["public"]["Enums"]["member_team_role"]
-          status: Database["public"]["Enums"]["status_invitation"]
+          status?: Database["public"]["Enums"]["status_invitation"]
           team_id: string
           token: string
         }
@@ -419,6 +419,13 @@ export type Database = {
             referencedRelation: "competition_teams"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "competition_team_members_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       competition_teams: {
@@ -439,7 +446,7 @@ export type Database = {
           created_by: string
           id?: string
           name: string
-          rules_accepted_at: string
+          rules_accepted_at?: string
           status: Database["public"]["Enums"]["status_registration"]
         }
         Update: {
@@ -729,21 +736,21 @@ export type Database = {
           created_at: string
           email: string
           name: string
-          phone: string | null
+          phone: string
           user_id: string
         }
         Insert: {
           created_at?: string
           email: string
           name: string
-          phone?: string | null
+          phone: string
           user_id: string
         }
         Update: {
           created_at?: string
           email?: string
           name?: string
-          phone?: string | null
+          phone?: string
           user_id?: string
         }
         Relationships: []
@@ -879,6 +886,17 @@ export type Database = {
       }
     }
     Functions: {
+      accept_team_invite: { Args: { p_token: string }; Returns: Json }
+      admin_create_team_with_emails: {
+        Args: {
+          p_category_id: string
+          p_competition_id: string
+          p_email_player1: string
+          p_email_player2: string
+          p_team_name: string
+        }
+        Returns: Json
+      }
       authorize: {
         Args: {
           requested_permission: Database["public"]["Enums"]["app_permission"]

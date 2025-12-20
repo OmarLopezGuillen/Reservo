@@ -92,6 +92,15 @@ export interface CompetitionTeamMember {
 	userId: string
 	role: MemberTeamRole
 	joinedAt: string
+	profile: Profile | null
+}
+
+export type Profile = {
+	userId: string
+	name: string
+	email: string
+	phone: string
+	createdAt: string
 }
 
 export interface CompetitionTeamWithMemberAndAvailability

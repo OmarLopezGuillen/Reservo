@@ -23,6 +23,7 @@ export type CompetitionParticipantsRow = Tables<"competition_participants">
 export type MatchesRow = Tables<"matches">
 export type CompetitionTeamMembersRow = Tables<"competition_team_members">
 export type CompetitionTeamInvitesRow = Tables<"competition_team_invites">
+export type ProfilesRow = Tables<"profiles">
 
 // INSERT (crear)
 export type BookingsInsert = TablesInsert<"bookings">
@@ -43,6 +44,7 @@ export type CompetitionTeamMembersInsert =
 	TablesInsert<"competition_team_members">
 export type CompetitionTeamInvitesInsert =
 	TablesInsert<"competition_team_invites">
+export type ProfilesInsert = TablesInsert<"profiles">
 
 // UPDATE (parcial)
 export type BookingsUpdate = TablesUpdate<"bookings">
@@ -63,6 +65,7 @@ export type CompetitionTeamMembersUpdate =
 	TablesUpdate<"competition_team_members">
 export type CompetitionTeamInvitesUpdate =
 	TablesUpdate<"competition_team_invites">
+export type ProfilesUpdate = TablesUpdate<"profiles">
 
 // Enums type útiles
 export type AppRole = Enums<"app_role">
@@ -97,5 +100,7 @@ export type BookingWithRelations = BookingsRow & {
 export type CompetitionTeamWithMembersAndAvailabilityDB =
 	CompetitionTeamsRow & {
 		team_availabilities: TeamAvailabilitiesRow[]
-		competition_team_members: CompetitionTeamMembersRow[]
+		competition_team_members: (CompetitionTeamMembersRow & {
+			profiles: ProfilesRow | null
+		})[]
 	}

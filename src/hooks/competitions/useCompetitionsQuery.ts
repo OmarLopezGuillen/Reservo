@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import {
+	getAllCompetitions,
 	getCompetitionById,
 	getCompetitionsByClubId,
 } from "@/services/databaseService/competitions/competitions.service"
@@ -22,4 +23,12 @@ export const useCompetitionById = (id: string | null) => {
 		enabled: !!id,
 	})
 	return { competitionByIdQuery }
+}
+
+export const useAllCompetitions = () => {
+	const allCompetitionsQuery = useQuery({
+		queryKey: [COMPETITIONS_QUERY_KEY, "all-with-club"],
+		queryFn: () => getAllCompetitions(),
+	})
+	return { allCompetitionsQuery }
 }

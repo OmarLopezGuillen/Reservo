@@ -9,6 +9,7 @@ import type {
 	CompetitionTeamMember,
 	CompetitionTeamWithMemberAndAvailability,
 	Match,
+	Profile,
 	TeamAvailability,
 } from "@/models/competition.model"
 import type {
@@ -22,6 +23,7 @@ import type {
 	CompetitionTeamsRow,
 	CompetitionTeamWithMembersAndAvailabilityDB,
 	MatchesRow,
+	ProfilesRow,
 	TeamAvailabilitiesRow,
 } from "@/models/dbTypes"
 
@@ -141,25 +143,39 @@ export const competitionTeamsAdapter = (
 
 // CompetitionTeamMembers
 export const competitionTeamMemberAdapter = (
-	db: CompetitionTeamMembersRow,
+	db: CompetitionTeamMembersRow & { profiles: ProfilesRow | null },
 ): CompetitionTeamMember => ({
 	id: db.id,
 	teamId: db.team_id,
 	userId: db.user_id,
 	role: db.role,
 	joinedAt: db.joined_at,
+	profile: db.profiles ? profileAdapter(db.profiles) : null,
 })
 
 export const competitionTeamMembersAdapter = (
-	db: CompetitionTeamMembersRow[],
+	db: (CompetitionTeamMembersRow & { profiles: ProfilesRow | null })[],
 ): CompetitionTeamMember[] => db.map(competitionTeamMemberAdapter)
 
+// Profile
+export const profileAdapter = (db: ProfilesRow): Profile => ({
+	userId: db.user_id,
+	name: db.name,
+	email: db.email,
+	phone: db.phone,
+	createdAt: db.created_at,
+})
+
+export const profilesAdapter = (db: ProfilesRow[]): Profile[] =>
+	db.map(profileAdapter)
+
+// CompetitionTeamWithMemberAndAvailability
 export const competitionTeamWithMemberAndAvailabilityAdapter = (
 	db: CompetitionTeamWithMembersAndAvailabilityDB,
 ): CompetitionTeamWithMemberAndAvailability => ({
 	...competitionTeamAdapter(db),
 	availabilities: teamAvailabilitiesAdapter(db.team_availabilities),
-	members: competitionTeamMembersAdapter(db.competition_team_members),
+	members: competitionTeamMembersAdapter(db.competition_team_members ?? []),
 })
 
 export const competitionTeamWithMemberAndAvailabilitiesAdapter = (

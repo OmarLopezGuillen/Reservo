@@ -36,6 +36,31 @@ export async function getCompetitionTeamInviteById(
 	}
 }
 
+export async function getCompetitionTeamInviteByToken(
+	token: string,
+): Promise<CompetitionTeamInvite> {
+	try {
+		const { data, error } = await supabase
+			.from(TABLE_NAME)
+			.select("*")
+			.eq("token", token)
+			.single()
+
+		if (error) throw error
+		return competitionTeamInviteAdapter(data)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error(
+				"Error getting competition team invite by token:",
+				error.message,
+			)
+		} else {
+			console.error("Error getting competition team invite by token:", error)
+		}
+		throw new Error("No se pudo obtener la invitación al equipo.")
+	}
+}
+
 export async function getCompetitionTeamInvitesByTeamId(
 	teamId: string,
 ): Promise<CompetitionTeamInvite[]> {
@@ -57,6 +82,35 @@ export async function getCompetitionTeamInvitesByTeamId(
 			console.error("Error getting competition team invites by team id:", error)
 		}
 		throw new Error("No se pudieron obtener las invitaciones del equipo.")
+	}
+}
+
+export const getPendingInvitesByEmail = async (email: string) => {
+	try {
+		const { data, error } = await supabase
+			.from(TABLE_NAME)
+			.select(
+				`
+      id,
+      team:competition_teams (
+        id,
+        name,
+        competition:competitions (
+          id,
+          name
+        )
+      )
+    `,
+			)
+			.eq("email", email)
+			.eq("status", "pending")
+
+		if (error) throw error
+
+		return data
+	} catch (error) {
+		console.error("Error fetching pending invites:", error)
+		throw new Error("No se pudieron cargar las invitaciones pendientes.")
 	}
 }
 

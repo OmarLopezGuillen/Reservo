@@ -2,7 +2,13 @@
 export const ROUTES = {
 	HOME: "/",
 	LOGIN: "/login",
+	COMPETITIONS: {
+		ROOT: "/competitions",
+		ID: (id: string | number) => `/competitions/${id}`,
+		REGISTER: "/register/competition",
+	},
 	REGISTER: "/register",
+	INVITE: "/invite",
 
 	// TODO: Revisar estas rutas
 	ADMIN: {

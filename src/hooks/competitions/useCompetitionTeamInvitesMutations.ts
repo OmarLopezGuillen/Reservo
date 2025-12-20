@@ -9,6 +9,10 @@ import {
 	deleteCompetitionTeamInvite,
 	updateCompetitionTeamInvite,
 } from "@/services/databaseService/competitions/competition_team_invites.service"
+import {
+	type AcceptTeamInviteParams,
+	acceptTeamInvite,
+} from "@/services/databaseService/competitions/RPC/acceptTeamInvite"
 import { COMPETITION_TEAM_INVITES_QUERY_KEY } from "./useCompetitionTeamInvitesQuery"
 
 export const useCompetitionTeamInvitesMutation = () => {
@@ -66,9 +70,22 @@ export const useCompetitionTeamInvitesMutation = () => {
 		},
 	})
 
+	const acceptTeamInviteMutation = useMutation({
+		mutationFn: (params: AcceptTeamInviteParams) => acceptTeamInvite(params),
+		onSuccess: (data) => {
+			invalidateCompetitionTeamInvitesQueries()
+			toast.success(data.message)
+		},
+		onError: (error) => {
+			console.error("Error accepting team invite:", error)
+			toast.error(error.message || "Error al aceptar la invitación al equipo.")
+		},
+	})
+
 	return {
 		createCompetitionTeamInvite: createCompetitionTeamInviteMutation,
 		updateCompetitionTeamInvite: updateCompetitionTeamInviteMutation,
 		deleteCompetitionTeamInvite: deleteCompetitionTeamInviteMutation,
+		acceptTeamInvite: acceptTeamInviteMutation,
 	}
 }

@@ -40,9 +40,12 @@ export async function getCompetitionTeamsByCompetitionId(
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
-			.select(`*, team_availabilities(*), competition_team_members(*)`)
+			.select(
+				`*, team_availabilities(*), competition_team_members(*, profiles (*))`,
+			)
 			.eq("competition_id", competitionId)
 
+		console.log("data", data)
 		if (error) throw error
 		return competitionTeamWithMemberAndAvailabilitiesAdapter(data)
 	} catch (error) {

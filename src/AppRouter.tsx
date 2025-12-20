@@ -49,12 +49,20 @@ const CrearCompeticion = lazy(
 			"@/pages/admin/pages/Competiciones/pages/crear-competicion/CrearCompeticion"
 		),
 )
+const CompetitionRegister = lazy(
+	() => import("@/pages/CompetitionRegister/CompetitionRegister"),
+)
+const Competitions = lazy(() => import("@/pages/competitions/Competitions"))
+const CompetitionId = lazy(
+	() => import("@/pages/competitions/competitionsId/CompetitionId"),
+)
 const AdminListaEspera = lazy(() => import("@/pages/admin/pages/ListaEspera"))
 const AdminRecursos = lazy(() => import("@/pages/admin/pages/Recursos"))
 const AdminReportes = lazy(() => import("@/pages/admin/pages/Reportes"))
 
 const LegalPrivacidad = lazy(() => import("@/pages/legal/pages/Privacidad"))
 const LegalTerminos = lazy(() => import("@/pages/legal/pages/Terminos"))
+const InvitePage = lazy(() => import("@/pages/invite/invite"))
 
 export default function AppRouter() {
 	return (
@@ -195,6 +203,38 @@ export default function AppRouter() {
 						element={
 							<Suspense fallback={<Loading />}>
 								<CrearReservaExito />
+							</Suspense>
+						}
+					/>
+					<Route
+						path={ROUTES.COMPETITIONS.REGISTER}
+						element={
+							<Suspense fallback={<Loading />}>
+								<CompetitionRegister />
+							</Suspense>
+						}
+					/>
+					<Route
+						path={ROUTES.COMPETITIONS.ROOT}
+						element={
+							<Suspense fallback={<Loading />}>
+								<Competitions />
+							</Suspense>
+						}
+					/>
+					<Route
+						path={ROUTES.COMPETITIONS.ID(":competicionId")}
+						element={
+							<Suspense fallback={<Loading />}>
+								<CompetitionId />
+							</Suspense>
+						}
+					/>
+					<Route
+						path={ROUTES.INVITE}
+						element={
+							<Suspense fallback={<Loading />}>
+								<InvitePage />
 							</Suspense>
 						}
 					/>

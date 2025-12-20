@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle, Mail } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { Link } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import { useAuthActions } from "@/auth/hooks/useAuthActions"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -30,6 +30,13 @@ export default function LoginForm() {
 	const { logIn } = useAuthActions()
 	const [error, setError] = useState<string | null>(null)
 
+	const navigate = useNavigate()
+	const location = useLocation()
+
+	// Leer ?redirect= de la URL si viene
+	const searchParams = new URLSearchParams(location.search)
+	const redirect = searchParams.get("redirect")
+
 	const form = useForm<LoginFormSchema>({
 		resolver: zodResolver(loginFormSchema),
 		defaultValues: {
@@ -43,12 +50,19 @@ export default function LoginForm() {
 		try {
 			const { email, password } = values
 			await logIn({ email, password })
+
+			// Si logIn no lanza error, navegamos:
+			navigate(redirect || ROUTES.HOME, { replace: true })
 		} catch (error: any) {
 			setError("No se pudo iniciar sesión. Por favor, inténtalo de nuevo.")
-
 			console.error("Login error:", error)
 		}
 	}
+
+	// Para mantener el redirect cuando el usuario pasa a "Regístrate"
+	const registerUrl = redirect
+		? `${ROUTES.REGISTER}?redirect=${encodeURIComponent(redirect)}`
+		: ROUTES.REGISTER
 
 	return (
 		<Card className="w-full max-w-md">
@@ -131,7 +145,7 @@ export default function LoginForm() {
 				</Form>
 				<div className="mt-4 text-center text-sm">
 					¿No tienes una cuenta?{" "}
-					<Link to={ROUTES.REGISTER} className="underline">
+					<Link to={registerUrl} className="underline">
 						Regístrate
 					</Link>
 				</div>

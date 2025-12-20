@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle, UserPlus } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { Link } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import { useAuthActions } from "@/auth/hooks/useAuthActions"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -33,6 +33,11 @@ export default function RegisterForm() {
 	const { signUp } = useAuthActions()
 	const [error, setError] = useState<string | null>(null)
 
+	const navigate = useNavigate()
+	const location = useLocation()
+	const searchParams = new URLSearchParams(location.search)
+	const redirect = searchParams.get("redirect")
+
 	const form = useForm<RegisterFormSchema>({
 		resolver: zodResolver(registerFormSchema),
 		defaultValues: {
@@ -53,10 +58,19 @@ export default function RegisterForm() {
 				password,
 				options: { data: { full_name: name, phone_number: phone } },
 			})
+
+			// Si el registro fue bien, redirigimos
+			navigate(redirect || ROUTES.HOME, { replace: true })
 		} catch (error: any) {
 			setError("No se pudo crear la cuenta. Por favor, inténtalo de nuevo.")
+			console.error("Register error:", error)
 		}
 	}
+
+	// Mantener redirect cuando el usuario pasa a "Inicia sesión"
+	const loginUrl = redirect
+		? `${ROUTES.LOGIN}?redirect=${encodeURIComponent(redirect)}`
+		: ROUTES.LOGIN
 
 	return (
 		<Card className="w-full max-w-md mb-4">
@@ -78,7 +92,6 @@ export default function RegisterForm() {
 							</Alert>
 						)}
 						<div className="grid gap-4">
-							{/* Name Field */}
 							<FormField
 								control={form.control}
 								name="name"
@@ -97,7 +110,6 @@ export default function RegisterForm() {
 								)}
 							/>
 
-							{/* Email Field */}
 							<FormField
 								control={form.control}
 								name="email"
@@ -118,7 +130,6 @@ export default function RegisterForm() {
 								)}
 							/>
 
-							{/* Phone Field */}
 							<FormField
 								control={form.control}
 								name="phone"
@@ -139,7 +150,6 @@ export default function RegisterForm() {
 								)}
 							/>
 
-							{/* Password Field */}
 							<FormField
 								control={form.control}
 								name="password"
@@ -159,7 +169,6 @@ export default function RegisterForm() {
 								)}
 							/>
 
-							{/* Confirm Password Field */}
 							<FormField
 								control={form.control}
 								name="confirmPassword"
@@ -195,7 +204,7 @@ export default function RegisterForm() {
 				</Form>
 				<div className="mt-4 text-center text-sm">
 					¿Ya tienes una cuenta?{" "}
-					<Link to={ROUTES.LOGIN} className="underline">
+					<Link to={loginUrl} className="underline">
 						Inicia sesión
 					</Link>
 				</div>
