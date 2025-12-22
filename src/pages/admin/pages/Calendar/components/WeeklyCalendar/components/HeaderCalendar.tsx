@@ -9,6 +9,7 @@ import {
 import { es } from "date-fns/locale"
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { CalendarPicker } from "@/components/CalendarPicker/CalendarPicker"
 import { Button } from "@/components/ui/button"
 import {
@@ -36,14 +37,13 @@ import {
 	useCurrentDayQueryState,
 	useViewModeQueryState,
 } from "@/pages/admin/pages/Calendar/hooks/useCalendarQueryState"
-import { useAuthUser } from "@/auth/hooks/useAuthUser"
 
 export const HeaderCalendar = () => {
 	const { viewMode, setViewMode } = useViewModeQueryState()
 	const { currentDate, setCurrentDate } = useCurrentDayQueryState()
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 	const user = useAuthUser()
-	
+
 	const { courtsQuery } = useCourts(user.clubId!)
 	const courts = courtsQuery.data
 
