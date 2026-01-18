@@ -40,7 +40,7 @@ const AdminCompeticiones = lazy(
 const AdminCompeticionesId = lazy(
 	() =>
 		import(
-			"@/pages/admin/pages/Competiciones/pages/CompeticionesId/CompeticionesId"
+			"@/pages/admin/pages/Competiciones/pages/CompetitionId/CompetitionId"
 		),
 )
 const CrearCompeticion = lazy(
