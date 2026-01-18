@@ -133,15 +133,15 @@ export interface CompetitionParticipant {
 	updatedAt: string | null
 	userId: string
 }
-//Lo pasamos a camelCase cada atributo
+
 export interface Match {
 	awayTeamId: string
 	categoryId: string
 	competitionId: string
 	confirmedAt: string | null
-	courtId: string
+	courtId: string | null
 	createdAt: string
-	endTime: string
+	endTime: string | null
 	homeTeamId: string
 	id: string
 	kind: KindMatches
@@ -150,7 +150,7 @@ export interface Match {
 	round: number
 	scoreAway: number | null
 	scoreHome: number | null
-	startTime: string
+	startTime: string | null
 	status: StatusMatches
 	updatedAt: string | null
 	winnerTeamId: string | null

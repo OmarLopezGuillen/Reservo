@@ -2,6 +2,7 @@ import type { TeamAvailability } from "@/models/competition.model"
 import type { WeekDay } from "@/models/dbTypes"
 
 export type TeamId = string
+export type CategoryId = string
 
 export interface InterfaceMatch {
 	home: TeamId
@@ -11,8 +12,9 @@ export interface InterfaceMatch {
 export type Round = InterfaceMatch[]
 export type Schedule = Round[]
 
+// startTime ahora es un array con TODAS las posibles disponibilidades (solapes) en ISO
 export interface InterfaceMatchWithStart extends InterfaceMatch {
-	startTime: string | null
+	startTime: string[]
 }
 
 export type ScheduledRound = InterfaceMatchWithStart[]
@@ -21,6 +23,20 @@ export type ScheduledSchedule = ScheduledRound[]
 export interface TeamAvailabilitiesByTeam {
 	teamId: TeamId
 	availabilities: TeamAvailability[]
+}
+
+/**
+ * Nuevo formato por categoría:
+ * - jornadas: Schedule (Round[])
+ */
+export interface CategoryMatches {
+	categoryId: CategoryId
+	schedule: Schedule
+}
+
+export interface CategoryScheduledMatches {
+	categoryId: CategoryId
+	schedule: ScheduledSchedule
 }
 
 interface ScheduleOptions {
@@ -35,54 +51,74 @@ interface ScheduleOptions {
 interface SlotIntersection {
 	weekday: number
 	startMinutes: number
+	endMinutes: number
 }
 
-export function getUniqueTeamIdsFromSchedule(schedule: Schedule): TeamId[] {
-	const [firstRound] = schedule
-	if (!firstRound) return []
-
+/**
+ * NUEVO: devuelve equipos únicos de TODAS las categorías (recorre todas las jornadas y partidos).
+ */
+export function getUniqueTeamIdsFromSchedule(
+	categories: CategoryMatches[],
+): TeamId[] {
 	const unique = new Set<TeamId>()
 
-	firstRound.forEach((match) => {
-		unique.add(match.home)
-		unique.add(match.away)
-	})
+	for (const category of categories) {
+		for (const round of category.schedule) {
+			for (const match of round) {
+				unique.add(match.home)
+				unique.add(match.away)
+			}
+		}
+	}
 
 	return Array.from(unique)
 }
 
 /**
- * Assigns start times to a schedule (rounds of matches) based on the overlapping availability of
- * each team.
- *
- * The algorithm picks the earliest common slot by ordering weekdays from Monday (0) to Sunday (6)
- * and, within each day, selecting the smallest intersecting start time. If no overlap exists for a
- * match, its startTime is set to null.
+ * NUEVO: asigna startTimes a TODAS las categorías y devuelve:
+ * [{ categoriaId, jornadas: ScheduledSchedule }]
  */
-export function assignStartTimesToSchedule(
-	schedule: Schedule,
+export function assignStartTimesToCategoryMatches(
+	categories: CategoryMatches[],
 	teamAvailabilities: TeamAvailabilitiesByTeam[],
 	options: ScheduleOptions = {},
-): ScheduledSchedule {
+): CategoryScheduledMatches[] {
 	const availabilityMap = buildAvailabilityMap(teamAvailabilities)
 	const referenceWeekStart = getMonday(options.referenceDate ?? new Date())
 
+	return categories.map((cat) => ({
+		categoryId: cat.categoryId,
+		schedule: assignStartTimesToScheduleInternal(
+			cat.schedule,
+			availabilityMap,
+			referenceWeekStart,
+		),
+	}))
+}
+
+/** ====== Helpers internos para no recalcular map + monday por cada categoría ====== */
+
+function assignStartTimesToScheduleInternal(
+	schedule: Schedule,
+	availabilityMap: Map<string, TeamAvailability[]>,
+	referenceWeekStart: Date,
+): ScheduledSchedule {
 	return schedule.map((round) =>
 		round.map((match) => {
 			const homeAvailability = availabilityMap.get(match.home) ?? []
 			const awayAvailability = availabilityMap.get(match.away) ?? []
-			const overlap = findEarliestOverlap(homeAvailability, awayAvailability)
 
-			if (!overlap) {
-				return { ...match, startTime: null }
-			}
+			const overlaps = findAllOverlaps(homeAvailability, awayAvailability)
 
-			const scheduledDate = addMinutesToDate(
-				addDays(referenceWeekStart, overlap.weekday),
-				overlap.startMinutes,
-			)
+			const startTimes = overlaps.map((overlap) => {
+				const scheduledDate = addMinutesToDate(
+					addDays(referenceWeekStart, overlap.weekday),
+					overlap.startMinutes,
+				)
+				return scheduledDate.toISOString()
+			})
 
-			return { ...match, startTime: scheduledDate.toISOString() }
+			return { ...match, startTime: startTimes }
 		}),
 	)
 }
@@ -94,14 +130,16 @@ function buildAvailabilityMap(entries: TeamAvailabilitiesByTeam[]) {
 	}, new Map())
 }
 
-function findEarliestOverlap(
+function findAllOverlaps(
 	home: TeamAvailability[],
 	away: TeamAvailability[],
-): SlotIntersection | null {
-	if (home.length === 0 || away.length === 0) return null
+): SlotIntersection[] {
+	if (home.length === 0 || away.length === 0) return []
 
 	const homeByDay = groupByWeekday(home)
 	const awayByDay = groupByWeekday(away)
+
+	const overlaps: SlotIntersection[] = []
 
 	for (let weekday = 0; weekday <= 6; weekday++) {
 		const homeSlots = sortByStartTime(homeByDay[weekday])
@@ -119,13 +157,16 @@ function findEarliestOverlap(
 				)
 
 				if (start < end) {
-					return { weekday, startMinutes: start }
+					overlaps.push({ weekday, startMinutes: start, endMinutes: end })
 				}
 			}
 		}
 	}
 
-	return null
+	// opcional: ordenar por weekday y hora de inicio (para que quede siempre consistente)
+	return overlaps.sort(
+		(a, b) => a.weekday - b.weekday || a.startMinutes - b.startMinutes,
+	)
 }
 
 function groupByWeekday(
