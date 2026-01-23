@@ -42,8 +42,7 @@ export async function createTeamByAdmin({
 				p_email_player2: emailPlayer2,
 			},
 		)
-		console.log("data", data)
-		console.log("error", error)
+
 		if (error) throw error
 		if (!data) {
 			throw new Error("La creación del equipo no devolvió los datos esperados.")

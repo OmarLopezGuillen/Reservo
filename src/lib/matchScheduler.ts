@@ -84,7 +84,8 @@ export function assignStartTimesToCategoryMatches(
 	options: ScheduleOptions = {},
 ): CategoryScheduledMatches[] {
 	const availabilityMap = buildAvailabilityMap(teamAvailabilities)
-	const referenceWeekStart = getMonday(options.referenceDate ?? new Date())
+	const today = options.referenceDate ?? new Date()
+	const referenceWeekStart = addDays(getMonday(today), 7)
 
 	return categories.map((cat) => ({
 		categoryId: cat.categoryId,
@@ -103,16 +104,16 @@ function assignStartTimesToScheduleInternal(
 	availabilityMap: Map<string, TeamAvailability[]>,
 	referenceWeekStart: Date,
 ): ScheduledSchedule {
-	return schedule.map((round) =>
+	return schedule.map((round, roundIndex) =>
 		round.map((match) => {
 			const homeAvailability = availabilityMap.get(match.home) ?? []
 			const awayAvailability = availabilityMap.get(match.away) ?? []
 
 			const overlaps = findAllOverlaps(homeAvailability, awayAvailability)
-
+			const weekStartForRound = addDays(referenceWeekStart, roundIndex * 7)
 			const startTimes = overlaps.map((overlap) => {
 				const scheduledDate = addMinutesToDate(
-					addDays(referenceWeekStart, overlap.weekday),
+					addDays(weekStartForRound, overlap.weekday),
 					overlap.startMinutes,
 				)
 				return scheduledDate.toISOString()

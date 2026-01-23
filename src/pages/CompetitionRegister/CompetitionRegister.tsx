@@ -99,7 +99,6 @@ const CompetitionRegister = () => {
 				onSuccess: (data) => {
 					setSubmitted(true)
 					if (availabilities.length > 0 && data.team_id) {
-						console.log("Creando disponibilidades...: ", availabilities)
 						availabilities.forEach((avail) => {
 							createTeamAvailability.mutate({
 								team_id: data.team_id,

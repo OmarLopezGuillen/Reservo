@@ -16,17 +16,17 @@ function TabsCompetition() {
 			<TabsList className="w-full justify-start">
 				<TabsTrigger value="teams">Equipos</TabsTrigger>
 				<TabsTrigger value="matches">Partidos</TabsTrigger>
-				{/* 				<TabsTrigger value="overview">General</TabsTrigger>
+				<TabsTrigger value="overview">General</TabsTrigger>
 				<TabsTrigger value="categories">Categorías</TabsTrigger>
-				<TabsTrigger value="rules">Normas</TabsTrigger> */}
-				{/* 				<TabsTrigger value="standings">Clasificación</TabsTrigger> */}
+				<TabsTrigger value="rules">Normas</TabsTrigger>
+				<TabsTrigger value="standings">Clasificación</TabsTrigger>
 			</TabsList>
 
 			<TabsContent value="teams" className="mt-6">
 				<TeamsAdminTab competitionId={competicionId!} />
 			</TabsContent>
 
-			{/* 			<TabsContent value="overview" className="mt-6">
+			{/*<TabsContent value="overview" className="mt-6">
 				<OverviewTab competition={competition} categories={categories} />
 			</TabsContent>
 
@@ -34,19 +34,20 @@ function TabsCompetition() {
 				<CategoriesTable competition={competition} />
 			</TabsContent>
 
-			
-
 			<TabsContent value="rules" className="mt-6">
 				<RulesTab competition={competition} />
-			</TabsContent> */}
+			</TabsContent>*/}
 
 			<TabsContent value="matches" className="mt-6">
 				<MatchesTab />
 			</TabsContent>
 
-			{/* 			<TabsContent value="standings" className="mt-6">
-				<StandingsTab competitionId={competition.id} />
-			</TabsContent> */}
+			<TabsContent value="standings" className="mt-6">
+				<StandingsTab
+					competitionId={competicionId}
+					categoryId="5556f289-1c14-4a53-a4ae-e8cf20aef15c"
+				/>
+			</TabsContent>
 		</Tabs>
 	)
 }

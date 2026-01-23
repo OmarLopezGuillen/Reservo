@@ -39,8 +39,7 @@ export function useStartCompetition(
 					courtIds, // todas las pistas del club
 				},
 			)
-		console.log("MATCHES CREADOS:", matches)
-		console.log("NO PROGRAMADOS:", unscheduled)
+
 		return schedule
 
 		/* 	getTeamsAvailabilitiesByTeamIds(["", "", ""])

@@ -155,3 +155,19 @@ export interface Match {
 	updatedAt: string | null
 	winnerTeamId: string | null
 }
+
+export interface CompetitionStanding {
+	competitionId: string
+	categoryId: string
+	teamId: string
+	teamName: string
+	position: number
+	played: number
+	won: number
+	drawn: number
+	lost: number
+	setsFor: number
+	setsAgainst: number
+	setsDiff: number
+	points: number
+}

@@ -384,6 +384,13 @@ export type Database = {
             foreignKeyName: "competition_team_invites_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
+            referencedRelation: "competition_standings"
+            referencedColumns: ["team_id"]
+          },
+          {
+            foreignKeyName: "competition_team_invites_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
             referencedRelation: "competition_teams"
             referencedColumns: ["id"]
           },
@@ -412,6 +419,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "competition_team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "competition_standings"
+            referencedColumns: ["team_id"]
+          },
           {
             foreignKeyName: "competition_team_members_team_id_fkey"
             columns: ["team_id"]
@@ -578,6 +592,54 @@ export type Database = {
           },
         ]
       }
+      court_blocks: {
+        Row: {
+          court_id: string
+          created_at: string
+          end_time: string
+          id: string
+          match_id: string | null
+          reason: string
+          start_time: string
+          updated_at: string | null
+        }
+        Insert: {
+          court_id: string
+          created_at?: string
+          end_time: string
+          id?: string
+          match_id?: string | null
+          reason: string
+          start_time: string
+          updated_at?: string | null
+        }
+        Update: {
+          court_id?: string
+          created_at?: string
+          end_time?: string
+          id?: string
+          match_id?: string | null
+          reason?: string
+          start_time?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "court_blocks_court_id_fkey"
+            columns: ["court_id"]
+            isOneToOne: false
+            referencedRelation: "courts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "court_blocks_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: true
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courts: {
         Row: {
           club_id: string
@@ -628,18 +690,19 @@ export type Database = {
           category_id: string
           competition_id: string
           confirmed_at: string | null
-          court_id: string
+          court_id: string | null
           created_at: string
-          end_time: string
+          end_time: string | null
           home_team_id: string
           id: string
           kind: Database["public"]["Enums"]["kind_matches"]
+          matchday: number
           playoff_round: Database["public"]["Enums"]["playoff_round"] | null
           reported_at: string | null
           round: number
-          score_away: number | null
-          score_home: number | null
-          start_time: string
+          score_away: Json | null
+          score_home: Json | null
+          start_time: string | null
           status: Database["public"]["Enums"]["status_matches"]
           updated_at: string | null
           winner_team_id: string | null
@@ -649,18 +712,19 @@ export type Database = {
           category_id: string
           competition_id: string
           confirmed_at?: string | null
-          court_id: string
+          court_id?: string | null
           created_at?: string
-          end_time: string
+          end_time?: string | null
           home_team_id: string
           id?: string
           kind: Database["public"]["Enums"]["kind_matches"]
+          matchday: number
           playoff_round?: Database["public"]["Enums"]["playoff_round"] | null
           reported_at?: string | null
           round: number
-          score_away?: number | null
-          score_home?: number | null
-          start_time: string
+          score_away?: Json | null
+          score_home?: Json | null
+          start_time?: string | null
           status: Database["public"]["Enums"]["status_matches"]
           updated_at?: string | null
           winner_team_id?: string | null
@@ -670,23 +734,31 @@ export type Database = {
           category_id?: string
           competition_id?: string
           confirmed_at?: string | null
-          court_id?: string
+          court_id?: string | null
           created_at?: string
-          end_time?: string
+          end_time?: string | null
           home_team_id?: string
           id?: string
           kind?: Database["public"]["Enums"]["kind_matches"]
+          matchday?: number
           playoff_round?: Database["public"]["Enums"]["playoff_round"] | null
           reported_at?: string | null
           round?: number
-          score_away?: number | null
-          score_home?: number | null
-          start_time?: string
+          score_away?: Json | null
+          score_home?: Json | null
+          start_time?: string | null
           status?: Database["public"]["Enums"]["status_matches"]
           updated_at?: string | null
           winner_team_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "matches_away_team_id_fkey"
+            columns: ["away_team_id"]
+            isOneToOne: false
+            referencedRelation: "competition_standings"
+            referencedColumns: ["team_id"]
+          },
           {
             foreignKeyName: "matches_away_team_id_fkey"
             columns: ["away_team_id"]
@@ -719,8 +791,22 @@ export type Database = {
             foreignKeyName: "matches_home_team_id_fkey"
             columns: ["home_team_id"]
             isOneToOne: false
+            referencedRelation: "competition_standings"
+            referencedColumns: ["team_id"]
+          },
+          {
+            foreignKeyName: "matches_home_team_id_fkey"
+            columns: ["home_team_id"]
+            isOneToOne: false
             referencedRelation: "competition_teams"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_winner_team_id_fkey"
+            columns: ["winner_team_id"]
+            isOneToOne: false
+            referencedRelation: "competition_standings"
+            referencedColumns: ["team_id"]
           },
           {
             foreignKeyName: "matches_winner_team_id_fkey"
@@ -803,6 +889,13 @@ export type Database = {
             foreignKeyName: "team_availabilities_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
+            referencedRelation: "competition_standings"
+            referencedColumns: ["team_id"]
+          },
+          {
+            foreignKeyName: "team_availabilities_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
             referencedRelation: "competition_teams"
             referencedColumns: ["id"]
           },
@@ -844,42 +937,44 @@ export type Database = {
           end_time: string | null
           id: string | null
           is_mine: boolean | null
+          source: string | null
           start_time: string | null
-          status: Database["public"]["Enums"]["status_booking"] | null
+          status: string | null
         }
-        Insert: {
-          club_id?: string | null
-          court_id?: string | null
-          date?: string | null
-          end_time?: string | null
-          id?: string | null
-          is_mine?: never
-          start_time?: string | null
-          status?: Database["public"]["Enums"]["status_booking"] | null
-        }
-        Update: {
-          club_id?: string | null
-          court_id?: string | null
-          date?: string | null
-          end_time?: string | null
-          id?: string | null
-          is_mine?: never
-          start_time?: string | null
-          status?: Database["public"]["Enums"]["status_booking"] | null
+        Relationships: []
+      }
+      competition_standings: {
+        Row: {
+          category_id: string | null
+          competition_id: string | null
+          drawn: number | null
+          games_against: number | null
+          games_diff: number | null
+          games_for: number | null
+          lost: number | null
+          played: number | null
+          points: number | null
+          position: number | null
+          sets_against: number | null
+          sets_diff: number | null
+          sets_for: number | null
+          team_id: string | null
+          team_name: string | null
+          won: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "bookings_club_id_fkey"
-            columns: ["club_id"]
+            foreignKeyName: "competition_teams_category_id_fkey"
+            columns: ["category_id"]
             isOneToOne: false
-            referencedRelation: "clubs"
+            referencedRelation: "competition_categories"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "bookings_court_id_fkey"
-            columns: ["court_id"]
+            foreignKeyName: "competition_teams_competition_id_fkey"
+            columns: ["competition_id"]
             isOneToOne: false
-            referencedRelation: "courts"
+            referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
         ]

@@ -8,6 +8,7 @@ import {
 
 // ROWS (lectura)
 export type BookingsCalendarRow = Tables<"bookings_calendar"> // Tabla de vistas
+export type CompetitionStandingsRow = Tables<"competition_standings"> // Tabla de vistas
 
 export type BookingsRow = Tables<"bookings">
 export type ClubsRow = Tables<"clubs">

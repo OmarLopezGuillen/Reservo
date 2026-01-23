@@ -4,6 +4,7 @@ import type {
 	CompetitionParticipant,
 	CompetitionRule,
 	CompetitionRuleTemplate,
+	CompetitionStanding,
 	CompetitionTeam,
 	CompetitionTeamInvite,
 	CompetitionTeamMember,
@@ -17,6 +18,7 @@ import type {
 	CompetitionParticipantsRow,
 	CompetitionRulesRow,
 	CompetitionRuleTemplatesRow,
+	CompetitionStandingsRow,
 	CompetitionsRow,
 	CompetitionTeamInvitesRow,
 	CompetitionTeamMembersRow,
@@ -247,3 +249,35 @@ export const matchAdapter = (db: MatchesRow): Match => ({
 
 export const matchesAdapter = (db: MatchesRow[]): Match[] =>
 	db.map(matchAdapter)
+
+const requiredString = (v: string | null | undefined, field: string) => {
+	if (!v) throw new Error(`competition_standings: ${field} es null`)
+	return v
+}
+
+const n0 = (v: number | null | undefined) => v ?? 0
+
+export const competitionStandingAdapter = (
+	db: CompetitionStandingsRow,
+): CompetitionStanding => ({
+	competitionId: requiredString(db.competition_id, "competition_id"),
+	categoryId: requiredString(db.category_id, "category_id"),
+	teamId: requiredString(db.team_id, "team_id"),
+	teamName: requiredString(db.team_name, "team_name"),
+
+	position: n0(db.position),
+	played: n0(db.played),
+	won: n0(db.won),
+	drawn: n0(db.drawn),
+	lost: n0(db.lost),
+
+	setsFor: n0(db.sets_for),
+	setsAgainst: n0(db.sets_against),
+	setsDiff: n0(db.sets_diff),
+
+	points: n0(db.points),
+})
+
+export const competitionStandingsAdapter = (
+	rows: CompetitionStandingsRow[],
+): CompetitionStanding[] => rows.map(competitionStandingAdapter)

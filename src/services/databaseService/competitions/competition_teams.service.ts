@@ -45,7 +45,6 @@ export async function getCompetitionTeamsByCompetitionId(
 			)
 			.eq("competition_id", competitionId)
 
-		console.log("data", data)
 		if (error) throw error
 		return competitionTeamWithMemberAndAvailabilitiesAdapter(data)
 	} catch (error) {
