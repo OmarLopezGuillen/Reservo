@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useParams } from "react-router"
 import { CategoriesTable } from "@/components/CategoriesTable"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import MatchesTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/matches-tab"
+import MatchesTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/matches-tab/matches-tab"
 import OverviewTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/overview-tab"
 import RulesTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/rules-tab"
 import StandingsTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/standings-tab"
@@ -33,6 +33,8 @@ function TabsCompetition() {
 			<TabsContent value="categories" className="mt-6">
 				<CategoriesTable competition={competition} />
 			</TabsContent>
+
+
 
 			<TabsContent value="rules" className="mt-6">
 				<RulesTab competition={competition} />

@@ -11,8 +11,43 @@ import {
 	CardTitle,
 } from "@/components/ui/card"
 import { useAllCompetitions } from "@/hooks/competitions/useCompetitionsQuery"
+import { formatDateShort } from "@/lib/utils"
 import { ROUTES } from "@/ROUTES"
 import { TeamInvitations } from "./TeamInvitations"
+
+const CompetitionCard = ({ competition }: { competition: any }) => (
+	<Card className="flex flex-col">
+		<CardHeader>
+			<div className="flex items-start justify-between">
+				<CardTitle className="text-lg">{competition.name}</CardTitle>
+				<Badge
+					variant={competition.status === "published" ? "success" : "default"}
+				>
+					{competition.status === "published" ? "Abierta" : "En progreso"}
+				</Badge>
+			</div>
+			<CardDescription className="flex items-center pt-1">
+				<Shield className="mr-2 h-4 w-4" />
+				{competition.description || "Sin descripción disponible"}
+			</CardDescription>
+		</CardHeader>
+		<CardContent className="grow space-y-4">
+			<div className="flex items-center text-sm text-muted-foreground">
+				<Trophy className="mr-2 h-4 w-4" />
+				<span>Tipo: {competition.type}</span>
+			</div>
+			<div className="flex items-center text-sm text-muted-foreground">
+				<Calendar className="mr-2 h-4 w-4" />
+				<span>Inicio: {formatDateShort(competition.startDate)}</span>
+			</div>
+		</CardContent>
+		<CardFooter>
+			<Button asChild className="w-full">
+				<Link to={ROUTES.COMPETITIONS.ID(competition.id)}>Ver Detalles</Link>
+			</Button>
+		</CardFooter>
+	</Card>
+)
 
 const Competitions = () => {
 	const { allCompetitionsQuery } = useAllCompetitions()
@@ -44,50 +79,7 @@ const Competitions = () => {
 			</div>
 			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 				{competitions.map((competition) => (
-					<Card key={competition.id} className="flex flex-col">
-						<CardHeader>
-							<div className="flex items-start justify-between">
-								<CardTitle className="text-lg">{competition.name}</CardTitle>
-								<Badge
-									variant={
-										competition.status === "published" ? "success" : "default"
-									}
-								>
-									{competition.status === "published"
-										? "Abierta"
-										: "En progreso"}
-								</Badge>
-							</div>
-							<CardDescription className="flex items-center pt-1">
-								<Shield className="mr-2 h-4 w-4" />
-								{competition.name}
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="flex-grow space-y-4">
-							<div className="flex items-center text-sm text-muted-foreground">
-								<Trophy className="mr-2 h-4 w-4" />
-								<span>Tipo: {competition.type}</span>
-							</div>
-							<div className="flex items-center text-sm text-muted-foreground">
-								<Calendar className="mr-2 h-4 w-4" />
-								<span>
-									Inicio:{" "}
-									{competition.startDate
-										? new Date(competition.startDate).toLocaleDateString(
-												"es-ES",
-											)
-										: "N/A"}
-								</span>
-							</div>
-						</CardContent>
-						<CardFooter>
-							<Button asChild className="w-full">
-								<Link to={ROUTES.COMPETITIONS.ID(competition.id)}>
-									Ver Detalles
-								</Link>
-							</Button>
-						</CardFooter>
-					</Card>
+					<CompetitionCard key={competition.id} competition={competition} />
 				))}
 			</div>
 		</div>

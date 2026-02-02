@@ -18,6 +18,7 @@ export default function OptionsCompetition({
 	const competitionStatus = competition.status
 	const { updateCompetition } = useCompetitionsMutation()
 
+	//this is a comment
 	const roundCompetition = competition.roundType
 	const statusCompetition = competition.status
 

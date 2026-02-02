@@ -1,4 +1,4 @@
-import type { CompetitionTeam } from "@/models/competition.model"
+import type { Competition, CompetitionTeam } from "@/models/competition.model"
 
 type TeamId = string
 type Bye = "BYE"
@@ -16,6 +16,8 @@ type CategorySchedule = {
 	categoryId: string
 	schedule: Schedule
 }
+
+type roundRobin = Competition["roundType"]
 
 /**
  * Función para agrupar equipos por categoría
@@ -97,7 +99,7 @@ function rotateSlots(slots: Slot[]): void {
 
 export function generateSchedulesByCategory(
 	teams: readonly CompetitionTeam[],
-	type: "single_round_robin" | "double_round_robin",
+	type: roundRobin,
 ): CategorySchedule[] {
 	const teamsByCategory = groupTeamsByCategory(teams)
 

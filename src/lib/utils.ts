@@ -101,3 +101,8 @@ export function toTitleCase(name: string): string {
 		.map((word) => word[0]?.toUpperCase() + word.slice(1))
 		.join(" ")
 }
+
+export function formatDateShort(date: string | null): string {
+	if (!date) return "N/A"
+	return new Date(date).toLocaleDateString("es-ES")
+}
