@@ -11,9 +11,10 @@ export const useViewModeQueryState = () => {
 }
 
 export const useCurrentDayQueryState = () => {
+	const today = new Date().setHours(0, 0, 0, 0)
 	const [currentDate, setCurrentDate] = useQueryState(
 		"date",
-		parseAsIsoDate.withDefault(new Date()),
+		parseAsIsoDate.withDefault(new Date(today)),
 	)
 	return { currentDate, setCurrentDate }
 }

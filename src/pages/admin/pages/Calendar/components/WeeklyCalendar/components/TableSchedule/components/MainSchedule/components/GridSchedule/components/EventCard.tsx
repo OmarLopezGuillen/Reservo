@@ -105,8 +105,6 @@ export function EventCard({
 								{booking.paymentStatus === "paid" ? "Pagado" : "No pagado"}
 							</div>
 						</div>
-
-						{/* Right side: Price */}
 					</div>
 				</CardContent>
 			</Card>

@@ -84,10 +84,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const user = useAuthUser()
 	const { signOut } = useAuthActions()
 
-	//TODO. A: Objener los datos del profile
+	//TODO. A: Obtener los datos del profile
 	const profile: Profile = {
 		email: user.email ?? "",
-		name: toTitleCase(user.user_metadata?.full_name) ?? "Usuario Admin",
+		name: toTitleCase(user.user_metadata?.full_name ?? "Usuario Admin"),
 		avatarUrl: "",
 		id: user.id,
 		userRole: user.userRole ?? "user",

@@ -7,8 +7,7 @@ import { useCourts } from "@/hooks/useCourtsQuery"
 import type { Booking } from "@/models/booking.model"
 import { EventCard } from "@/pages/admin/pages/Calendar/components/WeeklyCalendar/components/TableSchedule/components/MainSchedule/components/GridSchedule/components/EventCard"
 import { useCourtsStore } from "@/pages/admin/pages/Calendar/components/WeeklyCalendar/store/courtsSelectedStore"
-import { EditBookingDialog } from "./EditBookingDialog"
-import { NewBookingDialog } from "./NewBookingDialog"
+import { BookingDialog } from "./BookingDialog"
 
 const isEventStart = (event: Booking, time: Date) => {
 	return isEqual(event.startTime, time)
@@ -43,8 +42,7 @@ export const CellsSchedule = ({ weekDates, dayIndex, time }: Props) => {
 	}, [bookingsQuery.data])
 
 	const { courtsQuery } = useCourts(user.clubId!)
-	const [isNewBookingDialogOpen, setIsNewBookingDialogOpen] = useState(false)
-	const [isEditBookingDialogOpen, setIsEditBookingDialogOpen] = useState(false)
+	const [isBookingDialogOpen, setIsBookingDialogOpen] = useState(false)
 	const [selectedSlot, setSelectedSlot] = useState<{
 		date: Date
 		courtId: string
@@ -53,12 +51,13 @@ export const CellsSchedule = ({ weekDates, dayIndex, time }: Props) => {
 
 	const handleSlotClick = (date: Date, courtId: string) => {
 		setSelectedSlot({ date, courtId })
-		setIsNewBookingDialogOpen(true)
+		setSelectedBooking(null)
+		setIsBookingDialogOpen(true)
 	}
 
 	const handleEventClick = (booking: Booking) => {
 		setSelectedBooking(booking)
-		setIsEditBookingDialogOpen(true)
+		setIsBookingDialogOpen(true)
 	}
 
 	const courtsSelected = useCourtsStore((state) => state.courtsSelected)
@@ -150,16 +149,12 @@ export const CellsSchedule = ({ weekDates, dayIndex, time }: Props) => {
 						)
 					})}
 			</div>
-			<NewBookingDialog
-				isOpen={isNewBookingDialogOpen}
-				onOpenChange={setIsNewBookingDialogOpen}
+			<BookingDialog
+				isOpen={isBookingDialogOpen}
+				onOpenChange={setIsBookingDialogOpen}
 				slot={selectedSlot}
 				clubId={user.clubId!}
-			/>
-			<EditBookingDialog
 				booking={selectedBooking}
-				isOpen={isEditBookingDialogOpen}
-				onOpenChange={setIsEditBookingDialogOpen}
 			/>
 		</>
 	)
