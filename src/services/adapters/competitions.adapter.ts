@@ -1,4 +1,5 @@
 import type {
+	ChatThread,
 	Competition,
 	CompetitionCategory,
 	CompetitionParticipant,
@@ -14,6 +15,7 @@ import type {
 	TeamAvailability,
 } from "@/models/competition.model"
 import type {
+	ChatThreadsRow,
 	CompetitionCategoriesRow,
 	CompetitionParticipantsRow,
 	CompetitionRulesRow,
@@ -245,6 +247,7 @@ export const matchAdapter = (db: MatchesRow): Match => ({
 	status: db.status,
 	updatedAt: db.updated_at,
 	winnerTeamId: db.winner_team_id,
+	roundWeekStartDate: db.round_week_start_date,
 })
 
 export const matchesAdapter = (db: MatchesRow[]): Match[] =>
@@ -281,3 +284,19 @@ export const competitionStandingAdapter = (
 export const competitionStandingsAdapter = (
 	rows: CompetitionStandingsRow[],
 ): CompetitionStanding[] => rows.map(competitionStandingAdapter)
+
+export const chatThreadAdapter = (db: ChatThreadsRow): ChatThread => ({
+	id: db.id,
+	name: db.name,
+	matchId: db.match_id,
+	clubId: db.club_id,
+	createdAt: db.created_at,
+	createdBy: db.created_by,
+	needsAdminAttention: db.needs_admin_attention,
+	needsAdminAttentionAt: db.needs_admin_attention_at,
+	needsAdminAttentionMessageId: db.needs_admin_attention_message_id,
+	needsAdminAttentionBy: db.needs_admin_attention_by,
+})
+
+export const chatThreadsAdapter = (db: ChatThreadsRow[]): ChatThread[] =>
+	db.map(chatThreadAdapter)

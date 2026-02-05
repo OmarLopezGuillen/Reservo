@@ -6,6 +6,7 @@ import {
 	Home,
 	ListChecks,
 	LogOut,
+	MessageSquareText,
 	Trophy,
 	Users,
 } from "lucide-react"
@@ -47,6 +48,13 @@ const navMain = [
 		title: "Competiciones",
 		url: ROUTES.ADMIN.COMPETICIONES,
 		icon: Trophy,
+		isActive: true,
+		items: [], //? Si hay subrutas se colocan aquí
+	},
+	{
+		title: "Chats",
+		url: ROUTES.ADMIN.CHAT,
+		icon: MessageSquareText,
 		isActive: true,
 		items: [], //? Si hay subrutas se colocan aquí
 	} /*

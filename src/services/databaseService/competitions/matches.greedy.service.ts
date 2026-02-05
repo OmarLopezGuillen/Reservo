@@ -31,7 +31,22 @@ type Unscheduled = {
 
 type GreedyParams = {
 	competitionId: string
-	courtIds: string[] // <- ahora array de pistas
+	courtIds: string[]
+	firstRoundWeekStart: Date
+}
+
+function addDaysLocal(date: Date, days: number) {
+	const d = new Date(date)
+	d.setDate(d.getDate() + days)
+	return d
+}
+
+// YYYY-MM-DD en LOCAL (importante para no liarla con UTC)
+function isoDateLocal(date: Date) {
+	const y = date.getFullYear()
+	const m = String(date.getMonth() + 1).padStart(2, "0")
+	const d = String(date.getDate()).padStart(2, "0")
+	return `${y}-${m}-${d}`
 }
 
 const MATCH_DURATION_MINUTES = 90
@@ -93,6 +108,13 @@ export async function createMatchesGreedyFromCategoriesSchedule(
 			const roundNumber = jornadaIndex + 1
 			const matchday = jornadaIndex + 1
 
+			// ✅ lunes de esta jornada (round)
+			const roundWeekStart = addDaysLocal(
+				params.firstRoundWeekStart,
+				jornadaIndex * 7,
+			)
+			const roundWeekStartDate = isoDateLocal(roundWeekStart)
+
 			for (const m of jornada) {
 				const candidates = m.startTime ?? []
 
@@ -108,6 +130,7 @@ export async function createMatchesGreedyFromCategoriesSchedule(
 						startTime: null,
 						endTime: null,
 						status: STATUS_PENDING,
+						roundWeekStartDate,
 					})
 					createdMatches.push(matchAdapter(row))
 					unscheduled.push({
@@ -147,6 +170,7 @@ export async function createMatchesGreedyFromCategoriesSchedule(
 								startTime: startISO,
 								endTime: endISO,
 								status: STATUS_SCHEDULED,
+								roundWeekStartDate,
 							})
 							busy.push({ courtId, startMs, endMs })
 							break
@@ -175,6 +199,7 @@ export async function createMatchesGreedyFromCategoriesSchedule(
 						startTime: null,
 						endTime: null,
 						status: STATUS_PENDING,
+						roundWeekStartDate,
 					})
 					createdMatches.push(matchAdapter(row))
 					unscheduled.push({
@@ -244,6 +269,7 @@ async function insertMatchRow(args: {
 	startTime: string | null
 	endTime: string | null
 	status: MatchesInsert["status"]
+	roundWeekStartDate: string
 }): Promise<MatchesRow> {
 	const payload: MatchesInsert = {
 		competition_id: args.competitionId,
@@ -263,6 +289,7 @@ async function insertMatchRow(args: {
 		winner_team_id: null,
 		reported_at: null,
 		confirmed_at: null,
+		round_week_start_date: args.roundWeekStartDate,
 	}
 
 	const { data, error } = await supabase

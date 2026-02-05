@@ -22,6 +22,7 @@ export const ROUTES = {
 		LISTA_ESPERA: "/admin/lista-espera",
 		RECURSOS: "/admin/recursos",
 		REPORTES: "/admin/reportes",
+		CHAT: "/admin/chats",
 	},
 
 	// Legal
@@ -35,6 +36,10 @@ export const ROUTES = {
 		ID: (id: string | number) => `/clubs/${id}`,
 	},
 
+	CHATS: {
+		ROOT: "/chats",
+		ID: (id: string | number) => `/chats/${id}`,
+	},
 	// Reservas
 	RESERVAS: {
 		ROOT: "/reservas",

@@ -46,6 +46,7 @@ interface ScheduleOptions {
 	 * Defaults to the current date if not provided.
 	 */
 	referenceDate?: Date
+	firstRoundWeekStart?: Date
 }
 
 interface SlotIntersection {
@@ -84,8 +85,12 @@ export function assignStartTimesToCategoryMatches(
 	options: ScheduleOptions = {},
 ): CategoryScheduledMatches[] {
 	const availabilityMap = buildAvailabilityMap(teamAvailabilities)
+
 	const today = options.referenceDate ?? new Date()
-	const referenceWeekStart = addDays(getMonday(today), 7)
+
+	// 👇 antes era fijo addDays(getMonday(today), 7)
+	const referenceWeekStart =
+		options.firstRoundWeekStart ?? addDays(getMonday(today), 7)
 
 	return categories.map((cat) => ({
 		categoryId: cat.categoryId,

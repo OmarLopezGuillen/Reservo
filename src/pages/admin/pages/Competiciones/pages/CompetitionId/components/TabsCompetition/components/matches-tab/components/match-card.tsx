@@ -1,8 +1,25 @@
 import { Calendar, Clock, MapPin } from "lucide-react"
+import { useNavigate } from "react-router"
+import { toast } from "sonner"
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { useCreateMatchChatThreadMutation } from "@/hooks/competitions/useChatThreadsMutation"
+import { useChatThreadByMatchId } from "@/hooks/competitions/useChatThreadsQuery"
 import { useCompetitionTeamById } from "@/hooks/competitions/useCompetitionTeamsQuery"
 import { useCourtById } from "@/hooks/useCourtsQuery"
 import type { Match } from "@/models/competition.model"
+import { ROUTES } from "@/ROUTES"
 
 // This is a temporary type to avoid errors locally.
 // The user has a different type for Match in their local environment.
@@ -22,6 +39,13 @@ export function MatchCard({
 	noLocationText = "No asignado",
 	noDateText = "Por definir",
 }: MatchCardProps) {
+	const navigate = useNavigate()
+
+	const { threadByMatchQuery } = useChatThreadByMatchId(match.id)
+	const threadId = threadByMatchQuery.data
+
+	const { createThreadMutation } = useCreateMatchChatThreadMutation()
+
 	const { competitionTeamByIdQuery: homeTeamQuery } = useCompetitionTeamById(
 		match.homeTeamId,
 	)
@@ -60,6 +84,18 @@ export function MatchCard({
 	const isHomeWinner = match.winnerTeamId === match.homeTeamId
 	const isAwayWinner = match.winnerTeamId === match.awayTeamId
 
+	//TODO: REVISAR LOS NAVIGATES
+	const handleGoToChat = () => {
+		if (!threadId) return
+		navigate(ROUTES.CHATS.ID(threadId))
+	}
+
+	const handleCreateChat = async () => {
+		const res = await createThreadMutation.mutateAsync(match.id)
+		toast.success("Chat creado.")
+		navigate(ROUTES.CHATS.ID(res.thread_id))
+	}
+
 	return (
 		<div className="bg-card border rounded-md hover:shadow-sm transition-shadow flex flex-col max-w-lg">
 			{/* Header */}
@@ -78,6 +114,43 @@ export function MatchCard({
 					<Badge variant="outline" className="text-xs capitalize">
 						{match.status}
 					</Badge>
+					{threadByMatchQuery.isLoading ? (
+						<Button size="sm" variant="outline" disabled>
+							Chat...
+						</Button>
+					) : threadId ? (
+						<Button size="sm" variant="outline" onClick={handleGoToChat}>
+							Ir al chat
+						</Button>
+					) : (
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<Button size="sm" variant="outline">
+									Crear chat
+								</Button>
+							</AlertDialogTrigger>
+
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Crear chat del partido</AlertDialogTitle>
+									<AlertDialogDescription>
+										Se creará un chat con los integrantes de ambos equipos. Los
+										administradores del club podrán ver y participar en el chat.
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancelar</AlertDialogCancel>
+									<AlertDialogAction
+										onClick={handleCreateChat}
+										disabled={createThreadMutation.isPending}
+									>
+										{createThreadMutation.isPending ? "Creando..." : "Aceptar"}
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+					)}
 				</div>
 			</div>
 			{/* Main Content */}

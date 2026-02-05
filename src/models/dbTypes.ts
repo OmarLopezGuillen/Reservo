@@ -25,6 +25,9 @@ export type MatchesRow = Tables<"matches">
 export type CompetitionTeamMembersRow = Tables<"competition_team_members">
 export type CompetitionTeamInvitesRow = Tables<"competition_team_invites">
 export type ProfilesRow = Tables<"profiles">
+export type ChatThreadsRow = Tables<"chat_threads">
+export type ChatMessagesRow = Tables<"chat_messages">
+export type ChatThreadMembersRow = Tables<"chat_thread_members">
 
 // INSERT (crear)
 export type BookingsInsert = TablesInsert<"bookings">
@@ -46,6 +49,9 @@ export type CompetitionTeamMembersInsert =
 export type CompetitionTeamInvitesInsert =
 	TablesInsert<"competition_team_invites">
 export type ProfilesInsert = TablesInsert<"profiles">
+export type ChatThreadsInsert = TablesInsert<"chat_threads">
+export type ChatMessagesInsert = TablesInsert<"chat_messages">
+export type ChatThreadMembersInsert = TablesInsert<"chat_thread_members">
 
 // UPDATE (parcial)
 export type BookingsUpdate = TablesUpdate<"bookings">
@@ -67,6 +73,9 @@ export type CompetitionTeamMembersUpdate =
 export type CompetitionTeamInvitesUpdate =
 	TablesUpdate<"competition_team_invites">
 export type ProfilesUpdate = TablesUpdate<"profiles">
+export type ChatThreadsUpdate = TablesUpdate<"chat_threads">
+export type ChatMessagesUpdate = TablesUpdate<"chat_messages">
+export type ChatThreadMembersUpdate = TablesUpdate<"chat_thread_members">
 
 // Enums type útiles
 export type AppRole = Enums<"app_role">

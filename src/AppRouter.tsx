@@ -43,6 +43,7 @@ const AdminCompeticionesId = lazy(
 			"@/pages/admin/pages/Competiciones/pages/CompetitionId/CompetitionId"
 		),
 )
+const AdminChats = lazy(() => import("@/pages/admin/pages/chats/Chats"))
 const CrearCompeticion = lazy(
 	() =>
 		import(
@@ -64,6 +65,8 @@ const LegalPrivacidad = lazy(() => import("@/pages/legal/pages/Privacidad"))
 const LegalTerminos = lazy(() => import("@/pages/legal/pages/Terminos"))
 const InvitePage = lazy(() => import("@/pages/invite/invite"))
 
+//const Chats = lazy(() => import(""))
+const ChatsId = lazy(() => import("@/pages/chats/chatId/ChatId.tsx"))
 export default function AppRouter() {
 	return (
 		<BrowserRouter>
@@ -131,6 +134,8 @@ export default function AppRouter() {
 
 						<Route path={ROUTES.ADMIN.CALENDAR} element={<Calendar />} />
 						<Route path={ROUTES.ADMIN.AJUSTES} element={<AdminAjustes />} />
+
+						{/* SOLO ACCEDE A ESTADISTICAS EL OWNER */}
 						<Route
 							element={
 								<PrivateRoute
@@ -144,6 +149,7 @@ export default function AppRouter() {
 								element={<AdminEstadisticas />}
 							/>
 						</Route>
+						<Route path={ROUTES.ADMIN.CHAT} element={<AdminChats />} />
 						<Route
 							path={ROUTES.ADMIN.COMPETICIONES}
 							element={<AdminCompeticiones />}
@@ -235,6 +241,22 @@ export default function AppRouter() {
 						element={
 							<Suspense fallback={<Loading />}>
 								<InvitePage />
+							</Suspense>
+						}
+					/>
+					{/* Chats 	<Route
+						path={ROUTES.CHATS.ROOT}
+						element={
+							<Suspense fallback={<Loading />}>
+								<Chats />
+							</Suspense>
+						}
+					/>*/}
+					<Route
+						path={ROUTES.CHATS.ID(":chatId")}
+						element={
+							<Suspense fallback={<Loading />}>
+								<ChatsId />
 							</Suspense>
 						}
 					/>

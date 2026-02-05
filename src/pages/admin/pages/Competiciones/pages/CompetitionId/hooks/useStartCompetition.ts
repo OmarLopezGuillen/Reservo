@@ -24,30 +24,38 @@ export function useStartCompetition(
 
 	const startCompetition = async () => {
 		if (!type || !competicionId) return []
+
 		const schedule = generateSchedulesByCategory(teams, type)
 
 		const uniqueteams = getUniqueTeamIdsFromSchedule(schedule)
-		//TODO: Mover a reacquery o debatirlo
 		const disponibilidad = await getTeamsAvailabilitiesByTeamIds(uniqueteams)
+
+		// ✅ lunes de la semana que viene (igual que tu lógica actual)
+		const today = new Date()
+		const firstRoundWeekStart = (() => {
+			const d = new Date(today)
+			const day = d.getDay()
+			const diff = day === 0 ? -6 : 1 - day
+			d.setDate(d.getDate() + diff)
+			d.setHours(0, 0, 0, 0)
+			d.setDate(d.getDate() + 7)
+			return d
+		})()
+
 		const matchesWithTime = assignStartTimesToCategoryMatches(
 			schedule,
 			disponibilidad,
+			{ firstRoundWeekStart },
 		)
 
-		const { matches, unscheduled } =
-			await createMatchesGreedyFromCategoriesSchedule(
-				matchesWithTime, // tu array [{ categoriaId, schedule }, ...]
-				{
-					competitionId: competicionId,
-					courtIds, // todas las pistas del club
-				},
-			)
+		await createMatchesGreedyFromCategoriesSchedule(matchesWithTime, {
+			competitionId: competicionId,
+			courtIds,
+			firstRoundWeekStart, // 👈 NUEVO
+		})
 
 		return schedule
-
-		/* 	getTeamsAvailabilitiesByTeamIds(["", "", ""])
-
-	assignStartTimesToSchedule(schedule, disponibilidad) --> lib */
 	}
+
 	return { startCompetition }
 }

@@ -10,6 +10,7 @@ import type {
 	StatusRegistration,
 	WeekDay,
 } from "./dbTypes"
+import type { Role } from "./ROLES.model"
 
 export interface Competition {
 	id: string
@@ -148,12 +149,13 @@ export interface Match {
 	playoffRound: PlayoffRound | null
 	reportedAt: string | null
 	round: number
-	scoreAway: number | null
-	scoreHome: number | null
+	scoreAway: JSON
+	scoreHome: JSON
 	startTime: string | null
 	status: StatusMatches
 	updatedAt: string | null
 	winnerTeamId: string | null
+	roundWeekStartDate: string
 }
 
 export interface CompetitionStanding {
@@ -170,4 +172,33 @@ export interface CompetitionStanding {
 	setsAgainst: number
 	setsDiff: number
 	points: number
+}
+
+export interface ChatThread {
+	id: string
+	name: string
+	matchId: string
+	clubId: string
+	createdAt: string
+	createdBy: string
+	needsAdminAttention?: boolean
+	needsAdminAttentionAt?: string | null
+	needsAdminAttentionMessageId?: string | null
+	needsAdminAttentionBy?: string | null
+}
+
+export interface ChatThreadMember {
+	threadId: string
+	userId: string
+	role: Role
+	joinedAt: string
+}
+
+export interface ChatMessages {
+	id: string
+	threadId: string
+	userId: string
+	body: string
+	createdAt: string
+	editedAt: string | null
 }

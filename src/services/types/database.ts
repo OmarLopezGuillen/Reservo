@@ -92,6 +92,131 @@ export type Database = {
           },
         ]
       }
+      chat_messages: {
+        Row: {
+          body: string
+          created_at: string
+          edited_at: string | null
+          id: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "chat_threads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      chat_thread_members: {
+        Row: {
+          joined_at: string
+          role: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          joined_at?: string
+          role?: string
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          joined_at?: string
+          role?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_thread_members_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "chat_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_threads: {
+        Row: {
+          club_id: string
+          created_at: string
+          created_by: string
+          id: string
+          match_id: string
+          name: string
+          needs_admin_attention: boolean
+          needs_admin_attention_at: string | null
+          needs_admin_attention_by: string | null
+          needs_admin_attention_message_id: string | null
+        }
+        Insert: {
+          club_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          match_id: string
+          name: string
+          needs_admin_attention?: boolean
+          needs_admin_attention_at?: string | null
+          needs_admin_attention_by?: string | null
+          needs_admin_attention_message_id?: string | null
+        }
+        Update: {
+          club_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          match_id?: string
+          name?: string
+          needs_admin_attention?: boolean
+          needs_admin_attention_at?: string | null
+          needs_admin_attention_by?: string | null
+          needs_admin_attention_message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_threads_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_threads_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: true
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       club_hours: {
         Row: {
           close_time: string | null
@@ -684,6 +809,128 @@ export type Database = {
           },
         ]
       }
+      match_schedule_option_votes: {
+        Row: {
+          option_id: string
+          user_id: string
+          vote: boolean
+          voted_at: string
+        }
+        Insert: {
+          option_id: string
+          user_id: string
+          vote: boolean
+          voted_at?: string
+        }
+        Update: {
+          option_id?: string
+          user_id?: string
+          vote?: boolean
+          voted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_schedule_option_votes_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "match_schedule_proposal_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_schedule_proposal_options: {
+        Row: {
+          court_id: string
+          created_at: string
+          end_time: string
+          id: string
+          proposal_id: string
+          start_time: string
+          status: string
+        }
+        Insert: {
+          court_id: string
+          created_at?: string
+          end_time: string
+          id?: string
+          proposal_id: string
+          start_time: string
+          status?: string
+        }
+        Update: {
+          court_id?: string
+          created_at?: string
+          end_time?: string
+          id?: string
+          proposal_id?: string
+          start_time?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_schedule_proposal_options_court_id_fkey"
+            columns: ["court_id"]
+            isOneToOne: false
+            referencedRelation: "courts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_schedule_proposal_options_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "match_schedule_proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_schedule_proposals: {
+        Row: {
+          accepted_option_id: string | null
+          created_at: string
+          created_by: string
+          id: string
+          match_id: string
+          resolved_at: string | null
+          status: string
+          thread_id: string
+        }
+        Insert: {
+          accepted_option_id?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          match_id: string
+          resolved_at?: string | null
+          status?: string
+          thread_id: string
+        }
+        Update: {
+          accepted_option_id?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          match_id?: string
+          resolved_at?: string | null
+          status?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_schedule_proposals_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_schedule_proposals_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "chat_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       matches: {
         Row: {
           away_team_id: string
@@ -700,6 +947,7 @@ export type Database = {
           playoff_round: Database["public"]["Enums"]["playoff_round"] | null
           reported_at: string | null
           round: number
+          round_week_start_date: string
           score_away: Json | null
           score_home: Json | null
           start_time: string | null
@@ -722,6 +970,7 @@ export type Database = {
           playoff_round?: Database["public"]["Enums"]["playoff_round"] | null
           reported_at?: string | null
           round: number
+          round_week_start_date: string
           score_away?: Json | null
           score_home?: Json | null
           start_time?: string | null
@@ -744,6 +993,7 @@ export type Database = {
           playoff_round?: Database["public"]["Enums"]["playoff_round"] | null
           reported_at?: string | null
           round?: number
+          round_week_start_date?: string
           score_away?: Json | null
           score_home?: Json | null
           start_time?: string | null
@@ -1002,12 +1252,28 @@ export type Database = {
         Args: { role_name: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
       }
+      clear_chat_thread_admin_attention: {
+        Args: { p_thread_id: string }
+        Returns: undefined
+      }
       complete_finished_bookings: {
         Args: { batch_limit?: number }
         Returns: number
       }
+      create_match_chat_thread: {
+        Args: { p_match_id: string }
+        Returns: string
+      }
+      create_match_schedule_proposal: {
+        Args: { p_match_id: string; p_options: Json; p_thread_id: string }
+        Returns: string
+      }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       gen_checkin_code: { Args: { len?: number }; Returns: string }
+      vote_match_schedule_option: {
+        Args: { p_option_id: string; p_vote: boolean }
+        Returns: Json
+      }
     }
     Enums: {
       app_permission:
@@ -1027,6 +1293,10 @@ export type Database = {
         | "courts.create"
         | "courts.update"
         | "courts.delete"
+        | "chat_threads.read"
+        | "chat_threads.create"
+        | "chat_threads.update"
+        | "chat_threads.delete"
       app_role: "admin" | "owner" | "user"
       competition_round_type: "single_round_robin" | "double_round_robin"
       competitions_status:
@@ -1203,6 +1473,10 @@ export const Constants = {
         "courts.create",
         "courts.update",
         "courts.delete",
+        "chat_threads.read",
+        "chat_threads.create",
+        "chat_threads.update",
+        "chat_threads.delete",
       ],
       app_role: ["admin", "owner", "user"],
       competition_round_type: ["single_round_robin", "double_round_robin"],
