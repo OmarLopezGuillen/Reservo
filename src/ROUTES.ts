@@ -40,6 +40,8 @@ export const ROUTES = {
 		ROOT: "/chats",
 		ID: (id: string | number) => `/chats/${id}`,
 	},
+	MIS_LIGAS: "/mis-ligas",
+
 	// Reservas
 	RESERVAS: {
 		ROOT: "/reservas",

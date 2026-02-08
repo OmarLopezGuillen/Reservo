@@ -48,6 +48,14 @@ const NavLinks = () => {
 						Panel de administración
 					</Link>
 				)}
+				{role && role === ROLES.USER && (
+					<Link
+						to={ROUTES.MIS_LIGAS}
+						className="flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-lg bg-primary text-white shadow-md hover:bg-primary/90 transition-all"
+					>
+						🎯 Mis Ligas
+					</Link>
+				)}
 				<Button
 					onClick={() => signOut()}
 					variant="destructive"

@@ -67,6 +67,8 @@ const InvitePage = lazy(() => import("@/pages/invite/invite"))
 
 //const Chats = lazy(() => import(""))
 const ChatsId = lazy(() => import("@/pages/chats/chatId/ChatId.tsx"))
+const MisLigas = lazy(() => import("@/pages/mis-ligas/MisLigas"))
+
 export default function AppRouter() {
 	return (
 		<BrowserRouter>
@@ -177,6 +179,15 @@ export default function AppRouter() {
 						<PrivateRoute roles={[ROLES.USER, ROLES.ADMIN, ROLES.OWNER]} />
 					}
 				>
+					<Route
+						path={ROUTES.MIS_LIGAS}
+						element={
+							<Suspense fallback={<Loading />}>
+								<MisLigas />
+							</Suspense>
+						}
+					/>
+
 					<Route
 						path={ROUTES.RESERVAS.ROOT}
 						element={
