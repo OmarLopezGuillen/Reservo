@@ -117,7 +117,7 @@ export const teamAvailabilityAdapter = (
 ): TeamAvailability => ({
 	id: db.id,
 	teamId: db.team_id,
-	weekday: db.weekday,
+	weekday: db.weekday as TeamAvailability["weekday"],
 	startTime: db.start_time,
 	endTime: db.end_time,
 	createdAt: db.created_at,

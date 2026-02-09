@@ -1,5 +1,5 @@
 import { CheckCircle, Clock, RefreshCw } from "lucide-react"
-
+import { useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,6 +11,8 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog"
 import { useCompetitionTeamInvitesByTeamId } from "@/hooks/competitions/useCompetitionTeamInvitesQuery"
+import { useTeamAvailabilitiesByTeamId } from "@/hooks/competitions/useTeamAvailabilitiesQuery"
+import { WEEKDAYS } from "@/models/calendar.model"
 import type { CompetitionTeamWithMemberAndAvailability } from "@/models/competition.model"
 
 interface TeamDetailDialogProps {
@@ -31,6 +33,36 @@ export const TeamDetailDialog = ({
 	const { competitionTeamInvitesQuery } = useCompetitionTeamInvitesByTeamId(
 		team?.id,
 	)
+	const { teamAvailabilitiesQuery } = useTeamAvailabilitiesByTeamId(team?.id)
+
+	const groupedAvailabilities = useMemo(() => {
+		const data = teamAvailabilitiesQuery.data ?? []
+
+		const map = new Map<
+			number,
+			{ weekday: number; slots: { start: string; end: string }[] }
+		>()
+
+		for (const a of data) {
+			const weekdayNumber = Number(a.weekday)
+
+			let entry = map.get(weekdayNumber)
+
+			if (!entry) {
+				entry = { weekday: weekdayNumber, slots: [] }
+				map.set(weekdayNumber, entry)
+			}
+
+			// Aquí TypeScript ya sabe que entry no es undefined
+			entry.slots.push({
+				start: a.startTime,
+				end: a.endTime,
+			})
+		}
+
+		// ordenar por weekday (0 → 6)
+		return Array.from(map.values()).sort((a, b) => a.weekday - b.weekday)
+	}, [teamAvailabilitiesQuery.data])
 
 	const handleSentInvitation = () => {
 		//TODO: Implementar reenvío de invitación
@@ -142,6 +174,48 @@ export const TeamDetailDialog = ({
 							</div>
 						)}
 				</div>
+				{/* DISPONIBILIDAD */}
+				<div className="border-t pt-4">
+					<h4 className="font-medium mb-3">Disponibilidad horaria</h4>
+
+					{teamAvailabilitiesQuery.isLoading && (
+						<div className="text-sm text-muted-foreground">
+							Cargando disponibilidad...
+						</div>
+					)}
+
+					{teamAvailabilitiesQuery.isSuccess &&
+						groupedAvailabilities.length === 0 && (
+							<div className="text-sm text-muted-foreground">
+								Este equipo no ha configurado disponibilidad.
+							</div>
+						)}
+
+					{teamAvailabilitiesQuery.isSuccess &&
+						groupedAvailabilities.length > 0 && (
+							<div className="space-y-3">
+								{groupedAvailabilities.map((day) => (
+									<div key={day.weekday} className="bg-muted p-3 rounded-lg">
+										<div className="font-medium text-sm mb-1">
+											{WEEKDAYS[Number(day.weekday)]}
+										</div>
+
+										<div className="space-y-1">
+											{day.slots.map((slot, index) => (
+												<div
+													key={index}
+													className="text-sm text-muted-foreground"
+												>
+													{slot.start} - {slot.end}
+												</div>
+											))}
+										</div>
+									</div>
+								))}
+							</div>
+						)}
+				</div>
+
 				<DialogFooter>
 					<Button variant="outline" onClick={() => onOpenChange(false)}>
 						Cerrar
