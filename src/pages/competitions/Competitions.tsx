@@ -31,7 +31,7 @@ const CompetitionCard = ({ competition }: { competition: any }) => (
 				{competition.description || "Sin descripción disponible"}
 			</CardDescription>
 		</CardHeader>
-		<CardContent className="grow space-y-4">
+		<CardContent className="grow space-y-2">
 			<div className="flex items-center text-sm text-muted-foreground">
 				<Trophy className="mr-2 h-4 w-4" />
 				<span>Tipo: {competition.type}</span>

@@ -1,124 +1,93 @@
-import type { VariantProps } from "class-variance-authority"
-import { Calendar, Loader2, Trophy, Users } from "lucide-react"
-import { Link } from "react-router"
-import { useAuthStore } from "@/auth/stores/auth.store"
-import { Badge, type badgeVariants } from "@/components/ui/badge"
+import { Calendar, Loader2, Shield, Trophy } from "lucide-react"
+import { Link, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
-import { useCompetitionsByClubId } from "@/hooks/competitions/useCompetitionsQuery"
-import type { Competition } from "@/models/competition.model"
+import { useAllCompetitions } from "@/hooks/competitions/useCompetitionsQuery"
+import { formatDateShort } from "@/lib/utils"
+import { TeamInvitations } from "@/pages/mis-ligas/components/TeamInvitations"
 import { ROUTES } from "@/ROUTES"
 
 const MisLigas = () => {
-	const { user } = useAuthStore()
-	const { competitionsQuery } = useCompetitionsByClubId(user!.clubId!)
-	const { data: competitions = [], isLoading } = competitionsQuery
+	const { allCompetitionsQuery } = useAllCompetitions()
+	const { data: competitions = [], isLoading } = allCompetitionsQuery
+	const navigate = useNavigate()
 
-	const getStatusColor = (
-		status: string,
-	): VariantProps<typeof badgeVariants>["variant"] => {
-		switch (status) {
-			case "published":
-				return "default" // Primary color
-			case "draft":
-				return "secondary" // Gray
-			case "completed":
-				return "outline"
-			default:
-				return "secondary"
-		}
+	if (isLoading) {
+		return (
+			<div className="container mx-auto flex h-96 items-center justify-center py-10">
+				<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+			</div>
+		)
 	}
 
-	const getStatusLabel = (status: string) => {
-		switch (status) {
-			case "published":
-				return "Publicada"
-			case "draft":
-				return "Borrador"
-			case "completed":
-				return "Finalizada"
-			default:
-				return status
-		}
+	if (competitions.length === 0) {
+		return (
+			<div className="container mx-auto py-10 text-center">
+				<button
+					onClick={() => navigate("/mis-ligas")}
+					className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+				>
+					← Volver a mis ligas
+				</button>
+				<Trophy className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+				<h2 className="text-2xl font-bold">No hay competiciones disponibles</h2>
+				<p className="text-muted-foreground">Vuelve a intentarlo más tarde.</p>
+			</div>
+		)
 	}
 
 	return (
-		<div className="container mx-auto py-8">
+		<div className="container mx-auto py-10">
 			<div className="flex items-center justify-between mb-8">
-				<div>
-					<h1 className="text-3xl font-bold mb-2">Competiciones</h1>
-					<p className="text-muted-foreground">
-						Gestiona tus ligas y torneos de pádel
-					</p>
-				</div>
-			</div>
+				<button
+					onClick={() => navigate("/")}
+					className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+				>
+					← Volver
+				</button>
+				<h1 className="text-3xl font-bold">Mis Ligas</h1>
 
-			{isLoading ? (
-				<div className="flex justify-center py-12">
-					<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-				</div>
-			) : competitions.length === 0 ? (
-				<div className="text-center py-12 border rounded-lg bg-muted/10">
-					<Trophy className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-					<h3 className="text-lg font-medium mb-2">No hay competiciones</h3>
-					<p className="text-muted-foreground mb-4">
-						Empieza creando tu primera liga o torneo
-					</p>
-					<Link to={ROUTES.ADMIN.CREAR_COMPETICION}>
-						<Button variant="outline">Crear Competición</Button>
-					</Link>
-				</div>
-			) : (
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					{(competitions as Competition[]).map((competition) => (
-						<Link key={competition.id} to={ROUTES.ADMIN.ID(competition.id)}>
-							<Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
-								<CardHeader className="pb-2">
-									<div className="flex justify-between items-start">
-										<Badge variant={getStatusColor(competition.status)}>
-											{getStatusLabel(competition.status)}
-										</Badge>
-										<Badge variant="outline" className="capitalize">
-											{competition.type}
-										</Badge>
-									</div>
-									<CardTitle className="mt-2">{competition.name}</CardTitle>
-									<CardDescription className="line-clamp-2">
-										{competition.description || "Sin descripción"}
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-2 text-sm text-muted-foreground mt-2">
-										<div className="flex items-center">
-											<Calendar className="mr-2 h-4 w-4" />
-											<span>
-												{new Date(competition.startDate).toLocaleDateString()} -{" "}
-												{new Date(competition.endDate).toLocaleDateString()}
-											</span>
-										</div>
-										{competition.maxTeamsPerCategory && (
-											<div className="flex items-center">
-												<Users className="mr-2 h-4 w-4" />
-												<span>
-													Máx. {competition.maxTeamsPerCategory} equipos/cat
-												</span>
-											</div>
-										)}
-									</div>
-								</CardContent>
-							</Card>
-						</Link>
-					))}
-				</div>
-			)}
+				<TeamInvitations />
+			</div>
+			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+				{competitions.map((competition) => (
+					<CompetitionCard key={competition.id} competition={competition} />
+				))}
+			</div>
 		</div>
 	)
 }
 
 export default MisLigas
+
+const CompetitionCard = ({ competition }: { competition: any }) => (
+	<Card className="flex flex-col">
+		<CardHeader>
+			<div className="flex items-start justify-between">
+				<CardTitle className="text-lg">{competition.name}</CardTitle>
+			</div>
+			<CardDescription className="flex items-center pt-1">
+				<Shield className="mr-2 h-4 w-4" />
+				{competition.description || "Sin descripción disponible"}
+			</CardDescription>
+		</CardHeader>
+		<CardContent className="grow space-y-2">
+			<div className="flex items-center text-sm text-muted-foreground">
+				<Calendar className="mr-2 h-4 w-4" />
+				<span>Inicio: {formatDateShort(competition.startDate)}</span>
+			</div>
+		</CardContent>
+		<CardFooter>
+			<Button asChild className="w-full">
+				<Link to={ROUTES.COMPETITIONS.ID(competition.id)}>Ver Detalles</Link>
+			</Button>
+		</CardFooter>
+	</Card>
+)
