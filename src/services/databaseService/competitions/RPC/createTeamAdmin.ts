@@ -7,6 +7,7 @@ export interface CreateTeamAdminParams {
 	teamName: string
 	emailPlayer1: string
 	emailPlayer2: string
+	emailSubstitute?: string | null
 }
 
 export interface CreateTeamAdminResponse {
@@ -30,7 +31,17 @@ export async function createTeamByAdmin({
 	teamName,
 	emailPlayer1,
 	emailPlayer2,
+	emailSubstitute,
 }: CreateTeamAdminParams): Promise<CreateTeamAdminResponse> {
+	console.log("Creating team by admin with params:", {
+		competitionId,
+		categoryId,
+		teamName,
+		emailPlayer1,
+		emailPlayer2,
+		emailSubstitute,
+	})
+
 	try {
 		const { data, error } = await supabase.rpc(
 			"admin_create_team_with_emails",
@@ -40,6 +51,7 @@ export async function createTeamByAdmin({
 				p_team_name: teamName,
 				p_email_player1: emailPlayer1,
 				p_email_player2: emailPlayer2,
+				p_email_substitute: emailSubstitute,
 			},
 		)
 

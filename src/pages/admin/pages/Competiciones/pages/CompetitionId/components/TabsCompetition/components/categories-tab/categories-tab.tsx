@@ -12,26 +12,31 @@ import {
 } from "@/components/ui/card"
 import { useCompetitionCategoriesMutation } from "@/hooks/competitions/useCompetitionCategoriesMutations"
 import { useCompetitionCategoriesByCompetitionId } from "@/hooks/competitions/useCompetitionCategoriesQuery"
-import type {
-	Competition,
-	CompetitionCategory,
-} from "@/models/competition.model"
+import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
+import type { CompetitionCategory } from "@/models/competition.model"
 import type {
 	CompetitionCategoriesInsert,
 	CompetitionCategoriesUpdate,
 } from "@/models/dbTypes"
-import DialogCrearCategoria from "../../crear-competicion/components/DialogCrearCategoria"
-import { CategoryDetailView } from "./CategoryDetailView"
+import DialogCrearCategoria from "../../../../../crear-competicion/components/DialogCrearCategoria"
+import { CategoryDetailView } from "./components/CategoryDetailView"
 
 interface CategoriesTabProps {
-	competition: Competition
+	competitionId: string
 }
 
-const CategoriesTab = ({ competition }: CategoriesTabProps) => {
-	const { data: categories = [], isLoading } =
+const CategoriesTab = ({ competitionId }: CategoriesTabProps) => {
+	// 1) Cargar competición (para defaultMaxTeams + pasar a detail view)
+	const { data: competition, isLoading: isLoadingCompetition } =
+		useCompetitionById(competitionId).competitionByIdQuery
+
+	// 2) Cargar categorías por competición
+	const { data: categories = [], isLoading: isLoadingCategories } =
 		useCompetitionCategoriesByCompetitionId(
-			competition.id,
+			competitionId,
 		).competitionCategoriesQuery
+
+	const isLoading = isLoadingCompetition || isLoadingCategories
 
 	const {
 		createCompetitionCategory,
@@ -78,15 +83,26 @@ const CategoriesTab = ({ competition }: CategoriesTabProps) => {
 		} else {
 			createCompetitionCategory.mutate({
 				...data,
-				competition_id: competition.id,
+				competition_id: competitionId,
 			} as CompetitionCategoriesInsert)
 		}
+	}
+
+	// si por lo que sea no hay competición (id malo), puedes mostrar algo
+	if (!isLoading && !competition) {
+		return (
+			<Card>
+				<CardContent className="pt-6 text-muted-foreground">
+					No se encontró la competición.
+				</CardContent>
+			</Card>
+		)
 	}
 
 	return (
 		<div className="space-y-6">
 			<AnimatePresence mode="wait">
-				{selectedCategory ? (
+				{selectedCategory && competition ? (
 					<motion.div
 						key="detail"
 						initial={{ opacity: 0, x: 20 }}
@@ -117,7 +133,7 @@ const CategoriesTab = ({ competition }: CategoriesTabProps) => {
 											Gestiona las divisiones y niveles de tu competición
 										</CardDescription>
 									</div>
-									<Button onClick={handleOpenDialog}>
+									<Button onClick={handleOpenDialog} disabled={!competition}>
 										<Plus className="mr-2 h-4 w-4" />
 										Nueva Categoría
 									</Button>
@@ -130,19 +146,21 @@ const CategoriesTab = ({ competition }: CategoriesTabProps) => {
 									onEdit={handleEdit}
 									onDelete={handleDelete}
 									onView={handleViewCategory}
+									defaultMaxTeams={competition?.maxTeamsPerCategory || 8}
 								/>
 							</CardContent>
 						</Card>
 					</motion.div>
 				)}
 			</AnimatePresence>
+
 			{isDialogOpen && (
 				<DialogCrearCategoria
 					open={isDialogOpen}
 					onOpenChange={setIsDialogOpen}
 					onSave={handleSaveCategory}
 					defaultValues={editingCategory ?? undefined}
-					defaultMaxTeams={competition.maxTeamsPerCategory || 8}
+					defaultMaxTeams={competition?.maxTeamsPerCategory || 8}
 				/>
 			)}
 		</div>

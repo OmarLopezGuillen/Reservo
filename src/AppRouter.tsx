@@ -67,6 +67,7 @@ const InvitePage = lazy(() => import("@/pages/invite/invite"))
 
 //const Chats = lazy(() => import(""))
 const ChatsId = lazy(() => import("@/pages/chats/chatId/ChatId.tsx"))
+const MisChats = lazy(() => import("@/pages/chats/Chat.tsx"))
 const MisLigas = lazy(() => import("@/pages/mis-ligas/MisLigas"))
 
 export default function AppRouter() {
@@ -184,6 +185,15 @@ export default function AppRouter() {
 						element={
 							<Suspense fallback={<Loading />}>
 								<MisLigas />
+							</Suspense>
+						}
+					/>
+
+					<Route
+						path={ROUTES.CHATS.ROOT}
+						element={
+							<Suspense fallback={<Loading />}>
+								<MisChats />
 							</Suspense>
 						}
 					/>

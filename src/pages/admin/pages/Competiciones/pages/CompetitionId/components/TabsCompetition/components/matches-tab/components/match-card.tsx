@@ -1,35 +1,27 @@
-import { Calendar, Clock, MapPin } from "lucide-react"
+import {
+	AlertCircle,
+	Calendar,
+	CheckCircle2,
+	Clock,
+	MapPin,
+} from "lucide-react"
 import { useNavigate } from "react-router"
 import { toast } from "sonner"
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useCreateMatchChatThreadMutation } from "@/hooks/competitions/useChatThreadsMutation"
 import { useChatThreadByMatchId } from "@/hooks/competitions/useChatThreadsQuery"
 import { useCompetitionTeamById } from "@/hooks/competitions/useCompetitionTeamsQuery"
+import { useMatchResultMutations } from "@/hooks/competitions/useMatchResultMutations"
 import { useCourtById } from "@/hooks/useCourtsQuery"
-import type { Match } from "@/models/competition.model"
+import type { Match, MatchWithResult } from "@/models/competition.model"
 import { ROUTES } from "@/ROUTES"
-
-// This is a temporary type to avoid errors locally.
-// The user has a different type for Match in their local environment.
-type MatchWithSets = Omit<Match, "scoreHome" | "scoreAway"> & {
-	scoreHome: { sets: number[] } | null
-	scoreAway: { sets: number[] } | null
-}
+import { DisputeDialog } from "./disputeDialog"
+import { MatchResultDialog } from "./resultDialog"
 
 interface MatchCardProps {
-	match: MatchWithSets
+	match: MatchWithResult
 	noLocationText?: string
 	noDateText?: string
 }
@@ -40,10 +32,10 @@ export function MatchCard({
 	noDateText = "Por definir",
 }: MatchCardProps) {
 	const navigate = useNavigate()
+	const user = useAuthUser()
 
 	const { threadByMatchQuery } = useChatThreadByMatchId(match.id)
 	const threadId = threadByMatchQuery.data
-
 	const { createThreadMutation } = useCreateMatchChatThreadMutation()
 
 	const { competitionTeamByIdQuery: homeTeamQuery } = useCompetitionTeamById(
@@ -52,14 +44,15 @@ export function MatchCard({
 	const { competitionTeamByIdQuery: awayTeamQuery } = useCompetitionTeamById(
 		match.awayTeamId,
 	)
+
 	const { courtByIdQuery } = useCourtById(match.courtId)
+
+	const { report, confirm, dispute } = useMatchResultMutations(match.id)
 
 	if (!match) return null
 
-	const homeTeamName =
-		homeTeamQuery.data?.name || `Equipo ${match.homeTeamId.slice(0, 6)}`
-	const awayTeamName =
-		awayTeamQuery.data?.name || `Equipo ${match.awayTeamId.slice(0, 6)}`
+	const homeTeamName = homeTeamQuery.data?.name ?? "Equipo local"
+	const awayTeamName = awayTeamQuery.data?.name ?? "Equipo visitante"
 	const courtName = courtByIdQuery.data?.name
 
 	const formattedDate = match.startTime
@@ -84,7 +77,20 @@ export function MatchCard({
 	const isHomeWinner = match.winnerTeamId === match.homeTeamId
 	const isAwayWinner = match.winnerTeamId === match.awayTeamId
 
-	//TODO: REVISAR LOS NAVIGATES
+	// 🔹 Detectar si usuario pertenece a alguno de los equipos
+	const isHomeMember = homeTeamQuery.data?.members?.some(
+		(m) => m.userId === user?.id,
+	)
+	const isAwayMember = awayTeamQuery.data?.members?.some(
+		(m) => m.userId === user?.id,
+	)
+
+	const myTeamId = isHomeMember
+		? match.homeTeamId
+		: isAwayMember
+			? match.awayTeamId
+			: null
+
 	const handleGoToChat = () => {
 		if (!threadId) return
 		navigate(ROUTES.CHATS.ID(threadId))
@@ -98,144 +104,136 @@ export function MatchCard({
 
 	return (
 		<div className="bg-card border rounded-md hover:shadow-sm transition-shadow flex flex-col max-w-lg">
-			{/* Header */}
-			<div className="p-4 border-b">
-				<div className="flex flex-wrap items-center justify-between gap-2">
-					<div className="flex items-center gap-2">
-						<Badge variant="outline" className="text-xs">
-							Jornada {match.round}
-						</Badge>
-						{match.kind !== "regular" && (
-							<Badge variant="secondary" className="text-xs capitalize">
-								{match.kind === "playoff" ? "Playoff" : "Final"}
-							</Badge>
-						)}
+			{/* HEADER */}
+			<div className="p-4 border-b flex justify-between items-center">
+				<Badge variant="outline" className="text-xs">
+					Jornada {match.round}
+				</Badge>
+
+				{threadId ? (
+					<Button size="sm" variant="outline" onClick={handleGoToChat}>
+						Ir al chat
+					</Button>
+				) : (
+					<Button size="sm" variant="outline" onClick={handleCreateChat}>
+						Crear chat
+					</Button>
+				)}
+			</div>
+
+			{/* SCORE */}
+			<div className="p-4 space-y-2">
+				{/* Home */}
+				<div className="flex justify-between items-center">
+					<span className={isHomeWinner ? "font-bold" : ""}>
+						{homeTeamName}
+					</span>
+					<div className="flex gap-1">
+						{setsHome.map((set, i) => (
+							<span
+								key={i}
+								className="w-7 h-7 flex items-center justify-center border rounded text-sm"
+							>
+								{set}
+							</span>
+						))}
 					</div>
-					<Badge variant="outline" className="text-xs capitalize">
-						{match.status}
-					</Badge>
-					{threadByMatchQuery.isLoading ? (
-						<Button size="sm" variant="outline" disabled>
-							Chat...
-						</Button>
-					) : threadId ? (
-						<Button size="sm" variant="outline" onClick={handleGoToChat}>
-							Ir al chat
-						</Button>
-					) : (
-						<AlertDialog>
-							<AlertDialogTrigger asChild>
-								<Button size="sm" variant="outline">
-									Crear chat
-								</Button>
-							</AlertDialogTrigger>
+				</div>
 
-							<AlertDialogContent>
-								<AlertDialogHeader>
-									<AlertDialogTitle>Crear chat del partido</AlertDialogTitle>
-									<AlertDialogDescription>
-										Se creará un chat con los integrantes de ambos equipos. Los
-										administradores del club podrán ver y participar en el chat.
-									</AlertDialogDescription>
-								</AlertDialogHeader>
+				{/* Away */}
+				<div className="flex justify-between items-center">
+					<span className={isAwayWinner ? "font-bold" : ""}>
+						{awayTeamName}
+					</span>
+					<div className="flex gap-1">
+						{setsAway.map((set, i) => (
+							<span
+								key={i}
+								className="w-7 h-7 flex items-center justify-center border rounded text-sm"
+							>
+								{set}
+							</span>
+						))}
+					</div>
+				</div>
+			</div>
 
-								<AlertDialogFooter>
-									<AlertDialogCancel>Cancelar</AlertDialogCancel>
-									<AlertDialogAction
-										onClick={handleCreateChat}
-										disabled={createThreadMutation.isPending}
+			{/* RESULT ACTIONS */}
+			{myTeamId && (
+				<div className="border-t p-4 space-y-3">
+					{match.resultStatus === "none" && (
+						<MatchResultDialog
+							homeTeamName={homeTeamName}
+							awayTeamName={awayTeamName}
+							onReport={(h, a) =>
+								report.mutateAsync({ setsHome: h, setsAway: a })
+							}
+						/>
+					)}
+
+					{match.resultStatus === "reported" && (
+						<>
+							{match.reportedByTeamId === myTeamId ? (
+								<div className="flex items-center gap-2 text-sm text-muted-foreground">
+									<Clock className="h-4 w-4" />
+									Pendiente de confirmación del rival
+								</div>
+							) : (
+								<div className="flex gap-2">
+									<Button
+										size="sm"
+										onClick={() => confirm.mutate()}
+										disabled={confirm.isPending}
 									>
-										{createThreadMutation.isPending ? "Creando..." : "Aceptar"}
-									</AlertDialogAction>
-								</AlertDialogFooter>
-							</AlertDialogContent>
-						</AlertDialog>
+										<CheckCircle2 className="h-4 w-4 mr-1" />
+										Confirmar
+									</Button>
+
+									<DisputeDialog
+										onSubmit={(reason) => dispute.mutateAsync(reason)}
+									/>
+								</div>
+							)}
+						</>
+					)}
+
+					{match.resultStatus === "disputed" && (
+						<div className="space-y-2">
+							<div className="flex items-center gap-2 text-destructive text-sm">
+								<AlertCircle className="h-4 w-4" />
+								Resultado en disputa
+							</div>
+
+							<MatchResultDialog
+								homeTeamName={homeTeamName}
+								awayTeamName={awayTeamName}
+								onReport={(h, a) =>
+									report.mutateAsync({ setsHome: h, setsAway: a })
+								}
+							/>
+						</div>
+					)}
+
+					{match.resultStatus === "confirmed" && (
+						<div className="flex items-center gap-2 text-green-600 text-sm">
+							<CheckCircle2 className="h-4 w-4" />
+							Resultado confirmado
+						</div>
 					)}
 				</div>
-			</div>
-			{/* Main Content */}
-			<div className="p-4 flex-1">
-				<div className="flex items-center justify-between gap-4">
-					<div className="flex-1 min-w-0">
-						{/* Home Team Row */}
-						<div className="flex items-center gap-3 py-1.5">
-							<span
-								className={`flex-1 text-sm uppercase tracking-wide truncate ${
-									isHomeWinner
-										? "font-bold text-foreground"
-										: "font-medium text-muted-foreground"
-								}`}
-							>
-								{homeTeamName}
-							</span>
+			)}
 
-							<div className="flex gap-1.5">
-								{setsHome?.map((set, index) => (
-									<span
-										key={index}
-										className={`w-7 h-7 flex items-center justify-center text-sm border rounded`}
-									>
-										{set}
-									</span>
-								))}
-							</div>
-						</div>
-
-						{/* Away Team Row */}
-						<div className="flex items-center gap-3 py-1.5">
-							<span
-								className={`flex-1 text-sm uppercase tracking-wide truncate ${
-									isAwayWinner
-										? "font-bold text-foreground"
-										: "font-medium text-muted-foreground"
-								}`}
-							>
-								{awayTeamName}
-							</span>
-
-							<div className="flex gap-1.5">
-								{setsAway?.map((set, index) => (
-									<span
-										key={index}
-										className={`w-7 h-7 flex items-center justify-center text-sm border rounded `}
-									>
-										{set}
-									</span>
-								))}
-							</div>
-						</div>
-					</div>
+			{/* FOOTER */}
+			<div className="p-4 border-t text-sm text-muted-foreground flex justify-between">
+				<div className="flex items-center gap-1">
+					<Calendar className="h-4 w-4" />
+					{formattedDate ?? noDateText}
+					{formattedTime && <> · {formattedTime}</>}
 				</div>
-			</div>
 
-			{/* Footer */}
-			<div className="p-4 border-t text-sm text-muted-foreground">
-				<div className="flex flex-col sm:flex-row justify-between gap-1">
-					<div className="flex items-center gap-1">
-						<Calendar className="h-4 w-4 shrink-0" />
-						{formattedDate ? (
-							<span className="capitalize">{formattedDate}</span>
-						) : (
-							<span className="italic">{noDateText}</span>
-						)}
-						{formattedTime && (
-							<>
-								<span className="mx-1">·</span>
-								<div className="flex items-center gap-1">
-									<Clock className="h-4 w-4 shrink-0" />
-									<span>{formattedTime}</span>
-								</div>
-							</>
-						)}
-					</div>
-					<div className="flex items-center gap-1">
-						<MapPin className="h-4 w-4 shrink-0" />
-						{courtName ? (
-							<span className="font-medium text-foreground">{courtName}</span>
-						) : (
-							<span className="italic">{noLocationText}</span>
-						)}
-					</div>
+				<div className="flex items-center gap-1">
+					<MapPin className="h-4 w-4" />
+					{courtName ?? noLocationText}
 				</div>
 			</div>
 		</div>

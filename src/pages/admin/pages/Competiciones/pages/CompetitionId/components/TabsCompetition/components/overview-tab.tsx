@@ -12,17 +12,29 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type {
-	Competition,
-	CompetitionCategory,
-} from "@/models/competition.model"
+import { useCompetitionCategoriesByCompetitionId } from "@/hooks/competitions/useCompetitionCategoriesQuery"
+import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
 
 interface OverviewTabProps {
-	competition: Competition
-	categories: CompetitionCategory[]
+	competitionId: string
 }
 
-const OverviewTab = ({ competition, categories }: OverviewTabProps) => {
+const OverviewTab = ({ competitionId }: OverviewTabProps) => {
+	const {
+		data: competition,
+		isLoading,
+		isError,
+	} = useCompetitionById(competitionId).competitionByIdQuery
+
+	const { data: categories = [], isLoading: isLoadingCategories } =
+		useCompetitionCategoriesByCompetitionId(
+			competitionId,
+		).competitionCategoriesQuery
+
+	if (isLoading || isLoadingCategories) return <div>Cargando resumen...</div>
+	if (isError || !competition)
+		return <div>No se pudo cargar la competición</div>
+
 	return (
 		<div className="grid gap-6">
 			{/* Stats Cards */}
@@ -160,7 +172,7 @@ const OverviewTab = ({ competition, categories }: OverviewTabProps) => {
 				<CardContent>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 						<div className="flex flex-col items-center p-4 bg-muted/50 rounded-lg">
-							<span className="text-3xl font-bold text-green-600">
+							<span className="text-3xl font-bold">
 								{competition.pointsWin}
 							</span>
 							<span className="text-sm text-muted-foreground mt-1">
@@ -168,7 +180,7 @@ const OverviewTab = ({ competition, categories }: OverviewTabProps) => {
 							</span>
 						</div>
 						<div className="flex flex-col items-center p-4 bg-muted/50 rounded-lg">
-							<span className="text-3xl font-bold text-yellow-600">
+							<span className="text-3xl font-bold">
 								{competition.pointsDraw}
 							</span>
 							<span className="text-sm text-muted-foreground mt-1">
@@ -176,7 +188,7 @@ const OverviewTab = ({ competition, categories }: OverviewTabProps) => {
 							</span>
 						</div>
 						<div className="flex flex-col items-center p-4 bg-muted/50 rounded-lg">
-							<span className="text-3xl font-bold text-red-600">
+							<span className="text-3xl font-bold">
 								{competition.pointsLoss}
 							</span>
 							<span className="text-sm text-muted-foreground mt-1">

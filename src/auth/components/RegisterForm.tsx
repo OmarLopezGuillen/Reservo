@@ -28,6 +28,7 @@ import {
 	type RegisterFormSchema,
 	registerFormSchema,
 } from "@/schemas/register.schema"
+import { sanitizeRedirect } from "../helpers"
 
 export default function RegisterForm() {
 	const { signUp } = useAuthActions()
@@ -60,7 +61,8 @@ export default function RegisterForm() {
 			})
 
 			// Si el registro fue bien, redirigimos
-			navigate(redirect || ROUTES.HOME, { replace: true })
+			const safeRedirect = sanitizeRedirect(redirect)
+			navigate(safeRedirect || ROUTES.HOME, { replace: true })
 		} catch (error: any) {
 			setError("No se pudo crear la cuenta. Por favor, inténtalo de nuevo.")
 			console.error("Register error:", error)
@@ -68,8 +70,10 @@ export default function RegisterForm() {
 	}
 
 	// Mantener redirect cuando el usuario pasa a "Inicia sesión"
-	const loginUrl = redirect
-		? `${ROUTES.LOGIN}?redirect=${encodeURIComponent(redirect)}`
+	const safeRedirect = sanitizeRedirect(redirect)
+
+	const loginUrl = safeRedirect
+		? `${ROUTES.LOGIN}?redirect=${encodeURIComponent(safeRedirect)}`
 		: ROUTES.LOGIN
 
 	return (

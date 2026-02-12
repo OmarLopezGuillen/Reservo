@@ -13,6 +13,7 @@ import type {
 	Competition,
 	CompetitionCategory,
 	CompetitionTeam,
+	CompetitionTeamWithMemberAndAvailability,
 } from "@/models/competition.model"
 import { TeamCard } from "./TeamCard"
 
@@ -67,7 +68,7 @@ export const CategoryDetailView = ({
 					</div>
 				) : teams.length > 0 ? (
 					<div className="space-y-4">
-						{teams.map((team: CompetitionTeam) => (
+						{teams.map((team) => (
 							<TeamCard key={team.id} team={team} />
 						))}
 					</div>

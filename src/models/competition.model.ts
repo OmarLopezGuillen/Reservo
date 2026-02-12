@@ -158,6 +158,18 @@ export interface Match {
 	roundWeekStartDate: string
 }
 
+export type MatchResultStatus = "none" | "reported" | "confirmed" | "disputed"
+
+export type ScoreSets = { sets: number[] } | null
+
+export type MatchWithResult = Match & {
+	resultStatus: MatchResultStatus
+	reportedScoreHome: ScoreSets
+	reportedScoreAway: ScoreSets
+	reportedByTeamId: string | null
+	disputeReason: string | null
+}
+
 export interface CompetitionStanding {
 	competitionId: string
 	categoryId: string

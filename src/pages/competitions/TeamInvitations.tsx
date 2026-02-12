@@ -1,5 +1,4 @@
 import { Bell, Check, Loader2, X } from "lucide-react"
-import { useAuth } from "@/auth/hooks/useAuth"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,6 +9,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useCompetitionTeamInvitesMutation } from "@/hooks/competitions/useCompetitionTeamInvitesMutations"
 import { usePendingInvitesForUser } from "@/hooks/competitions/useCompetitionTeamInvitesQuery"
 
 export const TeamInvitations = () => {
@@ -17,19 +17,23 @@ export const TeamInvitations = () => {
 	const { pendingInvitesQuery } = usePendingInvitesForUser(user?.email)
 	const { data: invites = [], isLoading } = pendingInvitesQuery
 
-	/*const { acceptInvite, declineInvite } = useCompetitionTeamInvitesMutation()
+	const { acceptTeamInvite, updateCompetitionTeamInvite } =
+		useCompetitionTeamInvitesMutation()
 
-	const handleAccept = (inviteId: string) => {
-		if (!user) return
-		acceptInvite.mutate({ inviteId, userId: user.id })
+	const handleAccept = (token: string) => {
+		acceptTeamInvite.mutate({ token })
 	}
 
 	const handleDecline = (inviteId: string) => {
-		declineInvite.mutate(inviteId)
+		updateCompetitionTeamInvite.mutate({
+			id: inviteId,
+			inviteData: { status: "declined" as any }, // cambia si tu enum es otro
+		})
 	}
 
-	const isProcessing = acceptInvite.isPending || declineInvite.isPending*/
-	const isProcessing = false
+	const isProcessing =
+		acceptTeamInvite.isPending || updateCompetitionTeamInvite.isPending
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -43,9 +47,11 @@ export const TeamInvitations = () => {
 					)}
 				</Button>
 			</DropdownMenuTrigger>
+
 			<DropdownMenuContent align="end" className="w-80">
 				<DropdownMenuLabel>Invitaciones Pendientes</DropdownMenuLabel>
 				<DropdownMenuSeparator />
+
 				{isLoading ? (
 					<div className="flex items-center justify-center p-4">
 						<Loader2 className="h-5 w-5 animate-spin" />
@@ -59,24 +65,31 @@ export const TeamInvitations = () => {
 						<DropdownMenuItem
 							key={invite.id}
 							className="flex flex-col items-start gap-2 p-3"
-							onSelect={(e) => e.preventDefault()} // Evita que el menú se cierre al hacer clic
+							onSelect={(e) => e.preventDefault()}
 						>
 							<div>
 								<p className="font-semibold">{invite.team?.name}</p>
 								<p className="text-xs text-muted-foreground">
 									Competición: {invite.team?.competition?.name}
 								</p>
+								{invite.role && (
+									<p className="text-xs text-muted-foreground">
+										Rol: {invite.role}
+									</p>
+								)}
 							</div>
+
 							<div className="flex w-full gap-2">
 								<Button
 									size="sm"
 									className="w-full"
-									onClick={() => handleAccept(invite.id)}
+									onClick={() => handleAccept(invite.token)}
 									disabled={isProcessing}
 								>
 									<Check className="h-4 w-4 mr-2" />
 									Aceptar
 								</Button>
+
 								<Button
 									size="sm"
 									variant="outline"

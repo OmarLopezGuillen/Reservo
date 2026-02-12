@@ -937,8 +937,12 @@ export type Database = {
           category_id: string
           competition_id: string
           confirmed_at: string | null
+          confirmed_by: string | null
           court_id: string | null
           created_at: string
+          dispute_reason: string | null
+          disputed_at: string | null
+          disputed_by: string | null
           end_time: string | null
           home_team_id: string
           id: string
@@ -946,6 +950,12 @@ export type Database = {
           matchday: number
           playoff_round: Database["public"]["Enums"]["playoff_round"] | null
           reported_at: string | null
+          reported_by: string | null
+          reported_by_team_id: string | null
+          reported_score_away: Json | null
+          reported_score_home: Json | null
+          reported_winner_team_id: string | null
+          result_status: Database["public"]["Enums"]["match_result_status"]
           round: number
           round_week_start_date: string
           score_away: Json | null
@@ -960,8 +970,12 @@ export type Database = {
           category_id: string
           competition_id: string
           confirmed_at?: string | null
+          confirmed_by?: string | null
           court_id?: string | null
           created_at?: string
+          dispute_reason?: string | null
+          disputed_at?: string | null
+          disputed_by?: string | null
           end_time?: string | null
           home_team_id: string
           id?: string
@@ -969,6 +983,12 @@ export type Database = {
           matchday: number
           playoff_round?: Database["public"]["Enums"]["playoff_round"] | null
           reported_at?: string | null
+          reported_by?: string | null
+          reported_by_team_id?: string | null
+          reported_score_away?: Json | null
+          reported_score_home?: Json | null
+          reported_winner_team_id?: string | null
+          result_status?: Database["public"]["Enums"]["match_result_status"]
           round: number
           round_week_start_date: string
           score_away?: Json | null
@@ -983,8 +1003,12 @@ export type Database = {
           category_id?: string
           competition_id?: string
           confirmed_at?: string | null
+          confirmed_by?: string | null
           court_id?: string | null
           created_at?: string
+          dispute_reason?: string | null
+          disputed_at?: string | null
+          disputed_by?: string | null
           end_time?: string | null
           home_team_id?: string
           id?: string
@@ -992,6 +1016,12 @@ export type Database = {
           matchday?: number
           playoff_round?: Database["public"]["Enums"]["playoff_round"] | null
           reported_at?: string | null
+          reported_by?: string | null
+          reported_by_team_id?: string | null
+          reported_score_away?: Json | null
+          reported_score_home?: Json | null
+          reported_winner_team_id?: string | null
+          result_status?: Database["public"]["Enums"]["match_result_status"]
           round?: number
           round_week_start_date?: string
           score_away?: Json | null
@@ -1047,6 +1077,20 @@ export type Database = {
           {
             foreignKeyName: "matches_home_team_id_fkey"
             columns: ["home_team_id"]
+            isOneToOne: false
+            referencedRelation: "competition_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_reported_by_team_id_fkey"
+            columns: ["reported_by_team_id"]
+            isOneToOne: false
+            referencedRelation: "competition_standings"
+            referencedColumns: ["team_id"]
+          },
+          {
+            foreignKeyName: "matches_reported_by_team_id_fkey"
+            columns: ["reported_by_team_id"]
             isOneToOne: false
             referencedRelation: "competition_teams"
             referencedColumns: ["id"]
@@ -1231,6 +1275,19 @@ export type Database = {
       }
     }
     Functions: {
+      _is_member_of_team: {
+        Args: { p_team_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      _winner_team_id_from_sets: {
+        Args: {
+          p_away_team_id: string
+          p_home_team_id: string
+          p_sets_away: number[]
+          p_sets_home: number[]
+        }
+        Returns: string
+      }
       accept_team_invite: { Args: { p_token: string }; Returns: Json }
       admin_create_team_with_emails: {
         Args: {
@@ -1238,6 +1295,7 @@ export type Database = {
           p_competition_id: string
           p_email_player1: string
           p_email_player2: string
+          p_email_substitute?: string
           p_team_name: string
         }
         Returns: Json
@@ -1260,6 +1318,7 @@ export type Database = {
         Args: { batch_limit?: number }
         Returns: number
       }
+      confirm_match_result: { Args: { p_match_id: string }; Returns: Json }
       create_match_chat_thread: {
         Args: { p_match_id: string }
         Returns: string
@@ -1269,7 +1328,19 @@ export type Database = {
         Returns: string
       }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      dispute_match_result: {
+        Args: { p_match_id: string; p_reason: string }
+        Returns: Json
+      }
       gen_checkin_code: { Args: { len?: number }; Returns: string }
+      report_match_result: {
+        Args: {
+          p_match_id: string
+          p_sets_away: number[]
+          p_sets_home: number[]
+        }
+        Returns: Json
+      }
       vote_match_schedule_option: {
         Args: { p_option_id: string; p_vote: boolean }
         Returns: Json
@@ -1307,13 +1378,14 @@ export type Database = {
         | "finished"
       competitions_type: "league" | "americano" | "tournament"
       kind_matches: "regular" | "playoff"
+      match_result_status: "none" | "reported" | "confirmed" | "disputed"
       member_team_role: "player1" | "player2" | "substitute"
       payment_status: "pending" | "paid" | "refunded"
       playoff_round: "round_of_16" | "quarterfinal" | "semifinal" | "final"
       playoff_type: "single_elimination" | "double_elimination" | "final_match"
       position: "first" | "second"
       status_booking: "pending" | "confirmed" | "cancelled" | "completed"
-      status_invitation: "pending" | "accepted" | "expired"
+      status_invitation: "pending" | "accepted" | "expired" | "declined"
       status_matches:
         | "pending"
         | "scheduled"
@@ -1489,13 +1561,14 @@ export const Constants = {
       ],
       competitions_type: ["league", "americano", "tournament"],
       kind_matches: ["regular", "playoff"],
+      match_result_status: ["none", "reported", "confirmed", "disputed"],
       member_team_role: ["player1", "player2", "substitute"],
       payment_status: ["pending", "paid", "refunded"],
       playoff_round: ["round_of_16", "quarterfinal", "semifinal", "final"],
       playoff_type: ["single_elimination", "double_elimination", "final_match"],
       position: ["first", "second"],
       status_booking: ["pending", "confirmed", "cancelled", "completed"],
-      status_invitation: ["pending", "accepted", "expired"],
+      status_invitation: ["pending", "accepted", "expired", "declined"],
       status_matches: [
         "pending",
         "scheduled",

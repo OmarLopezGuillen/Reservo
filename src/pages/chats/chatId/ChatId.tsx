@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query"
-import { ArrowDown } from "lucide-react"
+import { ArrowDown, ChevronLeft } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useParams } from "react-router"
+import { Link, useParams } from "react-router"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,6 +17,7 @@ import { useClubHours } from "@/hooks/useClubHoursQuery"
 import { useCourts } from "@/hooks/useCourtsQuery"
 import { supabase } from "@/lib/supabase"
 import { cn } from "@/lib/utils"
+import { ROUTES } from "@/ROUTES"
 import { ChatRulesBanner } from "./components/ChatRulesBanner"
 import { MatchReschedulePanel } from "./components/MatchReschedulePanel/MatchReschedulePanel"
 
@@ -197,7 +198,16 @@ export default function ChatThreadPage() {
 	return (
 		<Card className="h-screen flex flex-col relative">
 			<CardHeader className="border-b">
-				<CardTitle className="truncate">{title}</CardTitle>
+				<div className="flex items-center gap-2">
+					<Button variant="ghost" size="sm" asChild>
+						<Link to={ROUTES.CHATS.ROOT}>
+							<ChevronLeft className="h-4 w-4 mr-2" />
+							Volver atrás
+						</Link>
+					</Button>
+
+					<CardTitle className="truncate">{title}</CardTitle>
+				</div>
 				<div className="w-full overflow-x-auto">
 					<MatchReschedulePanel
 						threadId={threadId}

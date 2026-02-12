@@ -7,6 +7,7 @@ import OverviewTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/c
 import RulesTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/rules-tab"
 import StandingsTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/standings-tab"
 import TeamsAdminTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/teams-tab/teams-tab"
+import CategoriesTab from "./components/categories-tab/categories-tab"
 
 function TabsCompetition() {
 	const [activeTab, setActiveTab] = useState("matches")
@@ -26,19 +27,17 @@ function TabsCompetition() {
 				<TeamsAdminTab competitionId={competicionId!} />
 			</TabsContent>
 
-			{/*<TabsContent value="overview" className="mt-6">
-				<OverviewTab competition={competition} categories={categories} />
+			<TabsContent value="overview" className="mt-6">
+				<OverviewTab competitionId={competicionId!} />
 			</TabsContent>
 
 			<TabsContent value="categories" className="mt-6">
-				<CategoriesTable competition={competition} />
+				<CategoriesTab competitionId={competicionId!} />
 			</TabsContent>
 
-
-
 			<TabsContent value="rules" className="mt-6">
-				<RulesTab competition={competition} />
-			</TabsContent>*/}
+				<RulesTab competitionId={competicionId!} />
+			</TabsContent>
 
 			<TabsContent value="matches" className="mt-6">
 				<MatchesTab />

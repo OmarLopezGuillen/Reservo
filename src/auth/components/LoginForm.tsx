@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input"
 import { PasswordInput } from "@/components/ui/password-input"
 import { ROUTES } from "@/ROUTES"
 import { type LoginFormSchema, loginFormSchema } from "@/schemas/login.schema"
+import { sanitizeRedirect } from "../helpers"
 
 export default function LoginForm() {
 	const { logIn } = useAuthActions()
@@ -52,7 +53,8 @@ export default function LoginForm() {
 			await logIn({ email, password })
 
 			// Si logIn no lanza error, navegamos:
-			navigate(redirect || ROUTES.HOME, { replace: true })
+			const safeRedirect = sanitizeRedirect(redirect)
+			navigate(safeRedirect || ROUTES.HOME, { replace: true })
 		} catch (error: any) {
 			setError("No se pudo iniciar sesión. Por favor, inténtalo de nuevo.")
 			console.error("Login error:", error)
@@ -60,8 +62,9 @@ export default function LoginForm() {
 	}
 
 	// Para mantener el redirect cuando el usuario pasa a "Regístrate"
-	const registerUrl = redirect
-		? `${ROUTES.REGISTER}?redirect=${encodeURIComponent(redirect)}`
+	const safeRedirect = sanitizeRedirect(redirect)
+	const registerUrl = safeRedirect
+		? `${ROUTES.REGISTER}?redirect=${encodeURIComponent(safeRedirect)}`
 		: ROUTES.REGISTER
 
 	return (

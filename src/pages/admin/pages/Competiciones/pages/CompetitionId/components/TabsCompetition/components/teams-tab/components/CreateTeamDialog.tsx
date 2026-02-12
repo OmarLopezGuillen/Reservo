@@ -22,6 +22,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
+
 import { useCompetitionTeamsMutation } from "@/hooks/competitions/useCompetitionTeamsMutations"
 import { useTeamAvailabilitiesMutation } from "@/hooks/competitions/useTeamAvailabilitiesMutations"
 import type {
@@ -43,6 +44,7 @@ export const CreateTeamDialog = ({
 	const [newTeamCategory, setNewTeamCategory] = useState("")
 	const [player1Email, setPlayer1Email] = useState("")
 	const [player2Email, setPlayer2Email] = useState("")
+	const [substituteEmail, setSubstituteEmail] = useState("")
 	const [availabilities, setAvailabilities] = useState<TeamAvailability[]>([])
 
 	const { createTeamByAdmin } = useCompetitionTeamsMutation()
@@ -53,6 +55,7 @@ export const CreateTeamDialog = ({
 		setNewTeamCategory("")
 		setPlayer1Email("")
 		setPlayer2Email("")
+		setSubstituteEmail("")
 		setAvailabilities([])
 	}
 
@@ -63,12 +66,21 @@ export const CreateTeamDialog = ({
 			!player1Email.trim() ||
 			!player2Email.trim()
 		) {
-			toast.error("Por favor completa todos los campos")
+			toast.error("Por favor completa todos los campos obligatorios")
 			return
 		}
 
-		if (player1Email.toLowerCase() === player2Email.toLowerCase()) {
+		const p1 = player1Email.toLowerCase()
+		const p2 = player2Email.toLowerCase()
+		const sub = substituteEmail.trim().toLowerCase()
+
+		if (p1 === p2) {
 			toast.error("Los emails de los jugadores no pueden ser iguales.")
+			return
+		}
+
+		if (sub && (sub === p1 || sub === p2)) {
+			toast.error("El email del sustituto no puede coincidir con otro jugador.")
 			return
 		}
 
@@ -79,28 +91,28 @@ export const CreateTeamDialog = ({
 				teamName: newTeamName,
 				emailPlayer1: player1Email,
 				emailPlayer2: player2Email,
+				emailSubstitute: sub || null,
 			},
 			{
 				onSuccess: (data) => {
 					setIsOpen(false)
 					resetCreateForm()
+
 					if (availabilities.length > 0 && data.team_id) {
-						availabilities.forEach((avail) => {
+						for (const avail of availabilities) {
 							createTeamAvailability.mutate({
 								team_id: data.team_id,
 								weekday: avail.weekday,
 								start_time: avail.startTime,
 								end_time: avail.endTime,
 							})
-						})
+						}
 					} else {
-						toast.success("Equipo creado sin disponibilidad horaria.")
+						toast.success("Equipo creado correctamente.")
 					}
 				},
 			},
 		)
-
-		//TODO: ENVIAR INVITACIONES POR CORREO SI ES NECESARIO
 	}
 
 	return (
@@ -111,6 +123,7 @@ export const CreateTeamDialog = ({
 					Crear Equipo
 				</Button>
 			</DialogTrigger>
+
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>Crear Nuevo Equipo</DialogTitle>
@@ -119,7 +132,9 @@ export const CreateTeamDialog = ({
 						registrados, recibirán una invitación por correo.
 					</DialogDescription>
 				</DialogHeader>
+
 				<div className="space-y-4 py-4">
+					{/* Team name */}
 					<div className="space-y-2">
 						<Label>Nombre del Equipo</Label>
 						<Input
@@ -128,6 +143,8 @@ export const CreateTeamDialog = ({
 							onChange={(e) => setNewTeamName(e.target.value)}
 						/>
 					</div>
+
+					{/* Category */}
 					<div className="space-y-2">
 						<Label>Categoría</Label>
 						<Select value={newTeamCategory} onValueChange={setNewTeamCategory}>
@@ -143,8 +160,10 @@ export const CreateTeamDialog = ({
 							</SelectContent>
 						</Select>
 					</div>
+
+					{/* Player 1 */}
 					<div className="space-y-2">
-						<Label>Email Jugador 1</Label>
+						<Label>Email Jugador 1 *</Label>
 						<Input
 							type="email"
 							placeholder="jugador1@email.com"
@@ -152,8 +171,10 @@ export const CreateTeamDialog = ({
 							onChange={(e) => setPlayer1Email(e.target.value)}
 						/>
 					</div>
+
+					{/* Player 2 */}
 					<div className="space-y-2">
-						<Label>Email Jugador 2</Label>
+						<Label>Email Jugador 2 *</Label>
 						<Input
 							type="email"
 							placeholder="jugador2@email.com"
@@ -161,15 +182,33 @@ export const CreateTeamDialog = ({
 							onChange={(e) => setPlayer2Email(e.target.value)}
 						/>
 					</div>
+
+					{/* Substitute */}
+					<div className="space-y-2">
+						<Label>Email Sustituto (opcional)</Label>
+						<Input
+							type="email"
+							placeholder="sustituto@email.com"
+							value={substituteEmail}
+							onChange={(e) => setSubstituteEmail(e.target.value)}
+						/>
+						<p className="text-xs text-muted-foreground">
+							No es obligatorio, pero recomendable para tener mayor
+							disponibilidad horaria.
+						</p>
+					</div>
+
 					<AvailabilityManager
 						availabilities={availabilities}
 						setAvailabilities={setAvailabilities}
 					/>
 				</div>
+
 				<DialogFooter>
 					<Button variant="outline" onClick={() => setIsOpen(false)}>
 						Cancelar
 					</Button>
+
 					<Button
 						onClick={handleCreateTeam}
 						disabled={createTeamByAdmin.isPending}

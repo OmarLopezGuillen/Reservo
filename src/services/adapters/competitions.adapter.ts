@@ -248,6 +248,11 @@ export const matchAdapter = (db: MatchesRow): Match => ({
 	updatedAt: db.updated_at,
 	winnerTeamId: db.winner_team_id,
 	roundWeekStartDate: db.round_week_start_date,
+	resultStatus: db.result_status,
+	reportedScoreHome: db.reported_score_home,
+	reportedScoreAway: db.reported_score_away,
+	reportedByTeamId: db.reported_by_team_id,
+	disputeReason: db.dispute_reason,
 })
 
 export const matchesAdapter = (db: MatchesRow[]): Match[] =>

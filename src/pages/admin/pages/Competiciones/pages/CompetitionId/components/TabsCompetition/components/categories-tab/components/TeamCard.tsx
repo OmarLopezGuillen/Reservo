@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react"
+import { Phone } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
 	Card,
@@ -15,11 +15,10 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
-import { useTeamAvailabilitiesByTeamId } from "@/hooks/competitions/useTeamAvailabilitiesQuery"
-import type { CompetitionTeam } from "@/models/competition.model"
+import type { CompetitionTeamWithMemberAndAvailability } from "@/models/competition.model"
 
 interface TeamCardProps {
-	team: CompetitionTeam
+	team: CompetitionTeamWithMemberAndAvailability
 }
 
 const statusVariant = {
@@ -31,8 +30,17 @@ const statusVariant = {
 const formatTime = (time: string) => time.substring(0, 5)
 
 export const TeamCard = ({ team }: TeamCardProps) => {
-	const { data: availabilities = [], isLoading } =
-		useTeamAvailabilitiesByTeamId(team.id).teamAvailabilitiesQuery
+	const player1 = team.members.find((m) => m.role === "player1")?.profile
+	const player2 = team.members.find((m) => m.role === "player2")?.profile
+	const substitute = team.members.find((m) => m.role === "substitute")?.profile
+	console.log("Team: ", team)
+	const captainName = player1?.name ?? "—"
+	const p1Name = player1?.name ?? "—"
+	const p1Phone = player1?.phone ?? "—"
+	const p2Name = player2?.name ?? "—"
+	const p2Phone = player2?.phone ?? "—"
+
+	const availabilities = team.availabilities ?? []
 
 	return (
 		<Card>
@@ -40,7 +48,7 @@ export const TeamCard = ({ team }: TeamCardProps) => {
 				<div className="flex justify-between items-start">
 					<div>
 						<CardTitle>{team.name}</CardTitle>
-						<CardDescription>Capitán: {team.player1Name}</CardDescription>
+						<CardDescription>Capitán: {captainName}</CardDescription>
 					</div>
 					<Badge
 						variant={
@@ -52,30 +60,34 @@ export const TeamCard = ({ team }: TeamCardProps) => {
 					</Badge>
 				</div>
 			</CardHeader>
+
 			<CardContent className="space-y-4">
 				{/* Players Info */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-					<div className="p-3 bg-muted/50 rounded-md">
-						<p className="font-semibold">Jugador 1</p>
-						<p>{team.player1Name}</p>
-						<p className="text-muted-foreground">{team.player1Phone}</p>
+				<div className="p-3 bg-muted/50 rounded-md">
+					<p className="font-semibold">Jugador 1</p>
+					<p>{p1Name}</p>
+
+					<div className="mt-1 flex items-center gap-2 text-muted-foreground">
+						<Phone className="h-4 w-4" />
+						<span>{p1Phone ?? "—"}</span>
 					</div>
-					<div className="p-3 bg-muted/50 rounded-md">
-						<p className="font-semibold">Jugador 2</p>
-						<p>{team.player2Name}</p>
-						<p className="text-muted-foreground">{team.player2Phone}</p>
+				</div>
+
+				<div className="p-3 bg-muted/50 rounded-md">
+					<p className="font-semibold">Jugador 2</p>
+					<p>{p2Name}</p>
+
+					<div className="mt-1 flex items-center gap-2 text-muted-foreground">
+						<Phone className="h-4 w-4" />
+						<span>{p2Phone ?? "—"}</span>
 					</div>
 				</div>
 
 				{/* Availability */}
 				<div>
 					<h4 className="font-semibold mb-2">Disponibilidad</h4>
-					{isLoading ? (
-						<div className="flex items-center text-muted-foreground">
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Cargando disponibilidad...
-						</div>
-					) : availabilities.length > 0 ? (
+
+					{availabilities.length > 0 ? (
 						<Table>
 							<TableHeader>
 								<TableRow>

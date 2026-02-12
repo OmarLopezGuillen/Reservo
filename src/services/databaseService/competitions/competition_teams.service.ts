@@ -66,7 +66,24 @@ export async function getCompetitionTeamsByCategoryId(
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
-			.select(`*, team_availabilities(*), competition_team_members(*)`)
+			.select(`
+        *,
+        team_availabilities(*),
+        competition_team_members(
+          id,
+          team_id,
+          user_id,
+          role,
+          joined_at,
+          profiles:profiles!competition_team_members_user_id_fkey1(
+            user_id,
+            name,
+            email,
+            phone,
+            created_at
+          )
+        )
+      `)
 			.eq("category_id", categoryId)
 
 		if (error) throw error

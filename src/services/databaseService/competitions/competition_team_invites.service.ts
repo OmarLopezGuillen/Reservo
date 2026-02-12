@@ -92,6 +92,9 @@ export const getPendingInvitesByEmail = async (email: string) => {
 			.select(
 				`
       id,
+			token,
+			role,
+			expires_at,
       team:competition_teams (
         id,
         name,

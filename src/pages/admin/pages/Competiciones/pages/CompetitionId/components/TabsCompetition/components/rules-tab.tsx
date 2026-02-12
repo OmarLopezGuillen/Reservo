@@ -16,30 +16,36 @@ import { Textarea } from "@/components/ui/textarea"
 import { useCompetitionRulesMutation } from "@/hooks/competitions/useCompetitionRulesMutations"
 import { useCompetitionRulesByCompetitionId } from "@/hooks/competitions/useCompetitionRulesQuery"
 import { useCompetitionRuleTemplateByType } from "@/hooks/competitions/useCompetitionRuleTemplatesQuery"
-import type { Competition } from "@/models/competition.model"
+import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
 
 interface RulesTabProps {
-	competition: Competition
+	competitionId: string
 }
 
-const RulesTab = ({ competition }: RulesTabProps) => {
+const RulesTab = ({ competitionId }: RulesTabProps) => {
 	const [isEditing, setIsEditing] = useState(false)
 	const [rulesContent, setRulesContent] = useState("")
 	const [originalContent, setOriginalContent] = useState("")
 
+	// 1) Cargar competición para obtener el type
+	const { data: competition, isLoading: isLoadingCompetition } =
+		useCompetitionById(competitionId).competitionByIdQuery
+
+	// 2) Reglas existentes
 	const { data: existingRules, isLoading: isLoadingRule } =
-		useCompetitionRulesByCompetitionId(competition.id).competitionRulesQuery
+		useCompetitionRulesByCompetitionId(competitionId).competitionRulesQuery
 	const existingRule = existingRules?.[0]
 
+	// 3) Template por tipo (solo cuando ya tengo competition.type)
 	const { data: ruleTemplate, isLoading: isLoadingTemplate } =
 		useCompetitionRuleTemplateByType(
-			competition.type,
+			competition?.type,
 		).competitionRuleTemplateByTypeQuery
 
 	const { createCompetitionRule, updateCompetitionRule } =
 		useCompetitionRulesMutation()
 
-	const isLoading = isLoadingRule || isLoadingTemplate
+	const isLoading = isLoadingCompetition || isLoadingRule || isLoadingTemplate
 
 	useEffect(() => {
 		let content = ""
@@ -66,7 +72,7 @@ const RulesTab = ({ competition }: RulesTabProps) => {
 		} else {
 			createCompetitionRule.mutate(
 				{
-					competition_id: competition.id,
+					competition_id: competitionId,
 					content: rulesContent,
 					template_id: ruleTemplate?.id,
 				},
@@ -87,8 +93,12 @@ const RulesTab = ({ competition }: RulesTabProps) => {
 							</CardTitle>
 							<CardDescription>Reglamento y normas aplicables</CardDescription>
 						</div>
+
 						{!isEditing ? (
-							<Button onClick={() => setIsEditing(true)}>
+							<Button
+								onClick={() => setIsEditing(true)}
+								disabled={isLoading || !competition}
+							>
 								<Edit className="mr-2 h-4 w-4" />
 								Editar
 							</Button>
@@ -111,6 +121,7 @@ const RulesTab = ({ competition }: RulesTabProps) => {
 						)}
 					</div>
 				</CardHeader>
+
 				<CardContent>
 					{isLoading ? (
 						<div className="flex justify-center items-center min-h-[400px]">
