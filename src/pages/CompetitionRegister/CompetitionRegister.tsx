@@ -32,12 +32,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
+import { ROUTES } from "@/constants/ROUTES"
 import { useCompetitionCategoriesByCompetitionId } from "@/hooks/competitions/useCompetitionCategoriesQuery"
 import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
 import { useCompetitionTeamsMutation } from "@/hooks/competitions/useCompetitionTeamsMutations"
 import { useTeamAvailabilitiesMutation } from "@/hooks/competitions/useTeamAvailabilitiesMutations"
 import type { TeamAvailability } from "@/models/competition.model"
-import { ROUTES } from "@/ROUTES"
 
 type FormValues = {
 	teamName: string

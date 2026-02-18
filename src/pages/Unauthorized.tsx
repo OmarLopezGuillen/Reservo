@@ -8,7 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
-import { ROUTES } from "@/ROUTES"
+import { ROUTES } from "@/constants/ROUTES"
 
 const Unauthorized = () => {
 	return (

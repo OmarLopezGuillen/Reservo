@@ -6,10 +6,9 @@ import { PrivateRoute } from "@/auth/layouts/PrivateRoute"
 import Login from "@/auth/pages/Login"
 import Register from "@/auth/pages/Register"
 import { Loading } from "@/components/Loading"
+import { ROUTES } from "@/constants/ROUTES"
 import { ROLES } from "@/models/ROLES.model"
 import Home from "@/pages/home/pages/Home"
-import Landing from "@/pages/landing/pages/Landing"
-import { ROUTES } from "@/ROUTES"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
@@ -77,7 +76,6 @@ export default function AppRouter() {
 			<Routes>
 				{/* Rutas públicas */}
 				<Route path={ROUTES.HOME} element={<Home />} />
-				<Route path={"/landing"} element={<Landing />} />
 				<Route
 					path={ROUTES.CLUBS.ROOT}
 					element={

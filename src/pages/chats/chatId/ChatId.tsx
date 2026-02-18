@@ -6,6 +6,7 @@ import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { ROUTES } from "@/constants/ROUTES"
 import { useSendChatMessage } from "@/hooks/competitions/useChatMutaiton"
 import {
 	CHAT_MESSAGES_QUERY_KEY,
@@ -17,7 +18,6 @@ import { useClubHours } from "@/hooks/useClubHoursQuery"
 import { useCourts } from "@/hooks/useCourtsQuery"
 import { supabase } from "@/lib/supabase"
 import { cn } from "@/lib/utils"
-import { ROUTES } from "@/ROUTES"
 import { ChatRulesBanner } from "./components/ChatRulesBanner"
 import { MatchReschedulePanel } from "./components/MatchReschedulePanel/MatchReschedulePanel"
 

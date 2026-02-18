@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router"
 import { useAuthStore } from "@/auth/stores/auth.store"
 import { Loading } from "@/components/Loading"
-import { ROUTES } from "@/ROUTES"
+import { ROUTES } from "@/constants/ROUTES"
 
 export function NoAuthRoute() {
 	const user = useAuthStore((s) => s.user)

@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react"
 import { Link } from "react-router"
 import LoginForm from "@/auth/components/LoginForm"
 import { Button } from "@/components/ui/button"
-import { ROUTES } from "@/ROUTES"
+import { ROUTES } from "@/constants/ROUTES"
 
 const Login = () => {
 	return (

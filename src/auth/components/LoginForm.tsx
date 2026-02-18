@@ -4,6 +4,10 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useLocation, useNavigate } from "react-router"
 import { useAuthActions } from "@/auth/hooks/useAuthActions"
+import {
+	type LoginFormSchema,
+	loginFormSchema,
+} from "@/auth/schemas/login.schema"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,8 +27,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { PasswordInput } from "@/components/ui/password-input"
-import { ROUTES } from "@/ROUTES"
-import { type LoginFormSchema, loginFormSchema } from "@/schemas/login.schema"
+import { ROUTES } from "@/constants/ROUTES"
 import { sanitizeRedirect } from "../helpers"
 
 export default function LoginForm() {

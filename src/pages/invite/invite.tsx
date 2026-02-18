@@ -5,11 +5,11 @@ import { toast } from "sonner"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ROUTES } from "@/constants/ROUTES"
 import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
 import { useCompetitionTeamInvitesMutation } from "@/hooks/competitions/useCompetitionTeamInvitesMutations"
 import { useCompetitionTeamInvitesByToken } from "@/hooks/competitions/useCompetitionTeamInvitesQuery"
 import { useCompetitionTeamById } from "@/hooks/competitions/useCompetitionTeamsQuery"
-import { ROUTES } from "@/ROUTES"
 
 //TODO: PONER GONFETI AL ACEPTAR INVITACION
 

@@ -11,8 +11,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { ROUTES } from "@/constants/ROUTES"
 import { useClubs } from "@/hooks/useClubsQuery"
-import { ROUTES } from "@/ROUTES"
 import { ClubCard } from "./components/ClubCard"
 
 const Clubs = () => {

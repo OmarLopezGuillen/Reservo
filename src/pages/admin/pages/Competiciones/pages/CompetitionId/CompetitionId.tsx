@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { ROUTES } from "@/constants/ROUTES"
 import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
 import { useCompetitionTeamsByCompetitionId } from "@/hooks/competitions/useCompetitionTeamsQuery"
 import OptionsCompetition from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/OptionsCompetition/OptionsCompetition"
@@ -11,7 +12,6 @@ import {
 	getStatusColor,
 	getStatusLabel,
 } from "@/pages/admin/pages/Competiciones/pages/CompetitionId/utils/getStatusStyles"
-import { ROUTES } from "@/ROUTES"
 
 const CompeticionesId = () => {
 	const { competicionId } = useParams<{ competicionId: string }>()

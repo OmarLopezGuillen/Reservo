@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react"
 import { Link } from "react-router"
 import RegisterForm from "@/auth/components/RegisterForm"
 import { Button } from "@/components/ui/button"
-import { ROUTES } from "@/ROUTES"
+import { ROUTES } from "@/constants/ROUTES"
 
 const Register = () => {
 	return (

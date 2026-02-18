@@ -1,8 +1,6 @@
-import { Mail, MapPin, Phone } from "lucide-react"
 import { Link } from "react-router"
 import { Separator } from "@/components/ui/separator"
 import { useClubsById } from "@/hooks/useClubsQuery"
-import type { BusinessData } from "@/models/business.model"
 import { BusinessHours } from "./BusinessHours"
 
 function FooterSection({
@@ -17,7 +15,7 @@ function FooterSection({
 	)
 }
 
-function ContactInfo({
+/* function ContactInfo({
 	data,
 	isLoading,
 	isError,
@@ -62,7 +60,7 @@ function ContactInfo({
 		</div>
 	)
 }
-
+ */
 function LegalLinks() {
 	return (
 		<div className="flex flex-col space-y-2 text-sm">
@@ -88,30 +86,12 @@ export function Footer() {
 	)
 
 	const businessData = clubsByIdQuery.data
-	const isLoading = clubsByIdQuery.isLoading
-	const isError = clubsByIdQuery.isError
+	/* const isLoading = clubsByIdQuery.isLoading
+	const isError = clubsByIdQuery.isError */
 
 	return (
 		<footer className="border-t bg-muted/50 mb-4">
 			<div className="container mx-auto px-4 py-12  max-w-7xl">
-				<div className="grid lg:grid-cols-3 gap-8">
-					<FooterSection title="Contacto">
-						<ContactInfo
-							data={businessData}
-							isLoading={isLoading}
-							isError={isError}
-						/>
-					</FooterSection>
-
-					<FooterSection title="Legal">
-						<LegalLinks />
-					</FooterSection>
-
-					<FooterSection title="Horarios">
-						<BusinessHours businessId={businessData?.id} />
-					</FooterSection>
-				</div>
-
 				<Separator className="my-4" />
 
 				<div className="mx-auto">

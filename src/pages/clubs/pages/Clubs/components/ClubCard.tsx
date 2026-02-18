@@ -1,8 +1,8 @@
 import { ChevronRight, MapPin } from "lucide-react"
 import { Link } from "react-router"
 import { Card, CardContent } from "@/components/ui/card"
+import { ROUTES } from "@/constants/ROUTES"
 import type { BusinessData } from "@/models/business.model"
-import { ROUTES } from "@/ROUTES"
 
 interface ClubCardProps {
 	club: BusinessData

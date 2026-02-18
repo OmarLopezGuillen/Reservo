@@ -13,6 +13,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
+import { ROUTES } from "@/constants/ROUTES"
 import { useMyBookings } from "@/hooks/useBookingsQuery"
 import {
 	formatDateWeekDayMonthShort,
@@ -20,7 +21,6 @@ import {
 	formatTimeToHourMinute,
 } from "@/lib/utils"
 import type { BookingManagement } from "@/models/booking.model"
-import { ROUTES } from "@/ROUTES"
 
 const Reservas = () => {
 	const { myBookingsQuery } = useMyBookings()

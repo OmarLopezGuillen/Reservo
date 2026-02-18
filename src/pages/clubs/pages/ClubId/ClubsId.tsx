@@ -2,10 +2,10 @@ import { ArrowLeft } from "lucide-react"
 import { Link, Navigate, useParams } from "react-router"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
+import { ROUTES } from "@/constants/ROUTES"
 import { useBookingsCalendar } from "@/hooks/useBookingsQuery"
 import { useClubHours } from "@/hooks/useClubHoursQuery"
 import { useCourts } from "@/hooks/useCourtsQuery"
-import { ROUTES } from "@/ROUTES"
 import CourtCalendar from "./components/CourtCalendar/CourtCalendar"
 
 const ClubsId = () => {

@@ -4,8 +4,8 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { ArrowRight, ArrowUpDown } from "lucide-react"
 import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
+import { ROUTES } from "@/constants/ROUTES"
 import type { ChatThreadRow } from "@/pages/admin/pages/chats/components/columns"
-import { ROUTES } from "@/ROUTES"
 
 export const chatColumns: ColumnDef<ChatThreadRow>[] = [
 	{

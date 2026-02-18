@@ -12,10 +12,10 @@ import {
 } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { ROUTES } from "@/constants/ROUTES"
 import { useBookingsMutation } from "@/hooks/useBookingsMutations"
 import type { BookingsInsert } from "@/models/dbTypes"
 import type { UISlot } from "@/models/slots.model"
-import { ROUTES } from "@/ROUTES"
 import BookingSummary from "./components/BookingSummary"
 
 const CrearReserva = () => {

@@ -16,10 +16,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { ROUTES } from "@/constants/ROUTES"
 import { useCompetitionCategoriesByCompetitionId } from "@/hooks/competitions/useCompetitionCategoriesQuery"
 import { useCompetitionsMutation } from "@/hooks/competitions/useCompetitionsMutations"
 import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
-import { ROUTES } from "@/ROUTES"
 
 interface Step5Props {
 	competitionId?: string

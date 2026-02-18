@@ -21,6 +21,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { ROUTES } from "@/constants/ROUTES"
 import { useCourtById } from "@/hooks/useCourtsQuery"
 import {
 	formatDateWeekDayMonthShort,
@@ -29,7 +30,6 @@ import {
 	formatTimeToHourMinute,
 } from "@/lib/utils"
 import type { Booking } from "@/models/booking.model"
-import { ROUTES } from "@/ROUTES"
 import CopyToClipboard from "./components/CopyToClipboard"
 
 const Exito = () => {

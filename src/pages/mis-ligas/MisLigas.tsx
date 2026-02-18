@@ -9,10 +9,10 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
+import { ROUTES } from "@/constants/ROUTES"
 import { useAllCompetitions } from "@/hooks/competitions/useCompetitionsQuery"
 import { formatDateShort } from "@/lib/utils"
 import { TeamInvitations } from "@/pages/mis-ligas/components/TeamInvitations"
-import { ROUTES } from "@/ROUTES"
 
 const MisLigas = () => {
 	const { allCompetitionsQuery } = useAllCompetitions()

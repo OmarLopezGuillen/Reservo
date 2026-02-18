@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router"
 import { useAuthStore } from "@/auth/stores/auth.store"
 import { Loading } from "@/components/Loading"
+import { ROUTES } from "@/constants/ROUTES"
 import type { Role } from "@/models/roles.model"
-import { ROUTES } from "@/ROUTES"
 
 interface PrivateRouteProps {
 	roles: Role[]

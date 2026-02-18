@@ -23,11 +23,11 @@ import {
 	SidebarHeader,
 	SidebarRail,
 } from "@/components/ui/sidebar"
+import { ROUTES } from "@/constants/ROUTES"
 import { toTitleCase } from "@/lib/utils"
 import type { Profile } from "@/models/profile.model"
 import { NavMain } from "@/pages/admin/components/NavMain"
 import { NavUser } from "@/pages/admin/components/NavUser"
-import { ROUTES } from "@/ROUTES"
 
 const navMain = [
 	{

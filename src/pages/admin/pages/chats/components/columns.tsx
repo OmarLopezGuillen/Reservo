@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { ArrowRight, ArrowUpDown } from "lucide-react"
 import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
-import { ROUTES } from "@/ROUTES"
+import { ROUTES } from "@/constants/ROUTES"
 
 export type ChatThreadRow = {
 	id: string

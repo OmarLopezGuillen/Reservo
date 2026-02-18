@@ -10,9 +10,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
+import { ROUTES } from "@/constants/ROUTES"
 import { useAllCompetitions } from "@/hooks/competitions/useCompetitionsQuery"
 import { formatDateShort } from "@/lib/utils"
-import { ROUTES } from "@/ROUTES"
 import { TeamInvitations } from "./TeamInvitations"
 
 const CompetitionCard = ({ competition }: { competition: any }) => (

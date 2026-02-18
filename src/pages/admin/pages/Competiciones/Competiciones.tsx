@@ -12,9 +12,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
+import { ROUTES } from "@/constants/ROUTES"
 import { useCompetitionsByClubId } from "@/hooks/competitions/useCompetitionsQuery"
 import type { Competition } from "@/models/competition.model"
-import { ROUTES } from "@/ROUTES"
 
 const Competiciones = () => {
 	const { user } = useAuthStore()
