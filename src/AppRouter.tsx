@@ -8,7 +8,7 @@ import Register from "@/auth/pages/Register"
 import { Loading } from "@/components/Loading"
 import { ROUTES } from "@/constants/ROUTES"
 import { ROLES } from "@/models/ROLES.model"
-import Home from "@/pages/home/pages/Home"
+import Home from "@/pages/home/Home"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
