@@ -7,7 +7,7 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/pages/admin/components/AppSidebar"
+import { AppSidebar } from "@/pages/admin/layout/components/AppSidebar/AppSidebar"
 
 const AdminLayout = () => {
 	const location = useLocation()

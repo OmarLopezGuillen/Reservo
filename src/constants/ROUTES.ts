@@ -15,13 +15,9 @@ export const ROUTES = {
 		ROOT: "/admin",
 		CALENDAR: "/admin/calendar",
 		AJUSTES: "/admin/ajustes",
-		ESTADISTICAS: "/admin/estadisticas",
 		COMPETICIONES: "/admin/competiciones",
 		ID: (id: string | number) => `/admin/competiciones/${id}`,
 		CREAR_COMPETICION: "/admin/competiciones/crear",
-		LISTA_ESPERA: "/admin/lista-espera",
-		RECURSOS: "/admin/recursos",
-		REPORTES: "/admin/reportes",
 		CHAT: "/admin/chats",
 	},
 

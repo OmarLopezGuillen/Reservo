@@ -32,7 +32,6 @@ const AdminLayout = lazy(() => import("@/pages/admin/layout/AdminLayout"))
 
 const Calendar = lazy(() => import("@/pages/admin/pages/Calendar/Calendar"))
 const AdminAjustes = lazy(() => import("@/pages/admin/pages/Ajustes/Ajustes"))
-const AdminEstadisticas = lazy(() => import("@/pages/admin/pages/Estadisticas"))
 const AdminCompeticiones = lazy(
 	() => import("@/pages/admin/pages/Competiciones/Competiciones"),
 )
@@ -56,9 +55,6 @@ const Competitions = lazy(() => import("@/pages/competitions/Competitions"))
 const CompetitionId = lazy(
 	() => import("@/pages/competitions/competitionsId/CompetitionId"),
 )
-const AdminListaEspera = lazy(() => import("@/pages/admin/pages/ListaEspera"))
-const AdminRecursos = lazy(() => import("@/pages/admin/pages/Recursos"))
-const AdminReportes = lazy(() => import("@/pages/admin/pages/Reportes"))
 
 const LegalPrivacidad = lazy(() => import("@/pages/legal/pages/Privacidad"))
 const LegalTerminos = lazy(() => import("@/pages/legal/pages/Terminos"))
@@ -137,19 +133,14 @@ export default function AppRouter() {
 						<Route path={ROUTES.ADMIN.AJUSTES} element={<AdminAjustes />} />
 
 						{/* SOLO ACCEDE A ESTADISTICAS EL OWNER */}
-						<Route
+						{/* <Route
 							element={
 								<PrivateRoute
 									roles={[ROLES.OWNER]}
 									redirectTo={ROUTES.ADMIN.ROOT}
 								/>
 							}
-						>
-							<Route
-								path={ROUTES.ADMIN.ESTADISTICAS}
-								element={<AdminEstadisticas />}
-							/>
-						</Route>
+						></Route> */}
 						<Route path={ROUTES.ADMIN.CHAT} element={<AdminChats />} />
 						<Route
 							path={ROUTES.ADMIN.COMPETICIONES}
@@ -163,12 +154,6 @@ export default function AppRouter() {
 							path={ROUTES.ADMIN.CREAR_COMPETICION}
 							element={<CrearCompeticion />}
 						/>
-						<Route
-							path={ROUTES.ADMIN.LISTA_ESPERA}
-							element={<AdminListaEspera />}
-						/>
-						<Route path={ROUTES.ADMIN.RECURSOS} element={<AdminRecursos />} />
-						<Route path={ROUTES.ADMIN.REPORTES} element={<AdminReportes />} />
 					</Route>
 				</Route>
 

@@ -1,6 +1,6 @@
-import { WeeklyCalendar } from "@/pages/admin/pages/Calendar/components/WeeklyCalendar/WeeklyCalendar"
+import { BookingCalendar } from "@/pages/admin/pages/Calendar/components/BookingCalendar/BookingCalendar"
 
 const Calendar = () => {
-	return <WeeklyCalendar />
+	return <BookingCalendar />
 }
 export default Calendar

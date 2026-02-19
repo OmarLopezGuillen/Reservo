@@ -1,11 +1,16 @@
 import { parseAsIsoDate, parseAsStringLiteral, useQueryState } from "nuqs"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export const useViewModeQueryState = () => {
 	const selectModes = ["week", "day"] as const
 
+	const isMobile = useIsMobile()
+
+	const defaultMode = isMobile ? "day" : "week"
+
 	const [viewMode, setViewMode] = useQueryState(
 		"viewMode",
-		parseAsStringLiteral(selectModes).withDefault("week"),
+		parseAsStringLiteral(selectModes).withDefault(defaultMode),
 	)
 	return { viewMode, setViewMode }
 }
