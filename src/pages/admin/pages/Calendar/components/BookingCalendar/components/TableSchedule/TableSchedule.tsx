@@ -4,7 +4,7 @@ import { MainSchedule } from "@/pages/admin/pages/Calendar/components/BookingCal
 import {
 	useCurrentDayQueryState,
 	useViewModeQueryState,
-} from "@/pages/admin/pages/Calendar/hooks/useCalendarQueryState"
+} from "@/pages/admin/pages/Calendar/components/BookingCalendar/components/TableSchedule/hooks/useCalendarQueryState"
 
 const getWeekDays = (date: Date) => {
 	const start = startOfWeek(date, { weekStartsOn: 1 })

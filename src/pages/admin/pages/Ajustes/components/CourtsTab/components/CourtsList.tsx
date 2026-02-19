@@ -1,10 +1,11 @@
-import type { Court } from "@/models/court.model"
 import { Loader2 } from "lucide-react"
+import type { Court } from "@/models/court.model"
 import { CourtCard } from "./CourtCard"
 
 interface CourtsListProps {
 	courts: Court[] | undefined
 	isLoading: boolean
+	isError: boolean
 	onToggleActive: (court: Court) => void
 	onEditCourt: (court: Court) => void
 	onDeleteCourt: (id: string) => void
@@ -13,6 +14,7 @@ interface CourtsListProps {
 export function CourtsList({
 	courts,
 	isLoading,
+	isError,
 	onToggleActive,
 	onEditCourt,
 	onDeleteCourt,
@@ -21,6 +23,14 @@ export function CourtsList({
 		return (
 			<div className="flex justify-center items-center h-48">
 				<Loader2 className="h-8 w-8 animate-spin text-primary" />
+			</div>
+		)
+	}
+
+	if (isError) {
+		return (
+			<div className="text-destructive p-4 bg-destructive/10 rounded-md">
+				Error al cargar las pistas.
 			</div>
 		)
 	}

@@ -32,11 +32,11 @@ import {
 	SelectValue,
 } from "@/components/ui/select"
 import { useCourts } from "@/hooks/useCourtsQuery"
-import { useCourtsStore } from "@/pages/admin/pages/Calendar/components/BookingCalendar/store/courtsSelectedStore"
 import {
 	useCurrentDayQueryState,
 	useViewModeQueryState,
-} from "@/pages/admin/pages/Calendar/hooks/useCalendarQueryState"
+} from "@/pages/admin/pages/Calendar/components/BookingCalendar/components/TableSchedule/hooks/useCalendarQueryState"
+import { useCourtsStore } from "@/pages/admin/pages/Calendar/components/BookingCalendar/store/courtsSelectedStore"
 
 export const HeaderCalendar = () => {
 	const { viewMode, setViewMode } = useViewModeQueryState()

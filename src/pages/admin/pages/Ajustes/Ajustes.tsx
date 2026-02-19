@@ -1,8 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import BusinessTab from "./components/BusinessTab"
-import { CancellationTab } from "./components/CancellationTab"
+import BusinessTab from "./components/BusinessTab/BusinessTab"
+import { CancellationTab } from "./components/CancellationTab/CancellationTab"
 import { CourtsTab } from "./components/CourtsTab/CourtsTab"
+
 const Ajustes = () => {
 	return (
 		<div className="p-3 space-y-3">
@@ -31,7 +32,6 @@ const Ajustes = () => {
 				<TabsContent value="pistas" className="space-y-3">
 					<CourtsTab />
 				</TabsContent>
-
 			</Tabs>
 		</div>
 	)

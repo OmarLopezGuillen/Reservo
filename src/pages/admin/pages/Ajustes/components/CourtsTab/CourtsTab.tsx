@@ -6,10 +6,10 @@ import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { useCourtsMutation } from "@/hooks/useCourtsMutations"
 import { useCourts } from "@/hooks/useCourtsQuery"
 import type { Court } from "@/models/court.model"
+import { CourtFormDialog } from "./components/CourtFormDialog"
 import { CourtsHeader } from "./components/CourtsHeader"
 import { CourtsList } from "./components/CourtsList"
 import { DeleteCourtDialog } from "./components/DeleteCourtDialog"
-import { CourtFormDialog } from "./components/CourtFormDialog"
 
 export const courtSchema = z.object({
 	name: z.string().min(1, "El nombre es obligatorio"),
@@ -29,7 +29,7 @@ type CourtFormInput = z.input<typeof courtSchema>
 export function CourtsTab() {
 	const user = useAuthUser()
 	const { courtsQuery } = useCourts(user.clubId!)
-	const { data: courts, isLoading } = courtsQuery
+	const { data: courts, isLoading, isError } = courtsQuery
 
 	const { createCourt, updateCourt, deleteCourt } = useCourtsMutation()
 
@@ -118,12 +118,13 @@ export function CourtsTab() {
 	}
 
 	return (
-		<div className="p-6 space-y-6">
+		<div className="space-y-6">
 			<CourtsHeader onAddCourt={handleCreateCourt} />
 
 			<CourtsList
 				courts={courts}
 				isLoading={isLoading}
+				isError={isError}
 				onToggleActive={handleToggleActive}
 				onEditCourt={handleEditCourt}
 				onDeleteCourt={openDeleteConfirmation}
