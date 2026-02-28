@@ -775,6 +775,8 @@ export type Database = {
           is_active: boolean
           name: string
           price: number
+          slot_duration_minutes: number
+          slot_start_offset_minutes: number
           type: Database["public"]["Enums"]["type_court"]
         }
         Insert: {
@@ -786,6 +788,8 @@ export type Database = {
           is_active?: boolean
           name: string
           price: number
+          slot_duration_minutes?: number
+          slot_start_offset_minutes?: number
           type: Database["public"]["Enums"]["type_court"]
         }
         Update: {
@@ -797,6 +801,8 @@ export type Database = {
           is_active?: boolean
           name?: string
           price?: number
+          slot_duration_minutes?: number
+          slot_start_offset_minutes?: number
           type?: Database["public"]["Enums"]["type_court"]
         }
         Relationships: [
@@ -1368,6 +1374,52 @@ export type Database = {
         | "chat_threads.create"
         | "chat_threads.update"
         | "chat_threads.delete"
+        | "profiles.read"
+        | "profiles.create"
+        | "profiles.update"
+        | "profiles.delete"
+        | "competitions.read"
+        | "competitions.create"
+        | "competitions.update"
+        | "competitions.delete"
+        | "competition_categories.read"
+        | "competition_categories.create"
+        | "competition_categories.update"
+        | "competition_categories.delete"
+        | "competition_teams.read"
+        | "competition_teams.create"
+        | "competition_teams.update"
+        | "competition_teams.delete"
+        | "competition_team_members.read"
+        | "competition_team_members.create"
+        | "competition_team_members.update"
+        | "competition_team_members.delete"
+        | "competition_team_invites.read"
+        | "competition_team_invites.create"
+        | "competition_team_invites.update"
+        | "competition_team_invites.delete"
+        | "team_availabilities.read"
+        | "team_availabilities.create"
+        | "team_availabilities.update"
+        | "team_availabilities.delete"
+        | "chat_thread_members.read"
+        | "chat_thread_members.create"
+        | "chat_thread_members.update"
+        | "chat_thread_members.delete"
+        | "chat_messages.read"
+        | "chat_messages.create"
+        | "chat_messages.update"
+        | "chat_messages.delete"
+        | "matches.read"
+        | "matches.create"
+        | "matches.update"
+        | "matches.delete"
+        | "match_schedule_proposals.read"
+        | "match_schedule_proposals.create"
+        | "match_schedule_proposals.update"
+        | "match_schedule_proposals.delete"
+        | "match_schedule_option_votes.read"
+        | "match_schedule_option_votes.create"
       app_role: "admin" | "owner" | "user"
       competition_round_type: "single_round_robin" | "double_round_robin"
       competitions_status:
@@ -1549,6 +1601,52 @@ export const Constants = {
         "chat_threads.create",
         "chat_threads.update",
         "chat_threads.delete",
+        "profiles.read",
+        "profiles.create",
+        "profiles.update",
+        "profiles.delete",
+        "competitions.read",
+        "competitions.create",
+        "competitions.update",
+        "competitions.delete",
+        "competition_categories.read",
+        "competition_categories.create",
+        "competition_categories.update",
+        "competition_categories.delete",
+        "competition_teams.read",
+        "competition_teams.create",
+        "competition_teams.update",
+        "competition_teams.delete",
+        "competition_team_members.read",
+        "competition_team_members.create",
+        "competition_team_members.update",
+        "competition_team_members.delete",
+        "competition_team_invites.read",
+        "competition_team_invites.create",
+        "competition_team_invites.update",
+        "competition_team_invites.delete",
+        "team_availabilities.read",
+        "team_availabilities.create",
+        "team_availabilities.update",
+        "team_availabilities.delete",
+        "chat_thread_members.read",
+        "chat_thread_members.create",
+        "chat_thread_members.update",
+        "chat_thread_members.delete",
+        "chat_messages.read",
+        "chat_messages.create",
+        "chat_messages.update",
+        "chat_messages.delete",
+        "matches.read",
+        "matches.create",
+        "matches.update",
+        "matches.delete",
+        "match_schedule_proposals.read",
+        "match_schedule_proposals.create",
+        "match_schedule_proposals.update",
+        "match_schedule_proposals.delete",
+        "match_schedule_option_votes.read",
+        "match_schedule_option_votes.create",
       ],
       app_role: ["admin", "owner", "user"],
       competition_round_type: ["single_round_robin", "double_round_robin"],

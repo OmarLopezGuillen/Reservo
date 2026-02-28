@@ -12,6 +12,8 @@ export const courtAdapter = (courtDB: CourtsRow): Court => {
 		color: courtDB.color,
 		isActive: courtDB.is_active,
 		createdAt: courtDB.created_at,
+		slotDurationMinutes: courtDB.slot_duration_minutes,
+		slotStartOffsetMinutes: courtDB.slot_start_offset_minutes,
 	}
 }
 

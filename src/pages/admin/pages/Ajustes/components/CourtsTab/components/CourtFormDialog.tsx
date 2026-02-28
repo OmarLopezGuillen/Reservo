@@ -1,3 +1,6 @@
+import { Loader2 } from "lucide-react"
+import type { UseFormReturn } from "react-hook-form"
+import type { z } from "zod"
 import { Button } from "@/components/ui/button"
 import {
 	Dialog,
@@ -19,9 +22,6 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import type { Court } from "@/models/court.model"
-import { Loader2 } from "lucide-react"
-import type { UseFormReturn } from "react-hook-form"
-import type { z } from "zod"
 import type { courtSchema } from "../CourtsTab"
 
 type CourtFormData = z.output<typeof courtSchema>
@@ -112,6 +112,50 @@ export function CourtFormDialog({
 							{errors.price && (
 								<p className="text-sm text-destructive">
 									{errors.price.message}
+								</p>
+							)}
+						</div>
+					</div>
+
+					<div className="grid grid-cols-2 gap-4">
+						<div className="space-y-2">
+							<Label htmlFor="slotDurationMinutes">
+								Duración del slot (min)
+							</Label>
+							<Input
+								id="slotDurationMinutes"
+								type="number"
+								min={30}
+								step={30}
+								{...register("slotDurationMinutes", { valueAsNumber: true })}
+								className={
+									errors.slotDurationMinutes ? "border-destructive" : ""
+								}
+							/>
+							{errors.slotDurationMinutes && (
+								<p className="text-sm text-destructive">
+									{errors.slotDurationMinutes.message}
+								</p>
+							)}
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="slotStartOffsetMinutes">
+								Desfase inicio (min)
+							</Label>
+							<Input
+								id="slotStartOffsetMinutes"
+								type="number"
+								min={0}
+								step={15}
+								{...register("slotStartOffsetMinutes", { valueAsNumber: true })}
+								className={
+									errors.slotStartOffsetMinutes ? "border-destructive" : ""
+								}
+							/>
+							{errors.slotStartOffsetMinutes && (
+								<p className="text-sm text-destructive">
+									{errors.slotStartOffsetMinutes.message}
 								</p>
 							)}
 						</div>

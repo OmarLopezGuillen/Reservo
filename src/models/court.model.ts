@@ -10,4 +10,6 @@ export interface Court {
 	color: string | null
 	isActive: boolean
 	createdAt: string
+	slotDurationMinutes: number
+	slotStartOffsetMinutes: number
 }

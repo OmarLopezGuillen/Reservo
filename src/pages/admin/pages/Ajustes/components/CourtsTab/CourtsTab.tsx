@@ -21,6 +21,8 @@ export const courtSchema = z.object({
 	color: z.string().regex(/^#[0-9a-f]{6}$/i, "Color no válido"),
 	description: z.string().optional(),
 	isActive: z.boolean(),
+	slotDurationMinutes: z.number().min(30),
+	slotStartOffsetMinutes: z.number().min(0).max(300),
 })
 
 type CourtFormData = z.output<typeof courtSchema>
@@ -50,6 +52,8 @@ export function CourtsTab() {
 			color: "#000000",
 			description: "",
 			isActive: true,
+			slotDurationMinutes: 90,
+			slotStartOffsetMinutes: 0,
 		},
 	})
 
@@ -64,6 +68,8 @@ export function CourtsTab() {
 				color: editingCourt.color || "#000000",
 				description: editingCourt.description || "",
 				isActive: editingCourt.isActive,
+				slotDurationMinutes: editingCourt.slotDurationMinutes ?? 90,
+				slotStartOffsetMinutes: editingCourt.slotStartOffsetMinutes ?? 0,
 			})
 		} else {
 			reset()
@@ -101,8 +107,16 @@ export function CourtsTab() {
 	}
 
 	const onSubmit = (data: CourtFormData) => {
-		const { isActive, ...restData } = data
-		const courtData = { ...restData, is_active: isActive }
+		const courtData = {
+			name: data.name,
+			type: data.type,
+			price: data.price,
+			color: data.color,
+			description: data.description,
+			is_active: data.isActive,
+			slot_duration_minutes: data.slotDurationMinutes,
+			slot_start_offset_minutes: data.slotStartOffsetMinutes,
+		}
 
 		if (editingCourt) {
 			updateCourt.mutate(

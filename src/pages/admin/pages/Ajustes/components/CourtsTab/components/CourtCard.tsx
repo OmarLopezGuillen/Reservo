@@ -55,6 +55,17 @@ export function CourtCard({
 								>
 									{court.type === "indoor" ? "Cubierta" : "Exterior"}
 								</Badge>
+								{/* Duración */}
+								<Badge variant="outline" className="text-xs bg-slate-50">
+									{court.slotDurationMinutes} min
+								</Badge>
+
+								{/* Offset */}
+								{court.slotStartOffsetMinutes > 0 && (
+									<Badge variant="outline" className="text-xs bg-slate-50">
+										+{court.slotStartOffsetMinutes} min inicio
+									</Badge>
+								)}
 							</div>
 						</div>
 
