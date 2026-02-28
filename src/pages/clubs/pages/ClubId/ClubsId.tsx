@@ -1,6 +1,5 @@
 import { ArrowLeft } from "lucide-react"
 import { Link, Navigate, useParams } from "react-router"
-import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/constants/ROUTES"
 import { useBookingsCalendar } from "@/hooks/useBookingsQuery"
@@ -10,7 +9,6 @@ import CourtCalendar from "./components/CourtCalendar/CourtCalendar"
 
 const ClubsId = () => {
 	const { clubId: clubIdFromUrl } = useParams<{ clubId: string }>()
-	const user = useAuthUser()
 
 	const clubId = clubIdFromUrl
 
