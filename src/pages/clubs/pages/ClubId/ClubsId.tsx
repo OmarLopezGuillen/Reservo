@@ -67,7 +67,6 @@ const ClubsId = () => {
 							courts={courts}
 							bookings={bookings}
 							clubHours={clubHoursData}
-							currentUserId={user?.id}
 							clubId={clubId}
 						/>
 					</div>

@@ -18,13 +18,26 @@ import type { BookingsInsert } from "@/models/dbTypes"
 import type { UISlot } from "@/models/slots.model"
 import BookingSummary from "./components/BookingSummary"
 
+type UserData = {
+	email: string
+	full_name: string
+	phone_number: string
+}
+
 const CrearReserva = () => {
 	const user = useAuthUser()
+	const metadata = user.user_metadata as Partial<UserData> | null
+	const userData: UserData = {
+		email: typeof metadata?.email === "string" ? metadata.email : user.email ?? "",
+		full_name: typeof metadata?.full_name === "string" ? metadata.full_name : "",
+		phone_number:
+			typeof metadata?.phone_number === "string" ? metadata.phone_number : "",
+	}
 	const navigate = useNavigate()
 	const [searchParams] = useSearchParams()
 	const slotParam = searchParams.get("slot")
 	const { createBooking } = useBookingsMutation()
-	const [selectedSlot, setSelectedSlot] = useState<UISlot>()
+	const [selectedSlot, setSelectedSlot] = useState<UISlot | null>(null)
 
 	useEffect(() => {
 		if (slotParam) {
@@ -74,6 +87,11 @@ const CrearReserva = () => {
 				payment_mode: "none",
 				payment_status: "pending",
 				status: "confirmed",
+				note: JSON.stringify({
+					clientName: userData.full_name,
+					clientPhone: userData.phone_number,
+					clientEmail: userData.email,
+				}),
 			}
 			const newBooking = await createBooking.mutateAsync(Booking)
 			const encodedBooking = encodeURIComponent(JSON.stringify(newBooking))
@@ -200,7 +218,7 @@ const CrearReserva = () => {
 
 					{/* Summary */}
 					<div className="lg:col-span-1">
-						<BookingSummary selectedSlot={selectedSlot!} />
+						<BookingSummary selectedSlot={selectedSlot} />
 					</div>
 				</div>
 			</div>
