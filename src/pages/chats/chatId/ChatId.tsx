@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { ArrowDown, ChevronLeft } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Link, useParams } from "react-router"
+import { Link, useLocation, useParams } from "react-router"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -52,6 +52,11 @@ export default function ChatThreadPage() {
 	const { data: clubHours } = clubHoursQuery
 
 	const messages = messagesQuery.data ?? []
+
+	const location = useLocation()
+
+	const backRoute =
+		location.state?.from === "admin" ? ROUTES.ADMIN.CHAT : ROUTES.CHATS.ROOT
 
 	const scrollToBottom = (smooth = true) => {
 		if (scrollRef.current) {
@@ -200,7 +205,7 @@ export default function ChatThreadPage() {
 			<CardHeader className="border-b">
 				<div className="flex items-center gap-2">
 					<Button variant="ghost" size="sm" asChild>
-						<Link to={ROUTES.CHATS.ROOT}>
+						<Link to={backRoute}>
 							<ChevronLeft className="h-4 w-4 mr-2" />
 							Volver atrás
 						</Link>

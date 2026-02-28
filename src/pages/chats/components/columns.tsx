@@ -5,9 +5,9 @@ import { ArrowRight, ArrowUpDown } from "lucide-react"
 import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/constants/ROUTES"
-import type { ChatThreadRow } from "@/pages/admin/pages/chats/components/columns"
+import type { ChatThread } from "@/models/competition.model"
 
-export const chatColumns: ColumnDef<ChatThreadRow>[] = [
+export const chatColumns: ColumnDef<ChatThread>[] = [
 	{
 		accessorKey: "name",
 		header: ({ column }) => (
@@ -42,6 +42,15 @@ export const chatColumns: ColumnDef<ChatThreadRow>[] = [
 				hour: "2-digit",
 				minute: "2-digit",
 			}),
+	},
+	{
+		accessorKey: "competitionName",
+		header: "Liga",
+		cell: ({ row }) => (
+			<span className="text-xs text-muted-foreground">
+				{row.original.competitionName ?? "—"}
+			</span>
+		),
 	},
 	{
 		id: "actions",

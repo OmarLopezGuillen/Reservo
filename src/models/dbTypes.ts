@@ -29,6 +29,27 @@ export type ChatThreadsRow = Tables<"chat_threads">
 export type ChatMessagesRow = Tables<"chat_messages">
 export type ChatThreadMembersRow = Tables<"chat_thread_members">
 
+export type ChatThreadDbRow = {
+	id: string
+	name: string
+	match_id: string
+	club_id: string
+	created_at: string
+	created_by: string
+	needs_admin_attention: boolean
+	needs_admin_attention_at: string | null
+	needs_admin_attention_by: string | null
+	needs_admin_attention_message_id: string | null
+	match: {
+		id: string
+		competition_id: string
+		competition: {
+			id: string
+			name: string
+		} | null
+	} | null
+}
+
 // INSERT (crear)
 export type BookingsInsert = TablesInsert<"bookings">
 export type ClubsInsert = TablesInsert<"clubs">

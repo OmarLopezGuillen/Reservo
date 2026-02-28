@@ -197,6 +197,8 @@ export interface ChatThread {
 	needsAdminAttentionAt?: string | null
 	needsAdminAttentionMessageId?: string | null
 	needsAdminAttentionBy?: string | null
+	competitionId: string | null
+	competitionName: string | null
 }
 
 export interface ChatThreadMember {

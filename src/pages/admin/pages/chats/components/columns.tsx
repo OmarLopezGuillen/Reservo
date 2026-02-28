@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUpDown } from "lucide-react"
 import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/constants/ROUTES"
+import type { ChatThread } from "@/models/competition.model"
 
 export type ChatThreadRow = {
 	id: string
@@ -13,7 +14,7 @@ export type ChatThreadRow = {
 	needsAdminAttention?: boolean
 }
 
-export const chatColumns: ColumnDef<ChatThreadRow>[] = [
+export const chatColumns: ColumnDef<ChatThread>[] = [
 	{
 		accessorKey: "name",
 		header: ({ column }) => (
@@ -64,11 +65,20 @@ export const chatColumns: ColumnDef<ChatThreadRow>[] = [
 			}),
 	},
 	{
+		accessorKey: "competitionName",
+		header: "Liga",
+		cell: ({ row }) => (
+			<span className="text-xs text-muted-foreground">
+				{row.original.competitionName ?? "—"}
+			</span>
+		),
+	},
+	{
 		id: "actions",
 		header: "",
 		cell: ({ row }) => (
 			<Button asChild size="sm" variant="outline">
-				<Link to={ROUTES.CHATS.ID(row.original.id)}>
+				<Link to={ROUTES.CHATS.ID(row.original.id)} state={{ from: "admin" }}>
 					Abrir <ArrowRight className="ml-1 h-4 w-4" />
 				</Link>
 			</Button>

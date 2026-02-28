@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase"
-import type { ChatThreadsRow } from "@/models/dbTypes"
+import type { ChatThread } from "@/models/competition.model"
+import type { ChatThreadDbRow, ChatThreadsRow } from "@/models/dbTypes"
 import { chatThreadsAdapter } from "@/services/adapters/competitions.adapter"
 
 export async function getChatThreadByMatchId(
@@ -15,12 +16,32 @@ export async function getChatThreadByMatchId(
 	return data?.id ?? null
 }
 
-export async function getChatThreads() {
+export async function getChatThreads(): Promise<ChatThread[]> {
 	const { data, error } = await supabase
 		.from("chat_threads")
-		.select("*")
+		.select(`
+			id,
+			name,
+			match_id,
+			club_id,
+			created_at,
+			created_by,
+			needs_admin_attention,
+			needs_admin_attention_at,
+			needs_admin_attention_by,
+			needs_admin_attention_message_id,
+			match:matches (
+				id,
+				competition_id,
+				competition:competitions (
+					id,
+					name
+				)
+			)
+		`)
 		.order("created_at", { ascending: false })
 
 	if (error) throw error
-	return chatThreadsAdapter((data ?? []) as ChatThreadsRow[])
+
+	return chatThreadsAdapter((data ?? []) as ChatThreadDbRow[])
 }

@@ -15,6 +15,7 @@ import type {
 	TeamAvailability,
 } from "@/models/competition.model"
 import type {
+	ChatThreadDbRow,
 	ChatThreadsRow,
 	CompetitionCategoriesRow,
 	CompetitionParticipantsRow,
@@ -290,7 +291,7 @@ export const competitionStandingsAdapter = (
 	rows: CompetitionStandingsRow[],
 ): CompetitionStanding[] => rows.map(competitionStandingAdapter)
 
-export const chatThreadAdapter = (db: ChatThreadsRow): ChatThread => ({
+export const chatThreadAdapter = (db: ChatThreadDbRow): ChatThread => ({
 	id: db.id,
 	name: db.name,
 	matchId: db.match_id,
@@ -301,7 +302,10 @@ export const chatThreadAdapter = (db: ChatThreadsRow): ChatThread => ({
 	needsAdminAttentionAt: db.needs_admin_attention_at,
 	needsAdminAttentionMessageId: db.needs_admin_attention_message_id,
 	needsAdminAttentionBy: db.needs_admin_attention_by,
+
+	competitionId: db.match?.competition_id ?? null,
+	competitionName: db.match?.competition?.name ?? null,
 })
 
-export const chatThreadsAdapter = (db: ChatThreadsRow[]): ChatThread[] =>
+export const chatThreadsAdapter = (db: ChatThreadDbRow[]): ChatThread[] =>
 	db.map(chatThreadAdapter)
