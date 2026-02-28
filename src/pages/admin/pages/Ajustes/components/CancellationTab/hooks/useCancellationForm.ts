@@ -4,8 +4,8 @@ import { type Resolver, useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
-import { useClubsMutation } from "@/hooks/useClubsMutations"
-import { useClubsById } from "@/hooks/useClubsQuery"
+import { useAjustesClubMutation } from "../../../hooks/useAjustesClubMutation"
+import { useAjustesClubQuery } from "../../../hooks/useAjustesClubQuery"
 
 export const cancellationSchema = z.object({
 	cancelHoursBefore: z.coerce
@@ -29,10 +29,10 @@ export type CancellationFormData = z.infer<typeof cancellationSchema>
 export function useCancellationForm() {
 	const user = useAuthUser()
 
-	const { clubsByIdQuery } = useClubsById(user.clubId!)
-	const { data: club, isLoading, isError } = clubsByIdQuery
+	const { clubQuery } = useAjustesClubQuery(user.clubId)
+	const { data: club, isLoading, isError } = clubQuery
 
-	const { updateClub } = useClubsMutation()
+	const { updateClub } = useAjustesClubMutation()
 
 	const form = useForm<CancellationFormData>({
 		resolver: zodResolver(cancellationSchema) as Resolver<CancellationFormData>,

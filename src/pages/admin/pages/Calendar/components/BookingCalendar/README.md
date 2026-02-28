@@ -22,12 +22,13 @@ Estructura relevante de la carpeta:
     - `TableSchedule.tsx` — coordinación de `HeadersSchedule` y `MainSchedule`.
     - `components/HeadersSchedule/` — encabezados del grid (`MainHeader`, `HeaderCourts`).
     - `components/MainSchedule/` — cuerpo del grid (hora por hora):
-      - `GridSchedule/` — genera columnas por día y celdas por slot.
-        - `CellsSchedule.tsx` — lógica por celda: muestra botones para crear slot o `EventCard` para reservas.
-        - `EventCard.tsx` — representación visual de una reserva (duración, estado de pago).
-        - `BookingDialog.tsx` — diálogo que usa `BookingForm` para crear/editar reservas.
-          - `components/BookingForm.tsx` — formulario completo de reserva con validación.
-          - `hooks/useBookingForm.ts` — lógica del formulario (create/update/cancel).
+      - `components/GridSchedule.tsx` — genera columnas por día y celdas por slot.
+      - `components/CellsSchedule.tsx` — lógica por celda: muestra botones para crear slot o `EventCard` para reservas.
+      - `components/EventCard.tsx` — representación visual de una reserva (duración, estado de pago).
+      - `components/BookingDialog/BookingDialog.tsx` — diálogo que usa `BookingForm` para crear/editar reservas.
+        - `components/BookingForm.tsx` — formulario completo de reserva con validación.
+        - `hooks/useBookingForm.ts` — lógica del formulario (create/update/cancel).
+        - `schemas/bookingForm.ts` — esquema y tipos del formulario de reserva.
 
 - `hooks/` (local):
   - `useCalendarQueryState.ts` — sincroniza `viewMode` y `currentDate` con query params.
@@ -184,7 +185,7 @@ BookingCalendar
       └─ GridSchedule (por día)
          └─ CellsSchedule (por slot)
             ├─ EventCard (si hay booking en inicio)
-            └─ BookingDialog -> BookingForm (crear/editar)
+            └─ BookingDialog/BookingDialog -> BookingForm (crear/editar)
 ````
 
 ## 10. Buenas prácticas y notas para mantenimiento

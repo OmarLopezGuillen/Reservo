@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { GridSchedule } from "@/pages/admin/pages/Calendar/components/BookingCalendar/components/TableSchedule/components/MainSchedule/components/GridSchedule/GridSchedule"
+import { GridSchedule } from "@/pages/admin/pages/Calendar/components/BookingCalendar/components/TableSchedule/components/MainSchedule/components/GridSchedule"
 import { useSelectedSlot } from "@/pages/admin/pages/Calendar/components/BookingCalendar/components/TableSchedule/components/MainSchedule/hooks/useSelectedSlot"
 
 const formatHour = (hour: string) => {

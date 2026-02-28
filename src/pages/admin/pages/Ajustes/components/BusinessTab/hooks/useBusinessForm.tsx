@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
-import { useClubsMutation } from "@/hooks/useClubsMutations"
-import { useClubsById } from "@/hooks/useClubsQuery"
+import { useAjustesClubMutation } from "../../../hooks/useAjustesClubMutation"
+import { useAjustesClubQuery } from "../../../hooks/useAjustesClubQuery"
 
 export const businessSchema = z.object({
 	name: z.string().min(1, "El nombre es obligatorio"),
@@ -20,10 +20,10 @@ export type BusinessFormData = z.infer<typeof businessSchema>
 export function useBusinessForm() {
 	const user = useAuthUser()
 
-	const { clubsByIdQuery } = useClubsById(user.clubId!)
-	const { data: club, isLoading, isError } = clubsByIdQuery
+	const { clubQuery } = useAjustesClubQuery(user.clubId)
+	const { data: club, isLoading, isError } = clubQuery
 
-	const { updateClub } = useClubsMutation()
+	const { updateClub } = useAjustesClubMutation()
 
 	const form = useForm<BusinessFormData>({
 		resolver: zodResolver(businessSchema),

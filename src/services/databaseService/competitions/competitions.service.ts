@@ -65,6 +65,43 @@ export async function getCompetitionsByClubId(
 	}
 }
 
+export async function getCompetitionsByUserId(
+	userId: string,
+): Promise<Competition[]> {
+	// Devuelve solo las competiciones en las que el usuario está inscrito:
+	// 1) obtiene sus `competition_id` desde `competition_participants`
+	// 2) consulta `competitions` por ese conjunto de ids
+	try {
+		const { data: participantRows, error: participantsError } = await supabase
+			.from("competition_participants")
+			.select("competition_id")
+			.eq("user_id", userId)
+
+		if (participantsError) throw participantsError
+
+		const competitionIds = Array.from(
+			new Set((participantRows ?? []).map((row) => row.competition_id)),
+		)
+
+		if (competitionIds.length === 0) return []
+
+		const { data, error } = await supabase
+			.from(TABLE_NAME)
+			.select("*")
+			.in("id", competitionIds)
+
+		if (error) throw error
+		return competitionsAdapter(data)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Error getting competitions by user id:", error.message)
+		} else {
+			console.error("Error getting competitions by user id:", error)
+		}
+		throw new Error("No se pudieron obtener las competiciones del usuario.")
+	}
+}
+
 export async function createCompetition(
 	competition: CompetitionsInsert,
 ): Promise<Competition> {

@@ -4,6 +4,12 @@ import BusinessTab from "./components/BusinessTab/BusinessTab"
 import { CancellationTab } from "./components/CancellationTab/CancellationTab"
 import { CourtsTab } from "./components/CourtsTab/CourtsTab"
 
+const SETTINGS_TABS = [
+	{ value: "business", label: "Negocio", Content: BusinessTab },
+	{ value: "cancellation", label: "Cancelación", Content: CancellationTab },
+	{ value: "pistas", label: "Pistas", Content: CourtsTab },
+] as const
+
 const Ajustes = () => {
 	return (
 		<div className="p-3 space-y-3">
@@ -16,22 +22,18 @@ const Ajustes = () => {
 
 			<Tabs defaultValue="business" className="space-y-3">
 				<TabsList className="grid w-full grid-cols-3">
-					<TabsTrigger value="business">Negocio</TabsTrigger>
-					<TabsTrigger value="cancellation">Cancelación</TabsTrigger>
-					<TabsTrigger value="pistas">Pistas</TabsTrigger>
+					{SETTINGS_TABS.map(({ value, label }) => (
+						<TabsTrigger key={value} value={value}>
+							{label}
+						</TabsTrigger>
+					))}
 				</TabsList>
 
-				<TabsContent value="business" className="space-y-3">
-					<BusinessTab />
-				</TabsContent>
-
-				<TabsContent value="cancellation" className="space-y-3">
-					<CancellationTab />
-				</TabsContent>
-
-				<TabsContent value="pistas" className="space-y-3">
-					<CourtsTab />
-				</TabsContent>
+				{SETTINGS_TABS.map(({ value, Content }) => (
+					<TabsContent key={value} value={value} className="space-y-3">
+						<Content />
+					</TabsContent>
+				))}
 			</Tabs>
 		</div>
 	)

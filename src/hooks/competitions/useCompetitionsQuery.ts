@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
+import { useAuthStore } from "@/auth/stores/auth.store"
 import {
 	getAllCompetitions,
 	getCompetitionById,
 	getCompetitionsByClubId,
+	getCompetitionsByUserId,
 } from "@/services/databaseService/competitions/competitions.service"
 
 export const COMPETITIONS_QUERY_KEY = "competitions"
@@ -31,4 +33,16 @@ export const useAllCompetitions = () => {
 		queryFn: () => getAllCompetitions(),
 	})
 	return { allCompetitionsQuery }
+}
+
+export const useMyCompetitions = () => {
+	const userId = useAuthStore((state) => state.user?.id)
+
+	const myCompetitionsQuery = useQuery({
+		queryKey: [COMPETITIONS_QUERY_KEY, "my", userId],
+		queryFn: () => getCompetitionsByUserId(userId!),
+		enabled: !!userId,
+	})
+
+	return { myCompetitionsQuery }
 }

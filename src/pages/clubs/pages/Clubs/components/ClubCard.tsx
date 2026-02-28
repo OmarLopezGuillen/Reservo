@@ -14,14 +14,13 @@ export const ClubCard = ({ club }: ClubCardProps) => {
 			to={ROUTES.CLUBS.ID(club.id)}
 			className="group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-xl block"
 		>
-			<Card className="h-full transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-primary/50 border-2 overflow-hidden bg-card">
-				<div className="relative h-48 bg-gradient-to-br from-primary/90 via-accent/80 to-primary/70 overflow-hidden">
+			<Card className="h-full transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-primary/50 border-2 overflow-hidden bg-card pt-0">
+				<div className="relative h-48 bg-linear-to-br from-primary/90 via-accent/80 to-primary/70 overflow-hidden">
 					<img
 						src={`/padel-court-modern-.jpg?height=200&width=400&query=padel+court+modern+${encodeURIComponent(club.name)}`}
 						alt={`${club.name} - Cancha de pádel`}
 						className="w-full h-full object-cover opacity-30 group-hover:scale-110 transition-transform duration-500"
 					/>
-					<div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-60" />
 					<div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
 						<span className="text-xs font-semibold text-primary">
 							Reserva ya

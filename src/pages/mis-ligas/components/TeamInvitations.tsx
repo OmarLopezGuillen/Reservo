@@ -32,8 +32,8 @@ export const TeamInvitations = () => {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" className="relative">
-					<Bell className="h-4 w-4 mr-2" />
-					Invitaciones
+					<Bell className="h-4 w-4 sm:mr-2" />
+					<span className="hidden sm:block">Invitaciones</span>
 					{invites.length > 0 && (
 						<span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
 							{invites.length}

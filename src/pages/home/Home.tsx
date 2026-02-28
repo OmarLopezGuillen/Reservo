@@ -188,7 +188,7 @@ const Home = () => {
 							<ActionCard
 								icon={LayoutDashboard}
 								title="Administración"
-								description="Panel admin"
+								description="Gestiona tu club"
 								to={ROUTES.ADMIN.ROOT}
 							/>
 						)}

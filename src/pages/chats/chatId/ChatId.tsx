@@ -1,12 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { ArrowDown, ChevronLeft } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Link, useLocation, useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { ROUTES } from "@/constants/ROUTES"
 import { useSendChatMessage } from "@/hooks/competitions/useChatMutaiton"
 import {
 	CHAT_MESSAGES_QUERY_KEY,
@@ -24,6 +23,8 @@ import { MatchReschedulePanel } from "./components/MatchReschedulePanel/MatchRes
 export default function ChatThreadPage() {
 	const { chatId } = useParams<{ chatId: string }>()
 	const threadId = chatId!
+
+	const navigate = useNavigate()
 
 	const queryClient = useQueryClient()
 
@@ -52,11 +53,6 @@ export default function ChatThreadPage() {
 	const { data: clubHours } = clubHoursQuery
 
 	const messages = messagesQuery.data ?? []
-
-	const location = useLocation()
-
-	const backRoute =
-		location.state?.from === "admin" ? ROUTES.ADMIN.CHAT : ROUTES.CHATS.ROOT
 
 	const scrollToBottom = (smooth = true) => {
 		if (scrollRef.current) {
@@ -204,11 +200,9 @@ export default function ChatThreadPage() {
 		<Card className="h-screen flex flex-col relative">
 			<CardHeader className="border-b">
 				<div className="flex items-center gap-2">
-					<Button variant="ghost" size="sm" asChild>
-						<Link to={backRoute}>
-							<ChevronLeft className="h-4 w-4 mr-2" />
-							Volver atrás
-						</Link>
+					<Button onClick={() => navigate(-1)} variant="ghost" size="sm">
+						<ChevronLeft className="h-4 w-4 mr-2" />
+						Volver atrás
 					</Button>
 
 					<CardTitle className="truncate">{title}</CardTitle>
