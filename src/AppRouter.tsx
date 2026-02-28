@@ -8,7 +8,9 @@ import Register from "@/auth/pages/Register"
 import { Loading } from "@/components/Loading"
 import { ROUTES } from "@/constants/ROUTES"
 import { ROLES } from "@/models/ROLES.model"
-import Home from "@/pages/home/Home"
+import ForgotPassword from "@/auth/pages/ForgotPassword"
+import ResetPassword from "@/auth/pages/ResetPassword"
+import Home from "./pages/home/Home"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
 const NotFound = lazy(() => import("@/pages/NotFound"))
@@ -93,6 +95,8 @@ export default function AppRouter() {
 				<Route element={<NoAuthRoute />}>
 					<Route path={ROUTES.LOGIN} element={<Login />} />
 					<Route path={ROUTES.REGISTER} element={<Register />} />
+					<Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
+					<Route path={ROUTES.RESET_PASSWORD} element={<ResetPassword />} />
 				</Route>
 
 				{/* Legales */}

@@ -119,7 +119,7 @@ export default function LoginForm() {
 										<div className="flex justify-between items-center">
 											<FormLabel htmlFor="password">Contraseña</FormLabel>
 											<Link
-												to={ROUTES.HOME}
+												to={ROUTES.FORGOT_PASSWORD}
 												className="ml-auto inline-block text-sm underline"
 											>
 												¿Has olvidado la contraseña?
