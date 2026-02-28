@@ -1,5 +1,5 @@
-import { Calendar, Loader2, Shield, Trophy } from "lucide-react"
-import { Link } from "react-router"
+import { ArrowLeft, Calendar, Loader2, Shield, Trophy } from "lucide-react"
+import { Link, useNavigate } from "react-router"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -50,6 +50,7 @@ const CompetitionCard = ({ competition }: { competition: any }) => (
 )
 
 const Competitions = () => {
+	const navigate = useNavigate()
 	const { allCompetitionsQuery } = useAllCompetitions()
 	const { data: competitions = [], isLoading } = allCompetitionsQuery
 
@@ -74,7 +75,19 @@ const Competitions = () => {
 	return (
 		<div className="container mx-auto py-10">
 			<div className="flex items-center justify-between mb-8">
-				<h1 className="text-3xl font-bold">Competiciones Disponibles</h1>
+				<div className="flex items-center gap-4">
+					<Button
+						variant="ghost"
+						onClick={() => navigate(-1)}
+						className="flex items-center gap-2 px-2"
+					>
+						<ArrowLeft className="h-4 w-4" />
+						<span className="text-sm">Volver</span>
+					</Button>
+
+					<h1 className="text-3xl font-bold">Competiciones Disponibles</h1>
+				</div>
+
 				<TeamInvitations />
 			</div>
 			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

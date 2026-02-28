@@ -42,6 +42,10 @@ const NavLinks = ({ onClick }: { onClick?: () => void }) => {
 					Mis ligas
 				</Link>
 
+				<Link onClick={handleClick} to={ROUTES.COMPETITIONS.ROOT}>
+					Competiciones
+				</Link>
+
 				{role && [ROLES.ADMIN, ROLES.OWNER].includes(role) && (
 					<Link onClick={handleClick} to={ROUTES.ADMIN.ROOT}>
 						Administración
@@ -211,6 +215,15 @@ const Home = () => {
 								title="Mis ligas"
 								description="Ver ligas"
 								to={ROUTES.MIS_LIGAS}
+							/>
+						)}
+
+						{user && (
+							<ActionCard
+								icon={Trophy}
+								title="Competiciones"
+								description="Explorar competiciones"
+								to={ROUTES.COMPETITIONS.ROOT}
 							/>
 						)}
 
