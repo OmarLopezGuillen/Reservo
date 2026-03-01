@@ -21,7 +21,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ROUTES } from "@/constants/ROUTES"
 import { ROLES } from "@/models/ROLES.model"
-import { sendEmail } from "@/services/sendEmail.service"
 
 const NavLinks = ({ onClick }: { onClick?: () => void }) => {
 	const { user } = useAuthStore()
