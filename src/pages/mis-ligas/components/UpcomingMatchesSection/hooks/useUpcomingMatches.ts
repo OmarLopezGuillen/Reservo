@@ -7,7 +7,7 @@ import type { Match } from "@/models/competition.model"
 import type { StatusMatches } from "@/models/dbTypes"
 import { getCompetitionTeamsByCompetitionId } from "@/services/databaseService/competitions/competition_teams.service"
 import { getMatchesByCompetitionId } from "@/services/databaseService/competitions/matches.service"
-import type { UpcomingMatchItem } from "./types"
+import type { UpcomingMatchItem } from "../types/types"
 
 type UseUpcomingMatchesParams = {
 	competitionIds?: string[]

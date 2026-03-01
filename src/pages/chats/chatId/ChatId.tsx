@@ -135,9 +135,7 @@ export default function ChatThreadPage() {
 					)
 				},
 			)
-			.subscribe((status) => {
-				console.log("Realtime chat status:", status)
-			})
+			.subscribe(() => {})
 
 		return () => {
 			channel.unsubscribe()
