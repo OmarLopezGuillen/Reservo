@@ -16,7 +16,7 @@ import { useCanStartCompetition } from "@/pages/admin/pages/Competiciones/pages/
 
 interface StartCompetitionDialogProps {
 	teams: CompetitionTeamWithMemberAndAvailability[]
-	onConfirm: () => void
+	onConfirm: () => void | Promise<void>
 }
 
 export const StartCompetitionDialog = ({

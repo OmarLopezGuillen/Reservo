@@ -123,19 +123,24 @@ export function MatchReschedulePanel({
 		courts.find((c) => c.id === id)?.name ?? "Pista"
 
 	return (
-		<Card className="p-3 space-y-4 w-full max-w-5xl mx-auto">
+		<Card className="w-full space-y-4 max-h-[30vh] overflow-y-auto overflow-x-hidden border-0 p-0 mt-4">
 			{/* HEADER */}
-			<div className="flex items-center justify-between">
+			<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 				<div className="font-medium">Reprogramación</div>
 
 				<Dialog open={open} onOpenChange={setOpen}>
 					<DialogTrigger asChild>
-						<Button size="sm" variant="outline" disabled={isLocked24h}>
+						<Button
+							size="sm"
+							variant="outline"
+							disabled={isLocked24h}
+							className="w-full sm:w-auto"
+						>
 							Nueva propuesta
 						</Button>
 					</DialogTrigger>
 
-					<DialogContent className="max-h-[90vh] overflow-y-auto w-full sm:max-w-6xl">
+					<DialogContent className="w-[calc(100vw-1.5rem)] max-w-[calc(100vw-1.5rem)] sm:w-full sm:max-w-6xl max-h-[90vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6">
 						<DialogHeader>
 							<DialogTitle>Nueva propuesta</DialogTitle>
 						</DialogHeader>
@@ -175,9 +180,9 @@ export function MatchReschedulePanel({
 								{pickedOptions.map((o, i) => (
 									<div
 										key={i}
-										className="flex items-center justify-between text-sm border rounded p-2"
+										className="min-w-0 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm border rounded p-2"
 									>
-										<div>
+										<div className="min-w-0 break-words">
 											{getCourtName(o.courtId)} ·{" "}
 											{new Date(o.startTime).toLocaleString("es-ES")}
 										</div>
@@ -185,6 +190,7 @@ export function MatchReschedulePanel({
 										<Button
 											size="sm"
 											variant="ghost"
+											className="w-full sm:w-auto"
 											onClick={() =>
 												setPickedOptions((prev) =>
 													prev.filter((_, idx) => idx !== i),
@@ -198,13 +204,18 @@ export function MatchReschedulePanel({
 							</div>
 						)}
 
-						<DialogFooter>
-							<Button variant="outline" onClick={() => setOpen(false)}>
+						<DialogFooter className="flex-col sm:flex-row gap-2">
+							<Button
+								variant="outline"
+								onClick={() => setOpen(false)}
+								className="w-full sm:w-auto"
+							>
 								Cancelar
 							</Button>
 							<Button
 								onClick={onCreateProposal}
 								disabled={!canCreate || createProposalMutation.isPending}
+								className="w-full sm:w-auto"
 							>
 								Crear propuesta
 							</Button>
@@ -237,18 +248,18 @@ export function MatchReschedulePanel({
 								return (
 									<div
 										key={o.id}
-										className="rounded-md border p-2 flex items-center justify-between"
+										className="min-w-0 rounded-md border p-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
 									>
-										<div>
+										<div className="min-w-0">
 											<div className="text-sm font-medium">
 												{new Date(o.startTime).toLocaleString("es-ES")}
 											</div>
-											<div className="text-xs text-muted-foreground">
+											<div className="text-xs text-muted-foreground break-words">
 												{getCourtName(o.courtId)} · ✅ {yes}/{required}
 											</div>
 										</div>
 
-										<div className="flex gap-2">
+										<div className="grid grid-cols-2 gap-2 sm:flex sm:gap-2">
 											<Button
 												size="sm"
 												onClick={() =>
@@ -313,7 +324,10 @@ export function MatchReschedulePanel({
 									</Badge>
 
 									{p.options.map((o) => (
-										<div key={o.id} className="text-sm text-muted-foreground">
+										<div
+											key={o.id}
+											className="text-sm text-muted-foreground break-words"
+										>
 											{getCourtName(o.courtId)} ·{" "}
 											{new Date(o.startTime).toLocaleString("es-ES")}
 										</div>

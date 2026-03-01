@@ -1,4 +1,5 @@
 import { useParams } from "react-router"
+import { useClubHours } from "@/hooks/useClubHoursQuery"
 import { useCourts } from "@/hooks/useCourtsQuery"
 import {
 	assignStartTimesToCategoryMatches,
@@ -17,10 +18,11 @@ type roundRobin = Competition["roundType"]
 export function useStartCompetition(
 	teams: CompetitionTeamWithMemberAndAvailability[],
 	type: roundRobin,
+	clubId: string,
 ) {
 	const { competicionId } = useParams()
-	const { courtsQuery } = useCourts(competicionId)
-	const courtIds = courtsQuery.data?.map((c) => c.id) ?? []
+	const { courtsQuery } = useCourts(clubId)
+	const { clubHoursQuery } = useClubHours(clubId)
 
 	const startCompetition = async () => {
 		if (!type || !competicionId) return []
@@ -42,15 +44,33 @@ export function useStartCompetition(
 			return d
 		})()
 
+		const courts =
+			(courtsQuery.data ?? (await courtsQuery.refetch()).data ?? []).filter(
+				(court) => court.isActive,
+			)
+		const clubHours = clubHoursQuery.data ?? (await clubHoursQuery.refetch()).data
+
 		const matchesWithTime = assignStartTimesToCategoryMatches(
 			schedule,
 			disponibilidad,
-			{ firstRoundWeekStart },
+			{
+				firstRoundWeekStart,
+				clubHours,
+				courtSlotRules: courts.map((court) => ({
+					slotDurationMinutes: court.slotDurationMinutes,
+					slotStartOffsetMinutes: court.slotStartOffsetMinutes,
+				})),
+			},
 		)
 
 		await createMatchesGreedyFromCategoriesSchedule(matchesWithTime, {
 			competitionId: competicionId,
-			courtIds,
+			courts: courts.map((court) => ({
+				id: court.id,
+				slotDurationMinutes: court.slotDurationMinutes,
+				slotStartOffsetMinutes: court.slotStartOffsetMinutes,
+			})),
+			clubHours,
 			firstRoundWeekStart, // 👈 NUEVO
 		})
 

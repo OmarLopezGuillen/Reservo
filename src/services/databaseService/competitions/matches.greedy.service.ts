@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase"
+import type { BusinessDay } from "@/models/business.model"
 import type { Match } from "@/models/competition.model"
 import type { MatchesInsert, MatchesRow } from "@/models/dbTypes"
 import { matchAdapter } from "@/services/adapters/competitions.adapter"
@@ -31,7 +32,12 @@ type Unscheduled = {
 
 type GreedyParams = {
 	competitionId: string
-	courtIds: string[]
+	courts: Array<{
+		id: string
+		slotDurationMinutes: number
+		slotStartOffsetMinutes: number
+	}>
+	clubHours?: BusinessDay[]
 	firstRoundWeekStart: Date
 }
 
@@ -49,7 +55,6 @@ function isoDateLocal(date: Date) {
 	return `${y}-${m}-${d}`
 }
 
-const MATCH_DURATION_MINUTES = 90
 const KIND: MatchesInsert["kind"] = "regular" as MatchesInsert["kind"]
 const STATUS_SCHEDULED: MatchesInsert["status"] =
 	"scheduled" as MatchesInsert["status"]
@@ -74,14 +79,11 @@ export async function createMatchesGreedyFromCategoriesSchedule(
 	}
 
 	const busy: BusyInterval[] = []
+	const courtIds = params.courts.map((court) => court.id)
 	if (candidateTimesMs.length > 0) {
 		const minIso = new Date(Math.min(...candidateTimesMs)).toISOString()
 		const maxIso = new Date(Math.max(...candidateTimesMs)).toISOString()
-		const existing = await getMatchesByCourtsAndRange(
-			params.courtIds,
-			minIso,
-			maxIso,
-		)
+		const existing = await getMatchesByCourtsAndRange(courtIds, minIso, maxIso)
 		for (const m of existing) {
 			if (!m.start_time || !m.end_time) continue
 			busy.push({
@@ -150,10 +152,12 @@ export async function createMatchesGreedyFromCategoriesSchedule(
 				for (const startISO of candidates) {
 					const startMs = Date.parse(startISO)
 					if (Number.isNaN(startMs)) continue
-					const endMs = startMs + MATCH_DURATION_MINUTES * 60_000
 
-					// probar cada pista en orden
-					for (const courtId of params.courtIds) {
+					// probar cada pista en orden respetando su duración/offset
+					for (const court of params.courts) {
+						const courtId = court.id
+						if (!isAlignedToCourtSlot(startMs, court, params.clubHours)) continue
+						const endMs = startMs + court.slotDurationMinutes * 60_000
 						if (!isCourtFree(busy, courtId, startMs, endMs)) continue
 
 						const endISO = new Date(endMs).toISOString()
@@ -256,6 +260,73 @@ function isCourtFree(
 		if (startMs < b.endMs && b.startMs < endMs) return false // solape
 	}
 	return true
+}
+
+function isAlignedToCourtSlot(
+	startMs: number,
+	court: { slotDurationMinutes: number; slotStartOffsetMinutes: number },
+	clubHours?: BusinessDay[],
+) {
+	const duration = Math.max(1, court.slotDurationMinutes || 90)
+	const offset = Math.max(0, court.slotStartOffsetMinutes || 0)
+	const date = new Date(startMs)
+	const minuteOfDay = date.getHours() * 60 + date.getMinutes()
+	const weekday = getWeekdayIndexMonday(date)
+	const dayRanges = getDayOpenRanges(clubHours, weekday)
+
+	// Si no hay configuración de horarios, fallback a la lógica simple.
+	if (dayRanges.length === 0) {
+		if (minuteOfDay < offset) return false
+		return (minuteOfDay - offset) % duration === 0
+	}
+
+	for (const range of dayRanges) {
+		const anchor = range.startMinutes + offset
+		if (minuteOfDay < anchor) continue
+		if (minuteOfDay + duration > range.endMinutes) continue
+		if ((minuteOfDay - anchor) % duration === 0) return true
+	}
+
+	return false
+}
+
+function getWeekdayIndexMonday(date: Date) {
+	return (date.getDay() + 6) % 7
+}
+
+function getDayOpenRanges(clubHours: BusinessDay[] | undefined, weekday: number) {
+	if (!clubHours || clubHours.length === 0) return []
+
+	const day = clubHours.find((entry) => weekdayToIndex(entry.weekday) === weekday)
+	if (!day || day.closed) return []
+
+	return (day.hours ?? [])
+		.map((range) => ({
+			startMinutes: timeToMinutes(range.start),
+			endMinutes: timeToMinutes(range.end),
+		}))
+		.filter((range) => range.endMinutes > range.startMinutes)
+}
+
+function weekdayToIndex(weekday: string): number | null {
+	const normalized = weekday.toLowerCase()
+	const map: Record<string, number> = {
+		lunes: 0,
+		martes: 1,
+		miercoles: 2,
+		miércoles: 2,
+		jueves: 3,
+		viernes: 4,
+		sabado: 5,
+		sábado: 5,
+		domingo: 6,
+	}
+	return map[normalized] ?? null
+}
+
+function timeToMinutes(value: string) {
+	const [hours, minutes] = value.split(":").map(Number)
+	return hours * 60 + minutes
 }
 
 async function insertMatchRow(args: {

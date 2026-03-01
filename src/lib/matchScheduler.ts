@@ -1,3 +1,4 @@
+import type { BusinessDay } from "@/models/business.model"
 import type { TeamAvailability } from "@/models/competition.model"
 import type { WeekDay } from "@/models/dbTypes"
 
@@ -25,6 +26,11 @@ export interface TeamAvailabilitiesByTeam {
 	availabilities: TeamAvailability[]
 }
 
+export interface CourtSlotRule {
+	slotDurationMinutes: number
+	slotStartOffsetMinutes: number
+}
+
 /**
  * Nuevo formato por categoría:
  * - jornadas: Schedule (Round[])
@@ -47,6 +53,8 @@ interface ScheduleOptions {
 	 */
 	referenceDate?: Date
 	firstRoundWeekStart?: Date
+	courtSlotRules?: CourtSlotRule[]
+	clubHours?: BusinessDay[]
 }
 
 interface SlotIntersection {
@@ -98,6 +106,8 @@ export function assignStartTimesToCategoryMatches(
 			cat.schedule,
 			availabilityMap,
 			referenceWeekStart,
+			options.courtSlotRules ?? [],
+			options.clubHours ?? [],
 		),
 	}))
 }
@@ -108,6 +118,8 @@ function assignStartTimesToScheduleInternal(
 	schedule: Schedule,
 	availabilityMap: Map<string, TeamAvailability[]>,
 	referenceWeekStart: Date,
+	courtSlotRules: CourtSlotRule[],
+	clubHours: BusinessDay[],
 ): ScheduledSchedule {
 	return schedule.map((round, roundIndex) =>
 		round.map((match) => {
@@ -116,17 +128,136 @@ function assignStartTimesToScheduleInternal(
 
 			const overlaps = findAllOverlaps(homeAvailability, awayAvailability)
 			const weekStartForRound = addDays(referenceWeekStart, roundIndex * 7)
-			const startTimes = overlaps.map((overlap) => {
-				const scheduledDate = addMinutesToDate(
-					addDays(weekStartForRound, overlap.weekday),
-					overlap.startMinutes,
-				)
-				return scheduledDate.toISOString()
-			})
+			const startTimes =
+				courtSlotRules.length > 0
+					? buildStartTimesFromOverlaps(
+							overlaps,
+							weekStartForRound,
+							courtSlotRules,
+							clubHours,
+						)
+					: overlaps.map((overlap) => {
+							const scheduledDate = addMinutesToDate(
+								addDays(weekStartForRound, overlap.weekday),
+								overlap.startMinutes,
+							)
+							return scheduledDate.toISOString()
+						})
 
 			return { ...match, startTime: startTimes }
 		}),
 	)
+}
+
+function buildStartTimesFromOverlaps(
+	overlaps: SlotIntersection[],
+	weekStartForRound: Date,
+	courtSlotRules: CourtSlotRule[],
+	clubHours: BusinessDay[],
+): string[] {
+	const starts = new Set<number>()
+	const rangesByWeekday = buildClubOpenRangesByWeekday(clubHours)
+
+	for (const overlap of overlaps) {
+		for (const rule of courtSlotRules) {
+			const duration = Math.max(1, rule.slotDurationMinutes || 90)
+			const offset = Math.max(0, rule.slotStartOffsetMinutes || 0)
+			const dayRanges = rangesByWeekday[overlap.weekday]
+
+			// Si no hay horario de club, fallback al comportamiento previo.
+			if (dayRanges.length === 0) {
+				let startMinutes = firstAlignedStart(overlap.startMinutes, offset, duration)
+
+				while (startMinutes + duration <= overlap.endMinutes) {
+					const scheduledDate = addMinutesToDate(
+						addDays(weekStartForRound, overlap.weekday),
+						startMinutes,
+					)
+					starts.add(scheduledDate.getTime())
+					startMinutes += duration
+				}
+				continue
+			}
+
+			for (const range of dayRanges) {
+				const intersectionStart = Math.max(overlap.startMinutes, range.startMinutes)
+				const intersectionEnd = Math.min(overlap.endMinutes, range.endMinutes)
+				const rangeAnchor = range.startMinutes + offset
+				let startMinutes = firstAlignedStart(
+					intersectionStart,
+					rangeAnchor,
+					duration,
+				)
+
+				while (startMinutes + duration <= intersectionEnd) {
+					const scheduledDate = addMinutesToDate(
+						addDays(weekStartForRound, overlap.weekday),
+						startMinutes,
+					)
+					starts.add(scheduledDate.getTime())
+					startMinutes += duration
+				}
+			}
+		}
+	}
+
+	return [...starts]
+		.sort((a, b) => a - b)
+		.map((timestamp) => new Date(timestamp).toISOString())
+}
+
+function firstAlignedStart(
+	startMinutes: number,
+	offsetMinutes: number,
+	durationMinutes: number,
+): number {
+	if (startMinutes <= offsetMinutes) return offsetMinutes
+	const delta = startMinutes - offsetMinutes
+	const slots = Math.ceil(delta / durationMinutes)
+	return offsetMinutes + slots * durationMinutes
+}
+
+function buildClubOpenRangesByWeekday(clubHours: BusinessDay[]) {
+	const result: Array<Array<{ startMinutes: number; endMinutes: number }>> = [
+		[],
+		[],
+		[],
+		[],
+		[],
+		[],
+		[],
+	]
+
+	for (const day of clubHours) {
+		const weekday = weekdayToIndex(day.weekday)
+		if (weekday === null || day.closed) continue
+
+		result[weekday] = (day.hours ?? [])
+			.map((hourRange) => ({
+				startMinutes: timeToMinutes(hourRange.start),
+				endMinutes: timeToMinutes(hourRange.end),
+			}))
+			.filter((range) => range.endMinutes > range.startMinutes)
+			.sort((a, b) => a.startMinutes - b.startMinutes)
+	}
+
+	return result
+}
+
+function weekdayToIndex(weekday: string): number | null {
+	const normalized = weekday.toLowerCase()
+	const map: Record<string, number> = {
+		lunes: 0,
+		martes: 1,
+		miercoles: 2,
+		miércoles: 2,
+		jueves: 3,
+		viernes: 4,
+		sabado: 5,
+		sábado: 5,
+		domingo: 6,
+	}
+	return map[normalized] ?? null
 }
 
 function buildAvailabilityMap(entries: TeamAvailabilitiesByTeam[]) {

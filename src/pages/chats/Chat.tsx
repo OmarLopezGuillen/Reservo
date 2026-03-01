@@ -12,8 +12,8 @@ export default function Chats() {
 	if (chatThreadsQuery.isError) return <div>Error cargando tus chats</div>
 
 	return (
-		<div className="min-h-svh w-full flex items-center justify-center px-4">
-			<div className="w-full max-w-5xl">
+		<div className="w-full flex items-center justify-center">
+			<div className="w-full">
 				<Card>
 					<CardHeader>
 						<CardTitle className="flex items-center gap-2">

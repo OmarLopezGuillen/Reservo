@@ -16,14 +16,30 @@ import { useChatThreadByMatchId } from "@/hooks/competitions/useChatThreadsQuery
 import { useCompetitionTeamById } from "@/hooks/competitions/useCompetitionTeamsQuery"
 import { useMatchResultMutations } from "@/hooks/competitions/useMatchResultMutations"
 import { useCourtById } from "@/hooks/useCourtsQuery"
-import type { Match, MatchWithResult } from "@/models/competition.model"
+import type {
+	Match,
+	MatchResultStatus,
+	MatchWithResult,
+} from "@/models/competition.model"
 import { DisputeDialog } from "./disputeDialog"
 import { MatchResultDialog } from "./resultDialog"
 
+type MatchCardMatch = Match | MatchWithResult
+
 interface MatchCardProps {
-	match: MatchWithResult
+	match: MatchCardMatch
 	noLocationText?: string
 	noDateText?: string
+}
+
+const hasResultData = (match: MatchCardMatch): match is MatchWithResult =>
+	"resultStatus" in match
+
+const parseSets = (score: unknown): number[] => {
+	if (!score || typeof score !== "object" || !("sets" in score)) return []
+	const sets = (score as { sets?: unknown }).sets
+	if (!Array.isArray(sets)) return []
+	return sets.filter((set): set is number => typeof set === "number")
 }
 
 export function MatchCard({
@@ -46,10 +62,7 @@ export function MatchCard({
 	)
 
 	const { courtByIdQuery } = useCourtById(match.courtId)
-
 	const { report, confirm, dispute } = useMatchResultMutations(match.id)
-
-	if (!match) return null
 
 	const homeTeamName = homeTeamQuery.data?.name ?? "Equipo local"
 	const awayTeamName = awayTeamQuery.data?.name ?? "Equipo visitante"
@@ -71,18 +84,21 @@ export function MatchCard({
 			})
 		: null
 
-	const setsHome = match.scoreHome?.sets || []
-	const setsAway = match.scoreAway?.sets || []
+	const setsHome = parseSets(match.scoreHome)
+	const setsAway = parseSets(match.scoreAway)
+	const resultStatus: MatchResultStatus = hasResultData(match)
+		? match.resultStatus
+		: "none"
+	const reportedByTeamId = hasResultData(match) ? match.reportedByTeamId : null
 
 	const isHomeWinner = match.winnerTeamId === match.homeTeamId
 	const isAwayWinner = match.winnerTeamId === match.awayTeamId
 
-	// 🔹 Detectar si usuario pertenece a alguno de los equipos
 	const isHomeMember = homeTeamQuery.data?.members?.some(
-		(m) => m.userId === user?.id,
+		(member) => member.userId === user.id,
 	)
 	const isAwayMember = awayTeamQuery.data?.members?.some(
-		(m) => m.userId === user?.id,
+		(member) => member.userId === user.id,
 	)
 
 	const myTeamId = isHomeMember
@@ -104,7 +120,6 @@ export function MatchCard({
 
 	return (
 		<div className="bg-card border rounded-md hover:shadow-sm transition-shadow flex flex-col max-w-lg">
-			{/* HEADER */}
 			<div className="p-4 border-b flex justify-between items-center">
 				<Badge variant="outline" className="text-xs">
 					Jornada {match.round}
@@ -121,17 +136,13 @@ export function MatchCard({
 				)}
 			</div>
 
-			{/* SCORE */}
 			<div className="p-4 space-y-2">
-				{/* Home */}
 				<div className="flex justify-between items-center">
-					<span className={isHomeWinner ? "font-bold" : ""}>
-						{homeTeamName}
-					</span>
+					<span className={isHomeWinner ? "font-bold" : ""}>{homeTeamName}</span>
 					<div className="flex gap-1">
-						{setsHome.map((set, i) => (
+						{setsHome.map((set, index) => (
 							<span
-								key={i}
+								key={`${match.id}-home-${index}`}
 								className="w-7 h-7 flex items-center justify-center border rounded text-sm"
 							>
 								{set}
@@ -140,15 +151,12 @@ export function MatchCard({
 					</div>
 				</div>
 
-				{/* Away */}
 				<div className="flex justify-between items-center">
-					<span className={isAwayWinner ? "font-bold" : ""}>
-						{awayTeamName}
-					</span>
+					<span className={isAwayWinner ? "font-bold" : ""}>{awayTeamName}</span>
 					<div className="flex gap-1">
-						{setsAway.map((set, i) => (
+						{setsAway.map((set, index) => (
 							<span
-								key={i}
+								key={`${match.id}-away-${index}`}
 								className="w-7 h-7 flex items-center justify-center border rounded text-sm"
 							>
 								{set}
@@ -158,22 +166,21 @@ export function MatchCard({
 				</div>
 			</div>
 
-			{/* RESULT ACTIONS */}
 			{myTeamId && (
 				<div className="border-t p-4 space-y-3">
-					{match.resultStatus === "none" && (
+					{resultStatus === "none" && (
 						<MatchResultDialog
 							homeTeamName={homeTeamName}
 							awayTeamName={awayTeamName}
-							onReport={(h, a) =>
-								report.mutateAsync({ setsHome: h, setsAway: a })
+							onReport={(homeSets, awaySets) =>
+								report.mutateAsync({ setsHome: homeSets, setsAway: awaySets })
 							}
 						/>
 					)}
 
-					{match.resultStatus === "reported" && (
+					{resultStatus === "reported" && (
 						<>
-							{match.reportedByTeamId === myTeamId ? (
+							{reportedByTeamId === myTeamId ? (
 								<div className="flex items-center gap-2 text-sm text-muted-foreground">
 									<Clock className="h-4 w-4" />
 									Pendiente de confirmación del rival
@@ -197,7 +204,7 @@ export function MatchCard({
 						</>
 					)}
 
-					{match.resultStatus === "disputed" && (
+					{resultStatus === "disputed" && (
 						<div className="space-y-2">
 							<div className="flex items-center gap-2 text-destructive text-sm">
 								<AlertCircle className="h-4 w-4" />
@@ -207,26 +214,25 @@ export function MatchCard({
 							<MatchResultDialog
 								homeTeamName={homeTeamName}
 								awayTeamName={awayTeamName}
-								onReport={(h, a) =>
-									report.mutateAsync({ setsHome: h, setsAway: a })
+								onReport={(homeSets, awaySets) =>
+									report.mutateAsync({ setsHome: homeSets, setsAway: awaySets })
 								}
 							/>
 						</div>
 					)}
 
-					{match.resultStatus === "confirmed" && (
+					{resultStatus === "confirmed" && (
 						<div className="flex items-center gap-2 text-green-600 text-sm">
-							<CheckCircle2 className="h-4 w-4" />
+							<CheckCircle2 className="h-4 w-4 shrink-0" />
 							Resultado confirmado
 						</div>
 					)}
 				</div>
 			)}
 
-			{/* FOOTER */}
-			<div className="p-4 border-t text-sm text-muted-foreground flex justify-between">
+			<div className="p-4 border-t text-sm text-muted-foreground flex justify-between flex-wrap gap-4">
 				<div className="flex items-center gap-1">
-					<Calendar className="h-4 w-4" />
+					<Calendar className="h-4 w-4 shrink-0" />
 					{formattedDate ?? noDateText}
 					{formattedTime && <> · {formattedTime}</>}
 				</div>

@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
 		setError(null)
 
 		try {
-			await resetPassword(values.email)
+			await resetPassword({ email: values.email })
 			setSuccess(true)
 		} catch (err: any) {
 			setError("No se pudo enviar el enlace. Inténtalo de nuevo.")

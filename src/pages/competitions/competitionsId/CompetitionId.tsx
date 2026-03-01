@@ -6,7 +6,7 @@ import { useMatchesByCompetitionId } from "@/hooks/competitions/useMatchesQuery"
 
 import type { Match } from "@/models/competition.model"
 
-import { MatchCard } from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/matches-tab/components/match-card"
+import { MatchCard } from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/matches-tab/components/MatchCard"
 import StandingsTab from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/components/standings-tab"
 
 type MatchesByCategory = Record<string, Match[]>

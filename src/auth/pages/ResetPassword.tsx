@@ -40,7 +40,7 @@ const resetSchema = z
 type ResetSchema = z.infer<typeof resetSchema>
 
 export default function ResetPasswordPage() {
-	const { updatePassword } = useAuthActions()
+	const { changePassword } = useAuthActions()
 	const [error, setError] = useState<string | null>(null)
 	const [success, setSuccess] = useState(false)
 	const navigate = useNavigate()
@@ -57,7 +57,9 @@ export default function ResetPasswordPage() {
 		setError(null)
 
 		try {
-			await updatePassword(values.password)
+			await changePassword({
+				password: values.password,
+			})
 			setSuccess(true)
 
 			// Redirigir después de 2s (opcional)

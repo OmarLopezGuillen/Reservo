@@ -35,7 +35,6 @@ export const ROUTES = {
 	},
 
 	CHATS: {
-		ROOT: "/chats",
 		ID: (id: string | number) => `/chats/${id}`,
 	},
 	MIS_LIGAS: "/mis-ligas",

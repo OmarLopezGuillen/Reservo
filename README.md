@@ -71,3 +71,19 @@ export default defineConfig([
   },
 ])
 ```
+
+## Supabase Edge Function + Resend
+
+Se añadió la función `supabase/functions/send-email/index.ts` para enviar emails con Resend.
+
+1. Configura secretos en Supabase:
+```bash
+supabase secrets set RESEND_API_KEY=tu_api_key
+supabase secrets set RESEND_FROM_EMAIL="Reservo <noreply@tu-dominio.com>"
+```
+2. Despliega la función:
+```bash
+supabase functions deploy send-email
+```
+3. Invócala desde frontend con:
+`src/services/edgeFunctions/sendEmail.service.ts`

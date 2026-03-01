@@ -1,6 +1,7 @@
 import { Calendar, CalendarX } from "lucide-react"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router"
+import { useCourtBlocksByCourtIds } from "@/hooks/useCourtBlocksQuery"
 import { cn } from "@/lib/utils"
 import type { BookingCalendar } from "@/models/booking.model"
 import type { BusinessDay } from "@/models/business.model"
@@ -8,8 +9,6 @@ import type { Court } from "@/models/court.model"
 import type { UISlot } from "@/models/slots.model"
 import { CalendarLegend } from "./components/CalendarLegend"
 import { CalendarNavigator } from "./components/CalendarNavigator"
-
-type Mode = "booking" | "picker"
 
 export type PickedOption = {
 	courtId: string
@@ -42,6 +41,8 @@ type Props =
 export default function CourtCalendarBase(props: Props) {
 	const navigate = useNavigate()
 	const [selectedDate, setSelectedDate] = useState(new Date())
+	const courtIds = useMemo(() => props.courts.map((court) => court.id), [props.courts])
+	const { courtBlocksQuery } = useCourtBlocksByCourtIds(courtIds)
 
 	/* ===============================
      Obtener rangos abiertos
@@ -137,12 +138,30 @@ export default function CourtCalendarBase(props: Props) {
 		return "occupied"
 	}
 
+	const isBlockedByCourtBlock = (courtId: string, start: Date, end: Date) => {
+		return (courtBlocksQuery.data ?? []).some((courtBlock) => {
+			if (courtBlock.court_id !== courtId) return false
+
+			const blockStart = new Date(courtBlock.start_time)
+			const blockEnd = new Date(courtBlock.end_time)
+
+			return start < blockEnd && end > blockStart
+		})
+	}
+
+	const getSlotStateWithBlocks = (courtId: string, start: Date, end: Date) => {
+		const bookingState = getSlotState(courtId, start, end)
+		if (bookingState !== "available") return bookingState
+		if (isBlockedByCourtBlock(courtId, start, end)) return "blocked"
+		return "available"
+	}
+
 	/* ===============================
      Click
   =============================== */
 
 	const handleSlotClick = (court: Court, start: Date, end: Date) => {
-		const state = getSlotState(court.id, start, end)
+		const state = getSlotStateWithBlocks(court.id, start, end)
 		if (state !== "available") return
 
 		if (props.mode === "booking") {
@@ -177,7 +196,8 @@ export default function CourtCalendarBase(props: Props) {
 		.map((court) => {
 			const slots = generateCourtSlots(court)
 			const availableSlots = slots.filter(
-				(slot) => getSlotState(court.id, slot.start, slot.end) === "available",
+				(slot) =>
+					getSlotStateWithBlocks(court.id, slot.start, slot.end) === "available",
 			)
 			return { court, slots, availableSlots }
 		})
@@ -240,7 +260,11 @@ export default function CourtCalendarBase(props: Props) {
 										key={slot.start.toISOString()}
 										court={court}
 										slot={slot}
-										state={getSlotState(court.id, slot.start, slot.end)}
+										state={getSlotStateWithBlocks(
+											court.id,
+											slot.start,
+											slot.end,
+										)}
 										onClick={handleSlotClick}
 									/>
 								))}
@@ -273,7 +297,11 @@ export default function CourtCalendarBase(props: Props) {
 											key={slot.start.toISOString()}
 											court={court}
 											slot={slot}
-											state={getSlotState(court.id, slot.start, slot.end)}
+											state={getSlotStateWithBlocks(
+												court.id,
+												slot.start,
+												slot.end,
+											)}
 											onClick={handleSlotClick}
 										/>
 									))}
@@ -302,6 +330,8 @@ function SlotButton({ court, slot, state, onClick }: any) {
 					"bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100",
 				state === "occupied" &&
 					"bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed",
+				state === "blocked" &&
+					"bg-orange-50 border-orange-200 text-orange-400 cursor-not-allowed",
 				state === "mine" &&
 					"bg-blue-600 border-blue-600 text-white hover:bg-blue-700",
 				state === "past" &&

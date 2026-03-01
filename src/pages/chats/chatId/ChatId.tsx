@@ -197,13 +197,13 @@ export default function ChatThreadPage() {
 	return (
 		<Card className="h-screen flex flex-col relative">
 			<CardHeader className="border-b">
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-2 flex-wrap">
 					<Button onClick={() => navigate(-1)} variant="ghost" size="sm">
 						<ChevronLeft className="h-4 w-4 mr-2" />
 						Volver atrás
 					</Button>
 
-					<CardTitle className="truncate">{title}</CardTitle>
+					<CardTitle>{title}</CardTitle>
 				</div>
 				<div className="w-full overflow-x-auto">
 					<MatchReschedulePanel

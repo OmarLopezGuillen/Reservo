@@ -22,7 +22,11 @@ export default function OptionsCompetition({
 	const roundCompetition = competition.roundType
 	const statusCompetition = competition.status
 
-	const { startCompetition } = useStartCompetition(teams, roundCompetition)
+	const { startCompetition } = useStartCompetition(
+		teams,
+		roundCompetition,
+		competition.clubId,
+	)
 
 	const handleStatusChange = (newStatus: typeof statusCompetition) => {
 		if (!newStatus) return
@@ -33,9 +37,14 @@ export default function OptionsCompetition({
 		})
 	}
 
-	const initCompetition = () => {
-		startCompetition()
-		handleStatusChange("in_progress")
+	const initCompetition = async () => {
+		try {
+			await startCompetition()
+			handleStatusChange("in_progress")
+		} catch (error) {
+			console.error("No se pudo iniciar la competición:", error)
+			alert("No se pudo iniciar la competición. Revisa los datos e inténtalo de nuevo.")
+		}
 	}
 
 	return (

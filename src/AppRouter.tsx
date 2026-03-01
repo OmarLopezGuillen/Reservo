@@ -3,13 +3,13 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router"
 import { AuthInit } from "@/auth/components/AuthInit"
 import { NoAuthRoute } from "@/auth/layouts/NoAuthRoute"
 import { PrivateRoute } from "@/auth/layouts/PrivateRoute"
+import ForgotPassword from "@/auth/pages/ForgotPassword"
 import Login from "@/auth/pages/Login"
 import Register from "@/auth/pages/Register"
+import ResetPassword from "@/auth/pages/ResetPassword"
 import { Loading } from "@/components/Loading"
 import { ROUTES } from "@/constants/ROUTES"
 import { ROLES } from "@/models/ROLES.model"
-import ForgotPassword from "@/auth/pages/ForgotPassword"
-import ResetPassword from "@/auth/pages/ResetPassword"
 import Home from "./pages/home/Home"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
@@ -64,7 +64,6 @@ const InvitePage = lazy(() => import("@/pages/invite/invite"))
 
 //const Chats = lazy(() => import(""))
 const ChatsId = lazy(() => import("@/pages/chats/chatId/ChatId.tsx"))
-const MisChats = lazy(() => import("@/pages/chats/Chat.tsx"))
 const MisLigas = lazy(() => import("@/pages/mis-ligas/MisLigas"))
 
 export default function AppRouter() {
@@ -96,7 +95,6 @@ export default function AppRouter() {
 					<Route path={ROUTES.LOGIN} element={<Login />} />
 					<Route path={ROUTES.REGISTER} element={<Register />} />
 					<Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
-					<Route path={ROUTES.RESET_PASSWORD} element={<ResetPassword />} />
 				</Route>
 
 				{/* Legales */}
@@ -167,20 +165,12 @@ export default function AppRouter() {
 						<PrivateRoute roles={[ROLES.USER, ROLES.ADMIN, ROLES.OWNER]} />
 					}
 				>
+					<Route path={ROUTES.RESET_PASSWORD} element={<ResetPassword />} />
 					<Route
 						path={ROUTES.MIS_LIGAS}
 						element={
 							<Suspense fallback={<Loading />}>
 								<MisLigas />
-							</Suspense>
-						}
-					/>
-
-					<Route
-						path={ROUTES.CHATS.ROOT}
-						element={
-							<Suspense fallback={<Loading />}>
-								<MisChats />
 							</Suspense>
 						}
 					/>

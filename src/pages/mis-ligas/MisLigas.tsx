@@ -14,6 +14,7 @@ import { ROUTES } from "@/constants/ROUTES"
 import { useAllCompetitions } from "@/hooks/competitions/useCompetitionsQuery"
 import { formatDateShort } from "@/lib/utils"
 import type { Competition } from "@/models/competition.model"
+import Chats from "@/pages/chats/Chat"
 import { TeamInvitations } from "@/pages/mis-ligas/components/TeamInvitations"
 import { UpcomingMatchesSection } from "@/pages/mis-ligas/components/UpcomingMatchesSection/UpcomingMatchesSection"
 
@@ -96,6 +97,7 @@ const MisLigas = () => {
 			</header>
 
 			<div className="container mx-auto px-4 py-8 space-y-8 max-w-6xl">
+				<Chats />
 				<UpcomingMatchesSection
 					competitionIds={competitions.map((competition) => competition.id)}
 				/>
