@@ -107,12 +107,21 @@ const CompetitionRegister = () => {
 
 		createTeamByAdmin.mutate(
 			{
-				competitionId: competitionId!,
-				categoryId: values.categoryId,
-				teamName: values.teamName,
-				emailPlayer1: userEmail,
-				emailPlayer2: values.emailPlayer2,
-				emailSubstitute: sub || null,
+				teamData: {
+					competitionId: competitionId!,
+					categoryId: values.categoryId,
+					teamName: values.teamName,
+					emailPlayer1: userEmail,
+					emailPlayer2: values.emailPlayer2,
+					emailSubstitute: sub || null,
+				},
+				extraData: {
+					teamName: values.teamName,
+					competitionName: competition.name,
+					clubName: competition.clubName ?? "Reservo", // TODO: TRAER EL NOMBRE DEL CLUB JUNTO CON LA COMPETICION
+					inviterName:
+						user?.user_metadata?.full_name ?? user?.email ?? "Jugador",
+				},
 			},
 			{
 				onSuccess: (data) => {
@@ -127,8 +136,6 @@ const CompetitionRegister = () => {
 								end_time: avail.endTime,
 							})
 						}
-					} else {
-						toast.success("Equipo creado correctamente.")
 					}
 				},
 			},

@@ -19,6 +19,7 @@ await sendEmail({
 interface InvitationTeamTemplateParams {
 	inviterName: string
 	teamName: string
+	competitionName: string
 	invitationUrl: string
 	clubName?: string
 	appName?: string
@@ -42,6 +43,7 @@ const escapeHtml = (value: string): string =>
 export function invitationTeamTemplate({
 	inviterName,
 	teamName,
+	competitionName,
 	invitationUrl,
 	clubName,
 	appName = "Reservo",
@@ -53,8 +55,9 @@ export function invitationTeamTemplate({
 	const safeAppName = escapeHtml(appName)
 	const safeUrl = escapeHtml(invitationUrl)
 	const safeExpiresAt = expiresAtText ? escapeHtml(expiresAtText) : null
+	const safeCompetition = escapeHtml(competitionName)
 
-	const subject = `Invitacion para unirte al equipo ${teamName} en ${appName}`
+	const subject = `Invitación para unirte a ${safeTeam} - ${safeCompetition} | ${safeAppName}`
 
 	const whereText = safeClub
 		? `en el club <strong>${safeClub}</strong>`
@@ -83,8 +86,10 @@ export function invitationTeamTemplate({
               <td style="padding:24px;">
                 <h1 style="margin:0 0 12px 0;font-size:22px;line-height:1.3;">Te invitaron a un equipo en ${safeAppName}</h1>
                 <p style="margin:0 0 12px 0;font-size:15px;color:#374151;">
-                  <strong>${safeInviter}</strong> te invito a unirte al equipo <strong>${safeTeam}</strong> ${whereText}.
-                </p>
+									<strong>${safeInviter}</strong> te invitó a unirte al equipo 
+									<strong>${safeTeam}</strong> para competir en 
+									<strong>${safeCompetition}</strong> ${whereText}.
+								</p>
                 <p style="margin:0 0 16px 0;font-size:15px;color:#374151;">
                   Aun no tienes cuenta. Crea tu cuenta y acepta la invitacion desde el siguiente enlace:
                 </p>
@@ -111,7 +116,7 @@ export function invitationTeamTemplate({
 
 	const text = [
 		`Te invitaron a un equipo en ${appName}.`,
-		`${inviterName} te invito a unirte al equipo ${teamName}${clubName ? ` en el club ${clubName}` : ""}.`,
+		`${inviterName} te invitó a unirte al equipo ${teamName} para competir en ${competitionName}${clubName ? ` en el club ${clubName}` : ""}.`,
 		"Aun no tienes cuenta. Crea tu cuenta y acepta la invitacion desde este enlace:",
 		invitationUrl,
 		expiresTextPlain,

@@ -1,5 +1,6 @@
 import { ArrowLeft, Calendar, Loader2, Shield, Trophy } from "lucide-react"
 import { Link } from "react-router"
+import { TeamInvitations } from "@/components/TeamInvitations/TeamInvitations"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,7 +16,6 @@ import { useAllCompetitions } from "@/hooks/competitions/useCompetitionsQuery"
 import { formatDateShort } from "@/lib/utils"
 import type { Competition } from "@/models/competition.model"
 import Chats from "@/pages/chats/Chat"
-import { TeamInvitations } from "@/pages/mis-ligas/components/TeamInvitations"
 import { UpcomingMatchesSection } from "@/pages/mis-ligas/components/UpcomingMatchesSection/UpcomingMatchesSection"
 
 const MisLigas = () => {

@@ -16,7 +16,7 @@ export const TeamInvitations = () => {
 	const user = useAuthUser()
 	const { pendingInvitesQuery } = usePendingInvitesForUser(user?.email)
 	const { data: invites = [], isLoading } = pendingInvitesQuery
-
+	console.log("Pending invites:", user?.email)
 	const { acceptTeamInvite, updateCompetitionTeamInvite } =
 		useCompetitionTeamInvitesMutation()
 
@@ -27,7 +27,7 @@ export const TeamInvitations = () => {
 	const handleDecline = (inviteId: string) => {
 		updateCompetitionTeamInvite.mutate({
 			id: inviteId,
-			inviteData: { status: "declined" as any }, // cambia si tu enum es otro
+			inviteData: { status: "declined" as any },
 		})
 	}
 
@@ -82,22 +82,22 @@ export const TeamInvitations = () => {
 							<div className="flex w-full gap-2">
 								<Button
 									size="sm"
-									className="w-full"
+									className="flex-1 bg-green-600 hover:bg-green-700 text-white"
 									onClick={() => handleAccept(invite.token)}
 									disabled={isProcessing}
 								>
-									<Check className="h-4 w-4 mr-2" />
+									<Check className="h-4 w-4 mr-2" strokeWidth={3} />
 									Aceptar
 								</Button>
 
 								<Button
 									size="sm"
 									variant="outline"
-									className="w-full"
+									className="flex-1 bg-red-600 hover:bg-red-700 text-white"
 									onClick={() => handleDecline(invite.id)}
 									disabled={isProcessing}
 								>
-									<X className="h-4 w-4 mr-2" />
+									<X className="h-4 w-4 mr-2" strokeWidth={3} />
 									Rechazar
 								</Button>
 							</div>

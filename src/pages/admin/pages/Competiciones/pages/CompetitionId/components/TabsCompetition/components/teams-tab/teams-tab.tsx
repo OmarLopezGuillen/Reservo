@@ -62,6 +62,7 @@ import {
 } from "@/components/ui/table"
 
 import { useCompetitionCategoriesByCompetitionId } from "@/hooks/competitions/useCompetitionCategoriesQuery"
+import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
 import { useCompetitionTeamsMutation } from "@/hooks/competitions/useCompetitionTeamsMutations"
 import { useCompetitionTeamsByCompetitionId } from "@/hooks/competitions/useCompetitionTeamsQuery"
 import type { CompetitionTeamWithMemberAndAvailability } from "@/models/competition.model"
@@ -83,6 +84,7 @@ const TeamsAdminTab = ({ competitionId }: TeamsAdminTabProps) => {
 	const { updateCompetitionTeam, deleteCompetitionTeam } =
 		useCompetitionTeamsMutation()
 
+	const { competitionByIdQuery } = useCompetitionById(competitionId)
 	// Filtros UI (buscador + selects)
 	const [searchQuery, setSearchQuery] = useState("")
 	const [selectedCategory, setSelectedCategory] = useState<string>("all")
@@ -289,6 +291,8 @@ const TeamsAdminTab = ({ competitionId }: TeamsAdminTabProps) => {
 						</div>
 						<CreateTeamDialog
 							competitionId={competitionId}
+							competitionName={competitionByIdQuery.data?.name ?? ""}
+							clubName={"Barrial"} // TODO: PASAR EL NOMBRE DEL CLUB CUANDO HAYA VARIOS CLUBES DE MOMENTO SE QUEDA ASI
 							categories={competitionCategoriesQuery.data || []}
 						/>
 					</div>

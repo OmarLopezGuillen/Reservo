@@ -33,11 +33,15 @@ import type {
 interface CreateTeamDialogProps {
 	competitionId: string
 	categories: CompetitionCategory[]
+	competitionName: string
+	clubName: string
 }
 
 export const CreateTeamDialog = ({
 	competitionId,
 	categories,
+	competitionName,
+	clubName,
 }: CreateTeamDialogProps) => {
 	const [isOpen, setIsOpen] = useState(false)
 	const [newTeamName, setNewTeamName] = useState("")
@@ -86,12 +90,20 @@ export const CreateTeamDialog = ({
 
 		createTeamByAdmin.mutate(
 			{
-				competitionId,
-				categoryId: newTeamCategory,
-				teamName: newTeamName,
-				emailPlayer1: player1Email,
-				emailPlayer2: player2Email,
-				emailSubstitute: sub || null,
+				teamData: {
+					competitionId,
+					categoryId: newTeamCategory,
+					teamName: newTeamName,
+					emailPlayer1: player1Email,
+					emailPlayer2: player2Email,
+					emailSubstitute: sub || null,
+				},
+				extraData: {
+					teamName: newTeamName,
+					competitionName,
+					clubName,
+					inviterName: "Administrador", // o user?.full_name si lo tienes
+				},
 			},
 			{
 				onSuccess: (data) => {
@@ -107,8 +119,6 @@ export const CreateTeamDialog = ({
 								end_time: avail.endTime,
 							})
 						}
-					} else {
-						toast.success("Equipo creado correctamente.")
 					}
 				},
 			},

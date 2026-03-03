@@ -1,5 +1,6 @@
 import { ArrowLeft, Calendar, Loader2, Shield, Trophy } from "lucide-react"
 import { Link, useNavigate } from "react-router"
+import { TeamInvitations } from "@/components/TeamInvitations/TeamInvitations"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,7 +14,6 @@ import {
 import { ROUTES } from "@/constants/ROUTES"
 import { useAllCompetitions } from "@/hooks/competitions/useCompetitionsQuery"
 import { formatDateShort } from "@/lib/utils"
-import { TeamInvitations } from "./TeamInvitations"
 
 const CompetitionCard = ({ competition }: { competition: any }) => (
 	<Card className="flex flex-col">
