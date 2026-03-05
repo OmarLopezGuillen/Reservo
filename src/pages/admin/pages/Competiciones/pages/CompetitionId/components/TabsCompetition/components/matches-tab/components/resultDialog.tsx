@@ -15,6 +15,15 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 
+const OptionalSetScoreSchema = z.preprocess(
+	(value) => {
+		if (value === null || value === "") return undefined
+		if (typeof value === "number" && Number.isNaN(value)) return undefined
+		return value
+	},
+	z.number().int().min(0).max(20).optional(),
+)
+
 const ResultSchema = z
 	.object({
 		h1: z.coerce.number().int().min(0).max(20),
@@ -22,9 +31,9 @@ const ResultSchema = z
 		h2: z.coerce.number().int().min(0).max(20),
 		a2: z.coerce.number().int().min(0).max(20),
 
-		// ✅ Set 3 opcional: NO coerce aquí (evita "" -> 0)
-		h3: z.number().int().min(0).max(20).optional(),
-		a3: z.number().int().min(0).max(20).optional(),
+		// Set 3 opcional: aceptar null/NaN y convertirlo a undefined
+		h3: OptionalSetScoreSchema,
+		a3: OptionalSetScoreSchema,
 	})
 	.superRefine((v, ctx) => {
 		// si uno rellena set 3, el otro también
