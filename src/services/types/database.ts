@@ -1351,6 +1351,10 @@ export type Database = {
         Args: { p_option_id: string; p_vote: boolean }
         Returns: Json
       }
+      vote_match_schedule_option_as_admin: {
+        Args: { p_option_id: string; p_user_id: string; p_vote: boolean }
+        Returns: Json
+      }
     }
     Enums: {
       app_permission:

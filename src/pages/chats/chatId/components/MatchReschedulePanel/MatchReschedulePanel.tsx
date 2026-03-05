@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import type { PickedOption } from "@/components/CourtCalendarBase/CourtCalendarBase"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -19,10 +20,19 @@ import {
 import {
 	useProposals,
 	useRequiredVoters,
+	useThreadPlayers,
 } from "@/hooks/competitions/useMatchSchedulingQuery"
 import type { BookingCalendar } from "@/models/booking.model"
 import type { BusinessDay } from "@/models/business.model"
 import type { Court } from "@/models/court.model"
+import { ROLES } from "@/models/ROLES.model"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
 import { CourtCalendarPicker } from "./components/CourtCalendarPicker"
 
 const MATCH_DURATION_MIN = 90
@@ -59,7 +69,10 @@ export function MatchReschedulePanel({
 	bookings: BookingCalendar[]
 	clubHours: BusinessDay[] | undefined
 }) {
+	const user = useAuthUser()
 	const { matchByIdQuery } = useMatchById(matchId)
+	const isAdminDelegateVote =
+		user.userRole === ROLES.ADMIN || user.userRole === ROLES.OWNER
 
 	const matchStartTime = matchByIdQuery.data?.startTime ?? null
 	const roundWeekStartDate = matchByIdQuery.data?.roundWeekStartDate ?? null
@@ -69,12 +82,19 @@ export function MatchReschedulePanel({
 
 	const { proposalsQuery } = useProposals(threadId)
 	const proposals = proposalsQuery.data ?? []
+	const { threadPlayersQuery } = useThreadPlayers(
+		isAdminDelegateVote ? threadId : undefined,
+	)
+	const threadPlayers = threadPlayersQuery.data ?? []
 
 	const { createProposalMutation } = useCreateProposal(threadId)
 	const { voteOptionMutation } = useVoteOption(threadId)
 
 	const [open, setOpen] = useState(false)
 	const [pickedOptions, setPickedOptions] = useState<PickedOption[]>([])
+	const [selectedVoterUserId, setSelectedVoterUserId] = useState<string | null>(
+		null,
+	)
 
 	// 👇 estados de UI
 	const [showActive, setShowActive] = useState(true)
@@ -102,6 +122,22 @@ export function MatchReschedulePanel({
 		// Semana siguiente: weekStart+7..weekStart+13  ✅ permitimos hasta el final de ese domingo
 		return endOfDay(addDays(weekStart, 13))
 	}, [roundWeekStartDate])
+
+	useEffect(() => {
+		if (!isAdminDelegateVote) return
+		if (threadPlayers.length === 0) {
+			setSelectedVoterUserId(null)
+			return
+		}
+		if (!selectedVoterUserId) {
+			setSelectedVoterUserId(threadPlayers[0].userId)
+			return
+		}
+		const exists = threadPlayers.some((p) => p.userId === selectedVoterUserId)
+		if (!exists) {
+			setSelectedVoterUserId(threadPlayers[0].userId)
+		}
+	}, [isAdminDelegateVote, threadPlayers, selectedVoterUserId])
 
 	const onCreateProposal = async () => {
 		if (!canCreate) return
@@ -224,6 +260,30 @@ export function MatchReschedulePanel({
 				</Dialog>
 			</div>
 
+			{isAdminDelegateVote && (
+				<div className="rounded-md border p-3 space-y-2">
+					<div className="text-sm font-medium">Votar como jugador</div>
+					<Select
+						value={selectedVoterUserId ?? undefined}
+						onValueChange={(value) => setSelectedVoterUserId(value)}
+					>
+						<SelectTrigger className="w-full sm:w-[320px]">
+							<SelectValue placeholder="Selecciona un jugador" />
+						</SelectTrigger>
+						<SelectContent>
+							{threadPlayers.map((player) => (
+								<SelectItem key={player.userId} value={player.userId}>
+									{player.name ?? player.userId}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+					<div className="text-xs text-muted-foreground">
+						El voto se registra a nombre del jugador seleccionado.
+					</div>
+				</div>
+			)}
+
 			{/* ===== PROPUESTA ACTIVA ===== */}
 			{activeProposal && (
 				<div className="rounded-md border">
@@ -262,10 +322,17 @@ export function MatchReschedulePanel({
 										<div className="grid grid-cols-2 gap-2 sm:flex sm:gap-2">
 											<Button
 												size="sm"
+												disabled={
+													voteOptionMutation.isPending ||
+													(isAdminDelegateVote && !selectedVoterUserId)
+												}
 												onClick={() =>
 													voteOptionMutation.mutate({
 														optionId: o.id,
 														vote: true,
+														asUserId: isAdminDelegateVote
+															? selectedVoterUserId ?? undefined
+															: undefined,
 													})
 												}
 											>
@@ -274,10 +341,17 @@ export function MatchReschedulePanel({
 											<Button
 												size="sm"
 												variant="outline"
+												disabled={
+													voteOptionMutation.isPending ||
+													(isAdminDelegateVote && !selectedVoterUserId)
+												}
 												onClick={() =>
 													voteOptionMutation.mutate({
 														optionId: o.id,
 														vote: false,
+														asUserId: isAdminDelegateVote
+															? selectedVoterUserId ?? undefined
+															: undefined,
 													})
 												}
 											>

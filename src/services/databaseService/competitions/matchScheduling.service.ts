@@ -24,6 +24,11 @@ export type ProposalWithOptions = Proposal & {
 	options: ProposalOption[]
 }
 
+export type ThreadPlayer = {
+	userId: string
+	name: string | null
+}
+
 export async function getRequiredVotersCount(
 	threadId: string,
 ): Promise<number> {
@@ -35,6 +40,41 @@ export async function getRequiredVotersCount(
 
 	if (error) throw error
 	return count ?? 0
+}
+
+export async function getThreadPlayers(threadId: string): Promise<ThreadPlayer[]> {
+	const { data: members, error: membersError } = await supabase
+		.from("chat_thread_members")
+		.select("user_id")
+		.eq("thread_id", threadId)
+		.eq("role", "member")
+
+	if (membersError) throw membersError
+
+	const orderedIds: string[] = []
+	for (const member of members ?? []) {
+		if (member.user_id && !orderedIds.includes(member.user_id)) {
+			orderedIds.push(member.user_id)
+		}
+	}
+
+	if (orderedIds.length === 0) return []
+
+	const { data: profiles, error: profilesError } = await supabase
+		.from("profiles")
+		.select("user_id,name")
+		.in("user_id", orderedIds)
+
+	if (profilesError) throw profilesError
+
+	const namesById = new Map(
+		(profiles ?? []).map((profile) => [profile.user_id, profile.name ?? null]),
+	)
+
+	return orderedIds.map((userId) => ({
+		userId,
+		name: namesById.get(userId) ?? null,
+	}))
 }
 
 export async function getProposalsByThreadId(
@@ -117,6 +157,21 @@ export async function voteMatchScheduleOption(args: {
 	const { data, error } = await supabase.rpc("vote_match_schedule_option", {
 		p_option_id: args.optionId,
 		p_vote: args.vote,
+	})
+
+	if (error) throw error
+	return data
+}
+
+export async function voteMatchScheduleOptionAsUser(args: {
+	optionId: string
+	vote: boolean
+	userId: string
+}) {
+	const { data, error } = await supabase.rpc("vote_match_schedule_option_as_admin", {
+		p_option_id: args.optionId,
+		p_vote: args.vote,
+		p_user_id: args.userId,
 	})
 
 	if (error) throw error
