@@ -15,6 +15,7 @@ import {
 import { ROUTES } from "@/constants/ROUTES"
 import { useCompetitionsByClubId } from "@/hooks/competitions/useCompetitionsQuery"
 import type { Competition } from "@/models/competition.model"
+import ShareRegistrationButton from "@/pages/admin/pages/Competiciones/components/ShareRegistrationButton"
 
 const Competiciones = () => {
 	const { user } = useAuthStore()
@@ -88,12 +89,21 @@ const Competiciones = () => {
 							<Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
 								<CardHeader className="pb-2">
 									<div className="flex justify-between items-start">
-										<Badge variant={getStatusColor(competition.status)}>
-											{getStatusLabel(competition.status)}
-										</Badge>
-										<Badge variant="outline" className="capitalize">
-											{competition.type}
-										</Badge>
+										<div className="flex gap-2 flex-wrap">
+											<Badge variant={getStatusColor(competition.status)}>
+												{getStatusLabel(competition.status)}
+											</Badge>
+											<Badge variant="outline" className="capitalize">
+												{competition.type}
+											</Badge>
+										</div>
+										<ShareRegistrationButton
+											competitionId={competition.id}
+											competitionName={competition.name}
+											size="sm"
+											variant="ghost"
+											className="shrink-0"
+										/>
 									</div>
 									<CardTitle className="mt-2">{competition.name}</CardTitle>
 									<CardDescription className="line-clamp-2">

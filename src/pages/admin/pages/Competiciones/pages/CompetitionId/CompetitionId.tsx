@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/constants/ROUTES"
 import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
 import { useCompetitionTeamsByCompetitionId } from "@/hooks/competitions/useCompetitionTeamsQuery"
+import ShareRegistrationButton from "@/pages/admin/pages/Competiciones/components/ShareRegistrationButton"
 import OptionsCompetition from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/OptionsCompetition/OptionsCompetition"
 import TabsCompetition from "@/pages/admin/pages/Competiciones/pages/CompetitionId/components/TabsCompetition/TabsCompetition"
 import {
@@ -74,8 +75,13 @@ const CompeticionesId = () => {
 						</p>
 					</div>
 
-					{/* Options */}
-					<OptionsCompetition competition={competition} teams={teams} />
+					<div className="flex items-center gap-2 flex-wrap">
+						<ShareRegistrationButton
+							competitionId={competition.id}
+							competitionName={competition.name}
+						/>
+						<OptionsCompetition competition={competition} teams={teams} />
+					</div>
 				</div>
 			</div>
 
