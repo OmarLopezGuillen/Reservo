@@ -60,7 +60,9 @@ const NavLinks = ({ onClick }: { onClick?: () => void }) => {
 				>
 					Cerrar sesión
 				</Button>
-				<Notification />
+				<div className="hidden md:block">
+					<Notification />
+				</div>
 			</>
 		)
 	}
@@ -137,18 +139,22 @@ const Home = () => {
 
 					{/* Mobile button */}
 
-					<Button
-						variant="ghost"
-						size="icon"
-						className="md:hidden"
-						onClick={() => setMenuOpen(!menuOpen)}
-					>
-						{menuOpen ? (
-							<X className="h-5 w-5" />
-						) : (
-							<Menu className="h-5 w-5" />
-						)}
-					</Button>
+					<div className="flex items-center gap-2 md:hidden">
+						{user && <Notification variant="header" />}
+						<Button
+							variant="ghost"
+							size="icon"
+							className="rounded-full border border-border/50 bg-muted/40 hover:bg-muted"
+							onClick={() => setMenuOpen(!menuOpen)}
+							aria-label={menuOpen ? "Cerrar menu" : "Abrir menu"}
+						>
+							{menuOpen ? (
+								<X className="h-5 w-5" />
+							) : (
+								<Menu className="h-5 w-5" />
+							)}
+						</Button>
+					</div>
 				</div>
 
 				{/* Mobile menu */}

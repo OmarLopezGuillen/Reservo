@@ -1,6 +1,6 @@
 import { ArrowLeft, Calendar, Loader2, Shield, Trophy } from "lucide-react"
 import { Link } from "react-router"
-import { TeamInvitations } from "@/components/TeamInvitations/TeamInvitations"
+import { AppHeaderActions } from "@/components/AppHeaderActions/AppHeaderActions"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,14 +27,17 @@ const MisLigas = () => {
 			<div className="min-h-screen bg-background">
 				<header className="border-b">
 					<div className="container mx-auto px-4 py-4">
-						<div className="flex items-center gap-4">
-							<Button variant="ghost" size="sm" asChild>
-								<Link to={ROUTES.HOME}>
-									<ArrowLeft className="h-4 w-4 mr-2" />
-									Volver
-								</Link>
-							</Button>
-							<h1 className="text-2xl font-bold">Mis ligas</h1>
+						<div className="flex items-center justify-between gap-4">
+							<div className="flex items-center gap-4">
+								<Button variant="ghost" size="sm" asChild>
+									<Link to={ROUTES.HOME}>
+										<ArrowLeft className="h-4 w-4 mr-2" />
+										Volver
+									</Link>
+								</Button>
+								<h1 className="text-2xl font-bold">Mis ligas</h1>
+							</div>
+							<AppHeaderActions />
 						</div>
 					</div>
 				</header>
@@ -60,7 +63,7 @@ const MisLigas = () => {
 								</Button>
 								<h1 className="text-2xl font-bold">Mis ligas</h1>
 							</div>
-							<TeamInvitations />
+							<AppHeaderActions />
 						</div>
 					</div>
 				</header>
@@ -91,7 +94,7 @@ const MisLigas = () => {
 							</Button>
 							<h1 className="text-2xl font-bold">Mis ligas</h1>
 						</div>
-						<TeamInvitations />
+						<AppHeaderActions />
 					</div>
 				</div>
 			</header>

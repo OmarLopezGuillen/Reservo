@@ -1,6 +1,6 @@
 import { ArrowLeft, Calendar, Loader2, Shield, Trophy } from "lucide-react"
 import { Link, useNavigate } from "react-router"
-import { TeamInvitations } from "@/components/TeamInvitations/TeamInvitations"
+import { AppHeaderActions } from "@/components/AppHeaderActions/AppHeaderActions"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -56,44 +56,90 @@ const Competitions = () => {
 
 	if (isLoading) {
 		return (
-			<div className="container mx-auto flex h-96 items-center justify-center py-10">
-				<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+			<div className="min-h-screen bg-background">
+				<header className="border-b">
+					<div className="container mx-auto px-4 py-4">
+						<div className="flex items-center justify-between gap-4">
+							<div className="flex items-center gap-4">
+								<Button
+									variant="ghost"
+									onClick={() => navigate(-1)}
+									className="flex items-center gap-2 px-2"
+								>
+									<ArrowLeft className="h-4 w-4" />
+									<span className="text-sm">Volver</span>
+								</Button>
+								<h1 className="text-2xl font-bold">Competiciones disponibles</h1>
+							</div>
+							<AppHeaderActions />
+						</div>
+					</div>
+				</header>
+				<div className="container mx-auto flex h-96 items-center justify-center py-10">
+					<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+				</div>
 			</div>
 		)
 	}
 
 	if (competitions.length === 0) {
 		return (
-			<div className="container mx-auto py-10 text-center">
-				<Trophy className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-				<h2 className="text-2xl font-bold">No hay competiciones disponibles</h2>
-				<p className="text-muted-foreground">Vuelve a intentarlo más tarde.</p>
+			<div className="min-h-screen bg-background">
+				<header className="border-b">
+					<div className="container mx-auto px-4 py-4">
+						<div className="flex items-center justify-between gap-4">
+							<div className="flex items-center gap-4">
+								<Button
+									variant="ghost"
+									onClick={() => navigate(-1)}
+									className="flex items-center gap-2 px-2"
+								>
+									<ArrowLeft className="h-4 w-4" />
+									<span className="text-sm">Volver</span>
+								</Button>
+								<h1 className="text-2xl font-bold">Competiciones disponibles</h1>
+							</div>
+							<AppHeaderActions />
+						</div>
+					</div>
+				</header>
+				<div className="container mx-auto py-10 text-center">
+					<Trophy className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+					<h2 className="text-2xl font-bold">No hay competiciones disponibles</h2>
+					<p className="text-muted-foreground">Vuelve a intentarlo más tarde.</p>
+				</div>
 			</div>
 		)
 	}
 
 	return (
-		<div className="container mx-auto py-10">
-			<div className="flex items-center justify-between mb-8">
-				<div className="flex items-center gap-4">
-					<Button
-						variant="ghost"
-						onClick={() => navigate(-1)}
-						className="flex items-center gap-2 px-2"
-					>
-						<ArrowLeft className="h-4 w-4" />
-						<span className="text-sm">Volver</span>
-					</Button>
+		<div className="min-h-screen bg-background">
+			<header className="border-b">
+				<div className="container mx-auto px-4 py-4">
+					<div className="flex items-center justify-between gap-4">
+						<div className="flex items-center gap-4">
+							<Button
+								variant="ghost"
+								onClick={() => navigate(-1)}
+								className="flex items-center gap-2 px-2"
+							>
+								<ArrowLeft className="h-4 w-4" />
+								<span className="text-sm">Volver</span>
+							</Button>
 
-					<h1 className="text-3xl font-bold">Competiciones Disponibles</h1>
+							<h1 className="text-3xl font-bold">Competiciones Disponibles</h1>
+						</div>
+
+						<AppHeaderActions />
+					</div>
 				</div>
-
-				<TeamInvitations />
-			</div>
-			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-				{competitions.map((competition) => (
-					<CompetitionCard key={competition.id} competition={competition} />
-				))}
+			</header>
+			<div className="container mx-auto py-10">
+				<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+					{competitions.map((competition) => (
+						<CompetitionCard key={competition.id} competition={competition} />
+					))}
+				</div>
 			</div>
 		</div>
 	)
