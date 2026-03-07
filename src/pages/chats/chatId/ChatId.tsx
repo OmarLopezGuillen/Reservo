@@ -33,10 +33,12 @@ export default function ChatThreadPage() {
 	const queryClient = useQueryClient()
 
 	const user = useAuthUser()
-	const { courtsQuery } = useCourts(user.clubId!)
-	const { data: courts, isLoading } = courtsQuery
 
 	const { threadQuery } = useChatThread(threadId)
+	const clubId = threadQuery.data?.clubId ?? null
+
+	const { courtsQuery } = useCourts(clubId ?? undefined)
+	const { data: courts } = courtsQuery
 	const { messagesQuery } = useChatMessages(threadId)
 	const { sendMessageMutation } = useSendChatMessage(threadId)
 
@@ -50,14 +52,14 @@ export default function ChatThreadPage() {
 	const [hasInitialized, setHasInitialized] = useState(false)
 	const prevLengthRef = useRef(0)
 
-	const { bookingCalendarQuery } = useBookingsCalendar(user.clubId!)
+	const { bookingCalendarQuery } = useBookingsCalendar(clubId ?? undefined)
 	const bookings = bookingCalendarQuery.data ?? []
 
-	const { clubHoursQuery } = useClubHours(user.clubId!)
+	const { clubHoursQuery } = useClubHours(clubId ?? undefined)
 	const { data: clubHours } = clubHoursQuery
 
 	const messages = messagesQuery.data ?? []
-	console.log("mensajes", messages)
+
 	const syncThreadAsRead = async () => {
 		try {
 			await Promise.all([
