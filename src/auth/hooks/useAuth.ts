@@ -1,7 +1,7 @@
 import { type JwtPayload, jwtDecode } from "jwt-decode"
 import { useEffect } from "react"
 import { useAuthStore } from "@/auth/stores/auth.store"
-import { ROLES, type Role } from "@/models/ROLES.model"
+import { ROLES, type Role } from "@/models/roles.model"
 import { onAuthStateChange } from "@/services/auth/onAuthStateChange.service"
 
 interface MyJwtPayload extends JwtPayload {

@@ -51,7 +51,7 @@ export async function createTeamByAdmin({
 				p_team_name: teamName,
 				p_email_player1: emailPlayer1,
 				p_email_player2: emailPlayer2,
-				p_email_substitute: emailSubstitute,
+				p_email_substitute: emailSubstitute ?? undefined,
 			},
 		)
 

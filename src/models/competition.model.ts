@@ -10,7 +10,8 @@ import type {
 	StatusRegistration,
 	WeekDay,
 } from "./dbTypes"
-import type { Role } from "./ROLES.model"
+import type { Json } from "@/services/types/database"
+import type { Role } from "./roles.model"
 
 export interface Competition {
 	id: string
@@ -116,7 +117,7 @@ export interface CompetitionTeamInvite {
 	email: string
 	role: MemberTeamRole
 	token: string
-	status: "pending" | "accepted" | "expired"
+	status: "pending" | "accepted" | "expired" | "declined"
 	createdAt: string
 	expiresAt: string
 }
@@ -149,8 +150,8 @@ export interface Match {
 	playoffRound: PlayoffRound | null
 	reportedAt: string | null
 	round: number
-	scoreAway: JSON
-	scoreHome: JSON
+	scoreAway: Json
+	scoreHome: Json
 	startTime: string | null
 	status: StatusMatches
 	updatedAt: string | null

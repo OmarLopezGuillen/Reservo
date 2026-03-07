@@ -25,7 +25,7 @@ import {
 import type { BookingCalendar } from "@/models/booking.model"
 import type { BusinessDay } from "@/models/business.model"
 import type { Court } from "@/models/court.model"
-import { ROLES } from "@/models/ROLES.model"
+import { ROLES } from "@/models/roles.model"
 import {
 	Select,
 	SelectContent,

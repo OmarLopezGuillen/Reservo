@@ -11,6 +11,7 @@ import CategoriesTab from "./components/categories-tab/categories-tab"
 function TabsCompetition() {
 	const [activeTab, setActiveTab] = useState("matches")
 	const { competicionId } = useParams<{ competicionId: string }>()
+	if (!competicionId) return null
 	return (
 		<Tabs value={activeTab} onValueChange={setActiveTab}>
 			<TabsList className="w-full justify-start">
@@ -43,10 +44,7 @@ function TabsCompetition() {
 			</TabsContent>
 
 			<TabsContent value="standings" className="mt-6">
-				<StandingsTab
-					competitionId={competicionId}
-					categoryId="5556f289-1c14-4a53-a4ae-e8cf20aef15c"
-				/>
+				<StandingsTab competitionId={competicionId} />
 			</TabsContent>
 		</Tabs>
 	)

@@ -11,12 +11,12 @@ import type {
 	CompetitionTeamMember,
 	CompetitionTeamWithMemberAndAvailability,
 	Match,
+	MatchWithResult,
 	Profile,
 	TeamAvailability,
 } from "@/models/competition.model"
 import type {
 	ChatThreadDbRow,
-	ChatThreadsRow,
 	CompetitionCategoriesRow,
 	CompetitionParticipantsRow,
 	CompetitionRulesRow,
@@ -148,7 +148,7 @@ export const competitionTeamsAdapter = (
 
 // CompetitionTeamMembers
 export const competitionTeamMemberAdapter = (
-	db: CompetitionTeamMembersRow & { profiles: ProfilesRow | null },
+	db: CompetitionTeamMembersRow & { profiles?: ProfilesRow | null },
 ): CompetitionTeamMember => ({
 	id: db.id,
 	teamId: db.team_id,
@@ -159,7 +159,7 @@ export const competitionTeamMemberAdapter = (
 })
 
 export const competitionTeamMembersAdapter = (
-	db: (CompetitionTeamMembersRow & { profiles: ProfilesRow | null })[],
+	db: (CompetitionTeamMembersRow & { profiles?: ProfilesRow | null })[],
 ): CompetitionTeamMember[] => db.map(competitionTeamMemberAdapter)
 
 // Profile
@@ -228,7 +228,7 @@ export const competitionParticipantsAdapter = (
 ): CompetitionParticipant[] => db.map(competitionParticipantAdapter)
 
 // Match
-export const matchAdapter = (db: MatchesRow): Match => ({
+export const matchAdapter = (db: MatchesRow): MatchWithResult => ({
 	awayTeamId: db.away_team_id,
 	categoryId: db.category_id,
 	competitionId: db.competition_id,
@@ -250,13 +250,13 @@ export const matchAdapter = (db: MatchesRow): Match => ({
 	winnerTeamId: db.winner_team_id,
 	roundWeekStartDate: db.round_week_start_date,
 	resultStatus: db.result_status,
-	reportedScoreHome: db.reported_score_home,
-	reportedScoreAway: db.reported_score_away,
+	reportedScoreHome: db.reported_score_home as MatchWithResult["reportedScoreHome"],
+	reportedScoreAway: db.reported_score_away as MatchWithResult["reportedScoreAway"],
 	reportedByTeamId: db.reported_by_team_id,
 	disputeReason: db.dispute_reason,
 })
 
-export const matchesAdapter = (db: MatchesRow[]): Match[] =>
+export const matchesAdapter = (db: MatchesRow[]): MatchWithResult[] =>
 	db.map(matchAdapter)
 
 const requiredString = (v: string | null | undefined, field: string) => {

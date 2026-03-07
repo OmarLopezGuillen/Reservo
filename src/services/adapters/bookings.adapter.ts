@@ -81,7 +81,7 @@ export const bookingCalendarAdapter = (
 		startTime: new Date(bookingDB.start_time!),
 		endTime: new Date(bookingDB.end_time!),
 		date: bookingDB.date!, // formato "yyyy-MM-dd"
-		status: bookingDB.status!,
+		status: bookingDB.status as BookingCalendar["status"],
 		isMine: bookingDB.is_mine!,
 	}
 }

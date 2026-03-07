@@ -18,7 +18,7 @@ export async function getCompetitionTeamById(
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
-			.select(`*, team_availabilities(*), competition_team_members(*)`)
+			.select(`*, team_availabilities(*), competition_team_members(*, profiles(*))`)
 			.eq("id", id)
 			.single()
 
@@ -108,7 +108,7 @@ export async function createCompetitionTeam(
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
 			.insert(teamData)
-			.select("*, team_availabilities(*), competition_team_members(*)")
+			.select("*, team_availabilities(*), competition_team_members(*, profiles(*))")
 			.single()
 
 		if (error) throw error
@@ -133,7 +133,7 @@ export async function updateCompetitionTeam(
 			.from(TABLE_NAME)
 			.update(teamData)
 			.eq("id", teamId)
-			.select("*, team_availabilities(*), competition_team_members(*)")
+			.select("*, team_availabilities(*), competition_team_members(*, profiles(*))")
 			.single()
 
 		if (error) throw error

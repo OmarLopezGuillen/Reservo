@@ -5,7 +5,6 @@ import {
 	getCompetitionTeamInvitesByTeamId,
 	getPendingInvitesByEmail,
 } from "@/services/databaseService/competitions/competition_team_invites.service"
-import { useCompetitionTeamInvitesMutation } from "./useCompetitionTeamInvitesMutations"
 
 export const COMPETITION_TEAM_INVITES_QUERY_KEY = "competition_team_invites"
 

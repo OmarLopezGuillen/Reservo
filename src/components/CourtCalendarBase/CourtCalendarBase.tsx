@@ -34,6 +34,7 @@ type Props =
 			clubHours: BusinessDay[] | undefined
 			durationMinutes: number
 			onPickOption: (opt: PickedOption) => void
+			selectedOptions?: PickedOption[]
 			disabled?: boolean
 			maxDate?: Date
 	  }

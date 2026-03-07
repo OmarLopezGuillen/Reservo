@@ -134,6 +134,6 @@ export type CompetitionTeamWithMembersAndAvailabilityDB =
 	CompetitionTeamsRow & {
 		team_availabilities: TeamAvailabilitiesRow[]
 		competition_team_members: (CompetitionTeamMembersRow & {
-			profiles: ProfilesRow | null
+			profiles?: ProfilesRow | null
 		})[]
 	}

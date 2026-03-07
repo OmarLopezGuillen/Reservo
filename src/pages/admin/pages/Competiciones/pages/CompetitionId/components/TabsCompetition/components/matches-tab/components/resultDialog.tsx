@@ -15,25 +15,14 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 
-const OptionalSetScoreSchema = z.preprocess(
-	(value) => {
-		if (value === null || value === "") return undefined
-		if (typeof value === "number" && Number.isNaN(value)) return undefined
-		return value
-	},
-	z.number().int().min(0).max(20).optional(),
-)
-
 const ResultSchema = z
 	.object({
-		h1: z.coerce.number().int().min(0).max(20),
-		a1: z.coerce.number().int().min(0).max(20),
-		h2: z.coerce.number().int().min(0).max(20),
-		a2: z.coerce.number().int().min(0).max(20),
-
-		// Set 3 opcional: aceptar null/NaN y convertirlo a undefined
-		h3: OptionalSetScoreSchema,
-		a3: OptionalSetScoreSchema,
+		h1: z.number().int().min(0).max(20),
+		a1: z.number().int().min(0).max(20),
+		h2: z.number().int().min(0).max(20),
+		a2: z.number().int().min(0).max(20),
+		h3: z.number().int().min(0).max(20).optional(),
+		a3: z.number().int().min(0).max(20).optional(),
 	})
 	.superRefine((v, ctx) => {
 		// si uno rellena set 3, el otro también
@@ -144,18 +133,34 @@ export function MatchResultDialog(props: {
 							{awayTeamName}
 						</div>
 
-						<Input type="number" {...form.register("h1")} inputMode="numeric" />
+						<Input
+							type="number"
+							{...form.register("h1", { valueAsNumber: true })}
+							inputMode="numeric"
+						/>
 						<div className="text-center text-xs text-muted-foreground">-</div>
-						<Input type="number" {...form.register("a1")} inputMode="numeric" />
+						<Input
+							type="number"
+							{...form.register("a1", { valueAsNumber: true })}
+							inputMode="numeric"
+						/>
 					</div>
 
 					{/* Set 2 */}
 					<div className="grid grid-cols-3 gap-2 items-center">
-						<Input type="number" {...form.register("h2")} inputMode="numeric" />
+						<Input
+							type="number"
+							{...form.register("h2", { valueAsNumber: true })}
+							inputMode="numeric"
+						/>
 						<div className="text-center text-xs text-muted-foreground">
 							Set 2
 						</div>
-						<Input type="number" {...form.register("a2")} inputMode="numeric" />
+						<Input
+							type="number"
+							{...form.register("a2", { valueAsNumber: true })}
+							inputMode="numeric"
+						/>
 					</div>
 
 					{/* Set 3 (opcional) */}

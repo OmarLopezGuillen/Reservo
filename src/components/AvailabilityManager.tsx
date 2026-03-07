@@ -11,9 +11,14 @@ import {
 } from "@/components/ui/select"
 import type { TeamAvailability } from "@/models/competition.model"
 
+export type TeamAvailabilityDraft = Pick<
+	TeamAvailability,
+	"weekday" | "startTime" | "endTime"
+>
+
 interface AvailabilityManagerProps {
-	availabilities: TeamAvailability[]
-	setAvailabilities: React.Dispatch<React.SetStateAction<TeamAvailability[]>>
+	availabilities: TeamAvailabilityDraft[]
+	setAvailabilities: React.Dispatch<React.SetStateAction<TeamAvailabilityDraft[]>>
 }
 
 const weekdays = [
@@ -43,14 +48,14 @@ export const AvailabilityManager = ({
 
 	const handleAvailabilityChange = (
 		index: number,
-		field: keyof TeamAvailability,
+		field: keyof TeamAvailabilityDraft,
 		value: string | number,
 	) => {
 		const newAvailabilities = [...availabilities]
 		const availabilityToUpdate = { ...newAvailabilities[index] }
 
 		if (field === "weekday") {
-			availabilityToUpdate.weekday = value as TeamAvailability["weekday"]
+			availabilityToUpdate.weekday = value as TeamAvailabilityDraft["weekday"]
 		} else if (field === "startTime" || field === "endTime") {
 			availabilityToUpdate[field] = value as string
 		}

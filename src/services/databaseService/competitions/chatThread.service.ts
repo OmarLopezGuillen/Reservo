@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase"
 import type { ChatThread } from "@/models/competition.model"
-import type { ChatThreadDbRow, ChatThreadsRow } from "@/models/dbTypes"
+import type { ChatThreadDbRow } from "@/models/dbTypes"
 import { chatThreadsAdapter } from "@/services/adapters/competitions.adapter"
 
 export async function getChatThreadByMatchId(

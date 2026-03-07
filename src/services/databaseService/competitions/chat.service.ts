@@ -86,5 +86,6 @@ export async function sendChatMessage(
 		userId: data.user_id,
 		body: data.body,
 		createdAt: data.created_at,
+		senderName: null,
 	}
 }

@@ -12,7 +12,10 @@ import { useForm } from "react-hook-form"
 import { useNavigate, useSearchParams } from "react-router"
 import { toast } from "sonner"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
-import { AvailabilityManager } from "@/components/AvailabilityManager"
+import {
+	AvailabilityManager,
+	type TeamAvailabilityDraft,
+} from "@/components/AvailabilityManager"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -37,7 +40,6 @@ import { useCompetitionCategoriesByCompetitionId } from "@/hooks/competitions/us
 import { useCompetitionById } from "@/hooks/competitions/useCompetitionsQuery"
 import { useCompetitionTeamsMutation } from "@/hooks/competitions/useCompetitionTeamsMutations"
 import { useTeamAvailabilitiesMutation } from "@/hooks/competitions/useTeamAvailabilitiesMutations"
-import type { TeamAvailability } from "@/models/competition.model"
 
 type FormValues = {
 	teamName: string
@@ -69,7 +71,7 @@ const CompetitionRegister = () => {
 	const { createTeamAvailability } = useTeamAvailabilitiesMutation()
 
 	const [submitted, setSubmitted] = useState(false)
-	const [availabilities, setAvailabilities] = useState<TeamAvailability[]>([])
+	const [availabilities, setAvailabilities] = useState<TeamAvailabilityDraft[]>([])
 
 	const {
 		register,
@@ -90,6 +92,7 @@ const CompetitionRegister = () => {
 
 	const onSubmit = async (values: FormValues) => {
 		if (!userEmail) return
+		if (!competition) return
 
 		const p1 = userEmail.toLowerCase()
 		const p2 = values.emailPlayer2.toLowerCase()
@@ -118,7 +121,7 @@ const CompetitionRegister = () => {
 				extraData: {
 					teamName: values.teamName,
 					competitionName: competition.name,
-					clubName: competition.clubName ?? "Reservo", // TODO: TRAER EL NOMBRE DEL CLUB JUNTO CON LA COMPETICION
+					clubName: "Reservo",
 					inviterName:
 						user?.user_metadata?.full_name ?? user?.email ?? "Jugador",
 				},

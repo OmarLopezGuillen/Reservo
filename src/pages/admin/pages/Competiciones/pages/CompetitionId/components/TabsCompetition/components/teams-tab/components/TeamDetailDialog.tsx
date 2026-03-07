@@ -1,4 +1,3 @@
-import { CheckCircle, Clock, RefreshCw } from "lucide-react"
 import { useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -54,10 +53,6 @@ export const TeamDetailDialog = ({
 
 		return Array.from(map.values()).sort((a, b) => a.weekday - b.weekday)
 	}, [team])
-
-	const handleSentInvitation = () => {
-		console.log("Invitación reenviada")
-	}
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>

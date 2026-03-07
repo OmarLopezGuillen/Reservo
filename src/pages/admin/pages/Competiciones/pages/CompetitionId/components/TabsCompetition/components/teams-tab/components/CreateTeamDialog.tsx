@@ -2,7 +2,10 @@ import { Loader2, Plus } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
-import { AvailabilityManager } from "@/components/AvailabilityManager"
+import {
+	AvailabilityManager,
+	type TeamAvailabilityDraft,
+} from "@/components/AvailabilityManager"
 import { Button } from "@/components/ui/button"
 import {
 	Dialog,
@@ -25,10 +28,7 @@ import {
 
 import { useCompetitionTeamsMutation } from "@/hooks/competitions/useCompetitionTeamsMutations"
 import { useTeamAvailabilitiesMutation } from "@/hooks/competitions/useTeamAvailabilitiesMutations"
-import type {
-	CompetitionCategory,
-	TeamAvailability,
-} from "@/models/competition.model"
+import type { CompetitionCategory } from "@/models/competition.model"
 
 interface CreateTeamDialogProps {
 	competitionId: string
@@ -49,7 +49,7 @@ export const CreateTeamDialog = ({
 	const [player1Email, setPlayer1Email] = useState("")
 	const [player2Email, setPlayer2Email] = useState("")
 	const [substituteEmail, setSubstituteEmail] = useState("")
-	const [availabilities, setAvailabilities] = useState<TeamAvailability[]>([])
+	const [availabilities, setAvailabilities] = useState<TeamAvailabilityDraft[]>([])
 
 	const { createTeamByAdmin } = useCompetitionTeamsMutation()
 	const { createTeamAvailability } = useTeamAvailabilitiesMutation()

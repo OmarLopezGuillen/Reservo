@@ -17,7 +17,7 @@ export async function getCompetitionTeamMemberById(
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
-			.select("*")
+			.select("*, profiles(*)")
 			.eq("id", id)
 			.single()
 
@@ -42,7 +42,7 @@ export async function getCompetitionTeamMembersByTeamId(
 	try {
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
-			.select("*")
+			.select("*, profiles(*)")
 			.eq("team_id", teamId)
 
 		if (error) throw error
@@ -67,7 +67,7 @@ export async function createCompetitionTeamMember(
 		const { data, error } = await supabase
 			.from(TABLE_NAME)
 			.insert(member)
-			.select()
+			.select("*, profiles(*)")
 			.single()
 
 		if (error) throw error
@@ -91,7 +91,7 @@ export async function updateCompetitionTeamMember(
 			.from(TABLE_NAME)
 			.update(member)
 			.eq("id", id)
-			.select()
+			.select("*, profiles(*)")
 			.single()
 
 		if (error) throw error

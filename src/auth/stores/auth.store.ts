@@ -1,6 +1,6 @@
 import type { Session, User } from "@supabase/supabase-js"
 import { create } from "zustand"
-import type { Role } from "@/models/ROLES.model"
+import type { Role } from "@/models/roles.model"
 import { signOut } from "@/services/auth/signOut.service"
 
 interface UserAuth extends User {

@@ -39,7 +39,7 @@ const RulesTab = ({ competitionId }: RulesTabProps) => {
 	// 3) Template por tipo (solo cuando ya tengo competition.type)
 	const { data: ruleTemplate, isLoading: isLoadingTemplate } =
 		useCompetitionRuleTemplateByType(
-			competition?.type,
+			competition?.type ?? null,
 		).competitionRuleTemplateByTypeQuery
 
 	const { createCompetitionRule, updateCompetitionRule } =
