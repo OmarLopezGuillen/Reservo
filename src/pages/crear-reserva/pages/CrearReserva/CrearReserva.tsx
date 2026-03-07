@@ -2,6 +2,7 @@ import { ArrowLeft, CreditCard, Info } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router" // Importar useSearchParams
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
+import { AppHeaderActions } from "@/components/AppHeaderActions/AppHeaderActions"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
@@ -112,14 +113,17 @@ const CrearReserva = () => {
 			{/* Header */}
 			<header className="border-b">
 				<div className="container mx-auto px-4 py-4">
-					<div className="flex items-center gap-4">
-						<Button variant="ghost" size="sm" asChild>
-							<Link to={ROUTES.HOME}>
-								<ArrowLeft className="h-4 w-4 mr-2" />
-								Volver
-							</Link>
-						</Button>
-						<h1 className="text-2xl font-bold">Confirmar reserva</h1>
+					<div className="flex items-center justify-between gap-4">
+						<div className="flex items-center gap-4">
+							<Button variant="ghost" size="sm" asChild>
+								<Link to={ROUTES.HOME}>
+									<ArrowLeft className="h-4 w-4 mr-2" />
+									Volver
+								</Link>
+							</Button>
+							<h1 className="text-2xl font-bold">Confirmar reserva</h1>
+						</div>
+						<AppHeaderActions />
 					</div>
 				</div>
 			</header>

@@ -2,6 +2,7 @@ import { ArrowLeft, Loader2, ShieldAlert, Trophy } from "lucide-react"
 import { useMemo } from "react"
 import { Link, useParams } from "react-router"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
+import { AppHeaderActions } from "@/components/AppHeaderActions/AppHeaderActions"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ROUTES } from "@/constants/ROUTES"
@@ -69,14 +70,17 @@ const CompetitionId = () => {
 			<div className="min-h-screen bg-background">
 				<header className="border-b">
 					<div className="container mx-auto px-4 py-4">
-						<div className="flex items-center gap-4">
-							<Button variant="ghost" size="sm" asChild>
-								<Link to={ROUTES.MIS_LIGAS}>
-									<ArrowLeft className="h-4 w-4 mr-2" />
-									Volver
-								</Link>
-							</Button>
-							<h1 className="text-2xl font-bold">Detalles de la competición</h1>
+						<div className="flex items-center justify-between gap-4">
+							<div className="flex items-center gap-4">
+								<Button variant="ghost" size="sm" asChild>
+									<Link to={ROUTES.MIS_LIGAS}>
+										<ArrowLeft className="h-4 w-4 mr-2" />
+										Volver
+									</Link>
+								</Button>
+								<h1 className="text-2xl font-bold">Detalles de la competición</h1>
+							</div>
+							<AppHeaderActions />
 						</div>
 					</div>
 				</header>
@@ -96,14 +100,17 @@ const CompetitionId = () => {
 			<div className="min-h-screen bg-background">
 				<header className="border-b">
 					<div className="container mx-auto px-4 py-4">
-						<div className="flex items-center gap-4">
-							<Button variant="ghost" size="sm" asChild>
-								<Link to={ROUTES.MIS_LIGAS}>
-									<ArrowLeft className="h-4 w-4 mr-2" />
-									Volver
-								</Link>
-							</Button>
-							<h1 className="text-2xl font-bold">Detalles de la competición</h1>
+						<div className="flex items-center justify-between gap-4">
+							<div className="flex items-center gap-4">
+								<Button variant="ghost" size="sm" asChild>
+									<Link to={ROUTES.MIS_LIGAS}>
+										<ArrowLeft className="h-4 w-4 mr-2" />
+										Volver
+									</Link>
+								</Button>
+								<h1 className="text-2xl font-bold">Detalles de la competición</h1>
+							</div>
+							<AppHeaderActions />
 						</div>
 					</div>
 				</header>
@@ -124,14 +131,17 @@ const CompetitionId = () => {
 		<div className="min-h-screen bg-background">
 			<header className="border-b">
 				<div className="container mx-auto px-4 py-4">
-					<div className="flex items-center gap-4">
-						<Button variant="ghost" size="sm" asChild>
-							<Link to={ROUTES.MIS_LIGAS}>
-								<ArrowLeft className="h-4 w-4 mr-2" />
-								Volver
-							</Link>
-						</Button>
-						<h1 className="text-2xl font-bold">Detalles de la competición</h1>
+					<div className="flex items-center justify-between gap-4">
+						<div className="flex items-center gap-4">
+							<Button variant="ghost" size="sm" asChild>
+								<Link to={ROUTES.MIS_LIGAS}>
+									<ArrowLeft className="h-4 w-4 mr-2" />
+									Volver
+								</Link>
+							</Button>
+							<h1 className="text-2xl font-bold">Detalles de la competición</h1>
+						</div>
+						<AppHeaderActions />
 					</div>
 				</div>
 			</header>

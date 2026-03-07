@@ -1,35 +1,70 @@
 import { Bell } from "lucide-react"
+import { useAuthStore } from "@/auth/stores/auth.store"
+import { usePendingInvitesForUser } from "@/hooks/competitions/useCompetitionTeamInvitesQuery"
+import { cn } from "@/lib/utils"
 import { NotificationDropdown } from "./components/NotificationDropdown"
 import { useNotifications } from "./hook/useNotifications"
 
-export function Notification() {
+interface NotificationProps {
+	variant?: "default" | "header"
+}
+
+export function Notification({ variant = "default" }: NotificationProps) {
+	const user = useAuthStore((state) => state.user)
 	const { data: notifications = [] } = useNotifications()
+	const { pendingInvitesQuery } = usePendingInvitesForUser(user?.email)
+	const invites = pendingInvitesQuery.data ?? []
 
 	const unreadCount = notifications.filter((n) => !n.is_read).length
+	const totalUnreadCount = unreadCount + invites.length
+	const isHeaderVariant = variant === "header"
 
 	return (
 		<div className="relative">
-			<NotificationDropdown notifications={notifications}>
-				<button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/90 text-muted-foreground shadow-sm transition-all hover:border-border hover:bg-accent hover:text-foreground">
-					<Bell className="h-5 w-5" />
+			<NotificationDropdown
+				invites={invites}
+				isLoadingInvites={pendingInvitesQuery.isLoading}
+				notifications={notifications}
+			>
+				<button
+					className={cn(
+						"relative flex items-center justify-center rounded-full border transition-all",
+						isHeaderVariant
+							? "h-9 w-9 border-border/50 bg-muted/40 text-foreground shadow-none backdrop-blur hover:border-border hover:bg-muted"
+							: "h-10 w-10 border-border/60 bg-background/90 text-muted-foreground shadow-sm hover:border-border hover:bg-accent hover:text-foreground",
+					)}
+				>
+					<Bell
+						className={cn("h-5 w-5", isHeaderVariant && "h-[18px] w-[18px]")}
+					/>
 
-					{unreadCount > 0 && (
+					{totalUnreadCount > 0 && (
 						<>
-							<span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-sky-500 animate-pulse" />
-							<span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-foreground px-1.5 py-0.5 text-center text-[10px] font-semibold leading-none text-background shadow-sm">
-								{unreadCount > 99 ? "99+" : unreadCount}
+							<span
+								className={cn(
+									"absolute rounded-full bg-sky-500 animate-pulse",
+									isHeaderVariant
+										? "right-1 top-1 h-2 w-2"
+										: "top-1 right-1 h-2.5 w-2.5",
+								)}
+							/>
+							<span
+								className={cn(
+									"absolute rounded-full bg-foreground text-center text-[10px] font-semibold leading-none text-background shadow-sm",
+									isHeaderVariant
+										? "-right-1.5 -top-1 min-w-4 px-1 py-0.5"
+										: "-top-1 -right-1 min-w-5 px-1.5 py-0.5",
+								)}
+							>
+								{totalUnreadCount > 99 ? "99+" : totalUnreadCount}
 							</span>
 						</>
 					)}
 
-					{unreadCount === 0 && (
-						<span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-emerald-500/80" />
-					)}
-
 					<span className="sr-only">
-						{unreadCount > 0
-							? `${unreadCount} notificaciones sin leer`
-							: "No hay notificaciones sin leer"}
+						{totalUnreadCount > 0
+							? `${totalUnreadCount} elementos pendientes`
+							: "No hay notificaciones ni invitaciones pendientes"}
 					</span>
 				</button>
 			</NotificationDropdown>

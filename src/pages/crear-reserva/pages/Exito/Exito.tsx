@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
+import { AppHeaderActions } from "@/components/AppHeaderActions/AppHeaderActions"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -74,7 +75,7 @@ const Exito = () => {
 			{/* Header */}
 			<header className="border-b">
 				<div className="container mx-auto px-4 py-4">
-					<div className="flex items-center gap-4">
+					<div className="flex items-center justify-between gap-4">
 						<div className="flex items-center space-x-2">
 							<div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
 								<span className="text-primary-foreground font-bold text-sm">
@@ -83,6 +84,7 @@ const Exito = () => {
 							</div>
 							<span className="text-xl font-semibold">Reservo</span>
 						</div>
+						<AppHeaderActions />
 					</div>
 				</div>
 			</header>

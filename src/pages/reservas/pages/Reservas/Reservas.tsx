@@ -2,6 +2,7 @@ import { Separator } from "@radix-ui/react-separator"
 import { ArrowLeft, Building, Calendar, Clock, MapPin } from "lucide-react"
 import { useMemo } from "react"
 import { Link } from "react-router"
+import { AppHeaderActions } from "@/components/AppHeaderActions/AppHeaderActions"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -129,14 +130,17 @@ const Reservas = () => {
 			{/* Header */}
 			<header className="border-b">
 				<div className="container mx-auto px-4 py-4">
-					<div className="flex items-center gap-4">
-						<Button variant="ghost" size="sm" asChild>
-							<Link to={ROUTES.HOME}>
-								<ArrowLeft className="h-4 w-4 mr-2" />
-								Volver
-							</Link>
-						</Button>
-						<h1 className="text-2xl font-bold">Mis reservas</h1>
+					<div className="flex items-center justify-between gap-4">
+						<div className="flex items-center gap-4">
+							<Button variant="ghost" size="sm" asChild>
+								<Link to={ROUTES.HOME}>
+									<ArrowLeft className="h-4 w-4 mr-2" />
+									Volver
+								</Link>
+							</Button>
+							<h1 className="text-2xl font-bold">Mis reservas</h1>
+						</div>
+						<AppHeaderActions />
 					</div>
 				</div>
 			</header>

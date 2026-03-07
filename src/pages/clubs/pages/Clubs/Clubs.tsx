@@ -7,6 +7,7 @@ import {
 } from "lucide-react"
 import { useMemo, useState } from "react"
 import { Link } from "react-router"
+import { AppHeaderActions } from "@/components/AppHeaderActions/AppHeaderActions"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -31,14 +32,17 @@ const Clubs = () => {
 		<div className="min-h-screen bg-gradient-to-b from-background via-secondary/30 to-background">
 			<header className="border-b">
 				<div className="container mx-auto px-4 py-4">
-					<div className="flex items-center gap-4">
-						<Button variant="ghost" size="sm" asChild>
-							<Link to={ROUTES.HOME}>
-								<ArrowLeft className="h-4 w-4 mr-2" />
-								Volver
-							</Link>
-						</Button>
-						<h1 className="text-2xl font-bold">Clubes</h1>
+					<div className="flex items-center justify-between gap-4">
+						<div className="flex items-center gap-4">
+							<Button variant="ghost" size="sm" asChild>
+								<Link to={ROUTES.HOME}>
+									<ArrowLeft className="h-4 w-4 mr-2" />
+									Volver
+								</Link>
+							</Button>
+							<h1 className="text-2xl font-bold">Clubes</h1>
+						</div>
+						<AppHeaderActions />
 					</div>
 				</div>
 			</header>

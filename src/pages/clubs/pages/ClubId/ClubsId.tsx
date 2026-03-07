@@ -1,5 +1,6 @@
 import { ArrowLeft } from "lucide-react"
 import { Link, Navigate, useParams } from "react-router"
+import { AppHeaderActions } from "@/components/AppHeaderActions/AppHeaderActions"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/constants/ROUTES"
 import { useBookingsCalendar } from "@/hooks/useBookingsQuery"
@@ -46,14 +47,17 @@ const ClubsId = () => {
 			{/* Header */}
 			<header className="border-b">
 				<div className="container mx-auto px-4 py-4">
-					<div className="flex items-center gap-4">
-						<Button variant="ghost" size="sm" asChild>
-							<Link to={ROUTES.CLUBS.ROOT}>
-								<ArrowLeft className="h-4 w-4 mr-2" />
-								Volver
-							</Link>
-						</Button>
-						<h1 className="text-2xl font-bold">Reservar pista</h1>
+					<div className="flex items-center justify-between gap-4">
+						<div className="flex items-center gap-4">
+							<Button variant="ghost" size="sm" asChild>
+								<Link to={ROUTES.CLUBS.ROOT}>
+									<ArrowLeft className="h-4 w-4 mr-2" />
+									Volver
+								</Link>
+							</Button>
+							<h1 className="text-2xl font-bold">Reservar pista</h1>
+						</div>
+						<AppHeaderActions />
 					</div>
 				</div>
 			</header>
