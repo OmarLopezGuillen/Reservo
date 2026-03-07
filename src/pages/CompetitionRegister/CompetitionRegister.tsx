@@ -5,9 +5,8 @@ import {
 	Loader2,
 	Send,
 	Trophy,
-	Users,
 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate, useSearchParams } from "react-router"
 import { toast } from "sonner"
@@ -57,6 +56,11 @@ const sanitizeCompetitionId = (rawId: string | null) => {
 	return rawId.match(UUID_REGEX)?.[0] ?? null
 }
 
+const timeToMinutes = (time: string) => {
+	const [hours, minutes] = time.split(":").map(Number)
+	return hours * 60 + minutes
+}
+
 const CompetitionRegister = () => {
 	const [searchParams] = useSearchParams()
 	const competitionId = sanitizeCompetitionId(searchParams.get("id"))
@@ -86,8 +90,7 @@ const CompetitionRegister = () => {
 		register,
 		handleSubmit,
 		setValue,
-		watch,
-		formState: { errors, isSubmitting },
+		formState: { isSubmitting },
 	} = useForm<FormValues>()
 
 	// Set player1 email automáticamente
@@ -105,9 +108,76 @@ const CompetitionRegister = () => {
 
 	const isLoading = isLoadingCompetition || isLoadingCategories
 
+	const availabilityValidation = useMemo(() => {
+		const minDays = competition?.minAvailabilityDays ?? 0
+		const minHoursPerDay = competition?.minAvailabilityHoursPerDay ?? 0
+		const minMinutesPerDay = minHoursPerDay * 60
+
+		const groupedByDay = new Map<string, { start: number; end: number }[]>()
+		const invalidRanges = availabilities.some((availability) => {
+			const start = timeToMinutes(availability.startTime)
+			const end = timeToMinutes(availability.endTime)
+
+			if (end <= start) return true
+
+			const current = groupedByDay.get(availability.weekday) ?? []
+			current.push({ start, end })
+			groupedByDay.set(availability.weekday, current)
+			return false
+		})
+
+		const validDays = Array.from(groupedByDay.values()).filter((ranges) => {
+			const merged = [...ranges]
+				.sort((a, b) => a.start - b.start)
+				.reduce<{ start: number; end: number }[]>((acc, range) => {
+					const last = acc[acc.length - 1]
+					if (!last || range.start > last.end) {
+						acc.push({ ...range })
+						return acc
+					}
+
+					last.end = Math.max(last.end, range.end)
+					return acc
+				}, [])
+
+			const totalMinutes = merged.reduce(
+				(sum, range) => sum + (range.end - range.start),
+				0,
+			)
+
+			return totalMinutes >= minMinutesPerDay
+		}).length
+
+		return {
+			minDays,
+			minHoursPerDay,
+			validDays,
+			invalidRanges,
+			meetsRequirement: !invalidRanges && validDays >= minDays,
+		}
+	}, [availabilities, competition])
+
+	const submitDisabled =
+		isSubmitting ||
+		createTeamByAdmin.isPending ||
+		createTeamAvailability.isPending ||
+		!availabilityValidation.meetsRequirement
+
 	const onSubmit = async (values: FormValues) => {
 		if (!userEmail) return
 		if (!competition) return
+
+		if (availabilityValidation.invalidRanges) {
+			toast.error("Revisa los tramos de disponibilidad: la hora de fin debe ser posterior al inicio.")
+			return
+		}
+
+		if (!availabilityValidation.meetsRequirement) {
+			toast.error(
+				`Debes indicar al menos ${availabilityValidation.minDays} dias con ${availabilityValidation.minHoursPerDay} horas de disponibilidad cada uno.`,
+			)
+			return
+		}
 
 		const p1 = userEmail.toLowerCase()
 		const p2 = values.emailPlayer2.toLowerCase()
@@ -295,6 +365,22 @@ const CompetitionRegister = () => {
 								setAvailabilities={setAvailabilities}
 							/>
 
+							<Alert
+								variant={
+									availabilityValidation.meetsRequirement
+										? "default"
+										: "destructive"
+								}
+							>
+								<AlertDescription>
+									{availabilityValidation.invalidRanges
+										? "Hay tramos invalidos: la hora de fin debe ser posterior a la de inicio."
+										: availabilityValidation.meetsRequirement
+											? `Requisito cumplido: ${availabilityValidation.validDays}/${availabilityValidation.minDays} dias validos con al menos ${availabilityValidation.minHoursPerDay} horas por dia.`
+											: `Debes indicar al menos ${availabilityValidation.minDays} dias con ${availabilityValidation.minHoursPerDay} horas por dia. Actualmente cumples ${availabilityValidation.validDays}/${availabilityValidation.minDays} dias.`}
+								</AlertDescription>
+							</Alert>
+
 							<Alert>
 								<Send className="h-4 w-4" />
 								<AlertDescription>
@@ -303,8 +389,12 @@ const CompetitionRegister = () => {
 								</AlertDescription>
 							</Alert>
 
-							<Button type="submit" className="w-full" disabled={isSubmitting}>
-								{isSubmitting ? "Inscribiendo..." : "Inscribir equipo"}
+							<Button type="submit" className="w-full" disabled={submitDisabled}>
+								{submitDisabled && !isSubmitting && !createTeamByAdmin.isPending
+									? "Completa la disponibilidad minima"
+									: isSubmitting || createTeamByAdmin.isPending
+										? "Inscribiendo..."
+										: "Inscribir equipo"}
 							</Button>
 						</form>
 					</CardContent>
