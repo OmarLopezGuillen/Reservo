@@ -11,7 +11,7 @@ import type {
 	WeekDay,
 } from "./dbTypes"
 import type { Json } from "@/services/types/database"
-import type { Role } from "./roles.model"
+import type { Role } from "./ROLES.model"
 
 export interface Competition {
 	id: string

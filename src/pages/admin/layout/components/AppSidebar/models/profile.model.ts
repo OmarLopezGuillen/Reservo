@@ -1,4 +1,4 @@
-import type { Role } from "@/models/roles.model"
+import type { Role } from "@/models/ROLES.model"
 
 export interface Profile {
 	id: string

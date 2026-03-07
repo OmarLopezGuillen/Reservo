@@ -9,7 +9,7 @@ import Register from "@/auth/pages/Register"
 import ResetPassword from "@/auth/pages/ResetPassword"
 import { Loading } from "@/components/Loading"
 import { ROUTES } from "@/constants/ROUTES"
-import { ROLES } from "@/models/roles.model"
+import { ROLES } from "@/models/ROLES.model"
 import Home from "./pages/home/Home"
 
 const Unauthorized = lazy(() => import("@/pages/Unauthorized"))
