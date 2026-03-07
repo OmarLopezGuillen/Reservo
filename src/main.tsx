@@ -4,6 +4,7 @@ import "@/index.css"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import AppRouter from "@/AppRouter"
+import { NotificationsRealtimeProvider } from "./components/NotificationsRealtimeProvider/NotificationsRealtimeProvider"
 import { Toaster } from "./components/ui/sonner"
 
 const queryClient = new QueryClient()
@@ -11,9 +12,11 @@ const queryClient = new QueryClient()
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<QueryClientProvider client={queryClient}>
-			<AppRouter />
-			<Toaster richColors theme="light" />
-			<ReactQueryDevtools initialIsOpen={false} />
+			<NotificationsRealtimeProvider>
+				<AppRouter />
+				<Toaster richColors theme="light" />
+				<ReactQueryDevtools initialIsOpen={false} />
+			</NotificationsRealtimeProvider>
 		</QueryClientProvider>
 	</StrictMode>,
 )

@@ -17,6 +17,19 @@ export type ChatMessage = {
 	senderName: string | null
 }
 
+async function getProfileNamesByUserIds(userIds: string[]) {
+	if (userIds.length === 0) return new Map<string, string | null>()
+
+	const { data, error } = await supabase
+		.from("profiles")
+		.select("user_id,name")
+		.in("user_id", userIds)
+
+	if (error) throw error
+
+	return new Map((data ?? []).map((profile) => [profile.user_id, profile.name]))
+}
+
 export async function getChatThreadById(threadId: string): Promise<ChatThread> {
 	const { data, error } = await supabase
 		.from("chat_threads")
@@ -40,19 +53,23 @@ export async function getChatMessages(
 ): Promise<ChatMessage[]> {
 	const { data, error } = await supabase
 		.from("chat_messages")
-		.select("id,thread_id,user_id,body,created_at, profiles(name)")
+		.select("id,thread_id,user_id,body,created_at")
 		.eq("thread_id", threadId)
 		.order("created_at", { ascending: true })
 
 	if (error) throw error
 
-	return (data ?? []).map((m) => ({
+	const messages = data ?? []
+	const userIds = [...new Set(messages.map((message) => message.user_id))]
+	const profileNames = await getProfileNamesByUserIds(userIds)
+
+	return messages.map((m) => ({
 		id: m.id,
 		threadId: m.thread_id,
 		userId: m.user_id,
 		body: m.body,
 		createdAt: m.created_at,
-		senderName: m.profiles?.name ?? null,
+		senderName: profileNames.get(m.user_id) ?? null,
 	}))
 }
 
@@ -80,12 +97,14 @@ export async function sendChatMessage(
 
 	if (error) throw error
 
+	const profileNames = await getProfileNamesByUserIds([userId])
+
 	return {
 		id: data.id,
 		threadId: data.thread_id,
 		userId: data.user_id,
 		body: data.body,
 		createdAt: data.created_at,
-		senderName: null,
+		senderName: profileNames.get(userId) ?? null,
 	}
 }

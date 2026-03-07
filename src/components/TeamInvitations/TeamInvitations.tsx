@@ -16,7 +16,7 @@ export const TeamInvitations = () => {
 	const user = useAuthUser()
 	const { pendingInvitesQuery } = usePendingInvitesForUser(user?.email)
 	const { data: invites = [], isLoading } = pendingInvitesQuery
-	console.log("Pending invites:", user?.email)
+
 	const { acceptTeamInvite, updateCompetitionTeamInvite } =
 		useCompetitionTeamInvitesMutation()
 

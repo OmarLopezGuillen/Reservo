@@ -54,8 +54,8 @@ export const useCompetitionTeamsMutation = () => {
 			toast.error("Error al crear el equipo de competición.")
 		},
 	})
-	//const APP_URL = import.meta.env.VITE_APP_URL || "http://localhost:5173"
-	const APP_URL = "http://localhost:5173"
+	const APP_URL = import.meta.env.VITE_APP_URL || "http://localhost:5173"
+
 	const invitationUrl = `${APP_URL}/register?redirect=${encodeURIComponent(
 		"/mis-ligas",
 	)}`

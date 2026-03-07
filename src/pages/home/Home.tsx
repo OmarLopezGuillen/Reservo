@@ -14,9 +14,8 @@ import { Link } from "react-router"
 
 import { useAuthActions } from "@/auth/hooks/useAuthActions"
 import { useAuthStore } from "@/auth/stores/auth.store"
-
+import { Notification } from "@/components/Notifications/Notifications"
 import { Button } from "@/components/ui/button"
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ROUTES } from "@/constants/ROUTES"
@@ -61,6 +60,7 @@ const NavLinks = ({ onClick }: { onClick?: () => void }) => {
 				>
 					Cerrar sesión
 				</Button>
+				<Notification />
 			</>
 		)
 	}

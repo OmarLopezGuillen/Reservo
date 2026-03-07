@@ -3,6 +3,7 @@ import { ArrowDown, ChevronLeft } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 import { useAuthUser } from "@/auth/hooks/useAuthUser"
+import { getNotificationsQueryKey } from "@/components/Notifications/hook/useNotifications"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -17,6 +18,9 @@ import { useClubHours } from "@/hooks/useClubHoursQuery"
 import { useCourts } from "@/hooks/useCourtsQuery"
 import { supabase } from "@/lib/supabase"
 import { cn } from "@/lib/utils"
+import type { ChatMessage } from "@/services/databaseService/competitions/chat.service"
+import { markThreadNotificationsRead } from "@/services/databaseService/competitions/RPC/markThreadNotificationsRead"
+import { markThreadRead } from "@/services/databaseService/competitions/RPC/markThreadRead"
 import { ChatRulesBanner } from "./components/ChatRulesBanner"
 import { MatchReschedulePanel } from "./components/MatchReschedulePanel/MatchReschedulePanel"
 
@@ -53,6 +57,21 @@ export default function ChatThreadPage() {
 	const { data: clubHours } = clubHoursQuery
 
 	const messages = messagesQuery.data ?? []
+	console.log("mensajes", messages)
+	const syncThreadAsRead = async () => {
+		try {
+			await Promise.all([
+				markThreadRead({ threadId }),
+				markThreadNotificationsRead(threadId),
+			])
+			await queryClient.invalidateQueries({
+				queryKey: getNotificationsQueryKey(user.id),
+				exact: true,
+			})
+		} catch {
+			// ignoramos error
+		}
+	}
 
 	const scrollToBottom = (smooth = true) => {
 		if (scrollRef.current) {
@@ -63,7 +82,7 @@ export default function ChatThreadPage() {
 		}
 	}
 
-	const handleScroll = () => {
+	const handleScroll = async () => {
 		if (!scrollRef.current) return
 		const { scrollTop, scrollHeight, clientHeight } = scrollRef.current
 		const isAtBottom = scrollHeight - scrollTop - clientHeight <= 100
@@ -72,6 +91,7 @@ export default function ChatThreadPage() {
 		if (isAtBottom) {
 			setUnreadCount(0)
 			setShowScrollButton(false)
+			await syncThreadAsRead()
 		} else {
 			setShowScrollButton(true)
 		}
@@ -99,6 +119,12 @@ export default function ChatThreadPage() {
 		void run()
 	}, [threadId])
 
+	useEffect(() => {
+		if (!threadId) return
+
+		void syncThreadAsRead()
+	}, [threadId])
+
 	// realtime: escuchar inserts en chat_messages de este thread
 	useEffect(() => {
 		if (!threadId) return
@@ -113,20 +139,26 @@ export default function ChatThreadPage() {
 					table: "chat_messages",
 					filter: `thread_id=eq.${threadId}`,
 				},
-				(payload) => {
+				async (payload) => {
 					const newRow = payload.new
+					const { data: profile } = await supabase
+						.from("profiles")
+						.select("name")
+						.eq("user_id", newRow.user_id)
+						.single()
 
-					const newMsg = {
+					const newMsg: ChatMessage = {
 						id: newRow.id,
 						threadId: newRow.thread_id,
 						userId: newRow.user_id,
 						body: newRow.body,
 						createdAt: newRow.created_at,
+						senderName: profile?.name ?? null,
 					}
 
 					queryClient.setQueryData(
 						[CHAT_MESSAGES_QUERY_KEY, threadId],
-						(old: any) => {
+						(old: ChatMessage[] | undefined) => {
 							const prev = Array.isArray(old) ? old : []
 							if (prev.find((m) => m.id === newMsg.id)) return prev
 
@@ -167,6 +199,9 @@ export default function ChatThreadPage() {
 
 		if (isMine || isAtBottomRef.current) {
 			requestAnimationFrame(() => scrollToBottom(true))
+			if (!isMine) {
+				void syncThreadAsRead()
+			}
 		} else {
 			setUnreadCount((prev) => prev + (currentLength - previousLength))
 		}
@@ -281,9 +316,10 @@ export default function ChatThreadPage() {
 						variant="secondary"
 						size="sm"
 						className="shadow-lg rounded-full gap-2 transition-all duration-200 hover:scale-105"
-						onClick={() => {
+						onClick={async () => {
 							scrollToBottom(true)
 							setUnreadCount(0)
+							await syncThreadAsRead()
 						}}
 					>
 						<ArrowDown className="h-4 w-4" />
