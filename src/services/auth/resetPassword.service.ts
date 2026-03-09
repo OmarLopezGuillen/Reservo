@@ -6,8 +6,11 @@ interface Props {
 }
 
 export const resetPassword = async ({ email }: Props) => {
+	const appUrl = import.meta.env.VITE_APP_URL || window.location.origin
+	const redirectTo = new URL(ROUTES.RESET_PASSWORD, appUrl).toString()
+
 	const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-		redirectTo: `http://localhost:5173${ROUTES.RESET_PASSWORD}`,
+		redirectTo,
 	})
 	if (error) {
 		console.error("Error password change:", error.message)

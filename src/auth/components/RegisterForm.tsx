@@ -8,6 +8,7 @@ import {
 	type RegisterFormSchema,
 	registerFormSchema,
 } from "@/auth/schemas/register.schema"
+import { PasswordRequirements } from "@/auth/components/PasswordRequirements"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -49,6 +50,7 @@ export default function RegisterForm() {
 			confirmPassword: "",
 		},
 	})
+	const passwordValue = form.watch("password")
 
 	async function onSubmit(values: RegisterFormSchema) {
 		setError(null)
@@ -168,6 +170,7 @@ export default function RegisterForm() {
 												{...field}
 											/>
 										</FormControl>
+										<PasswordRequirements password={passwordValue} />
 										<FormMessage />
 									</FormItem>
 								)}

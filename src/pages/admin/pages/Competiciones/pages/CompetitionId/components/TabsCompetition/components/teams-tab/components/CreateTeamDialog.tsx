@@ -2,6 +2,7 @@ import { Loader2, Plus } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
+import { useAuthUser } from "@/auth/hooks/useAuthUser"
 import {
 	AvailabilityManager,
 	type TeamAvailabilityDraft,
@@ -43,6 +44,7 @@ export const CreateTeamDialog = ({
 	competitionName,
 	clubName,
 }: CreateTeamDialogProps) => {
+	const user = useAuthUser()
 	const [isOpen, setIsOpen] = useState(false)
 	const [newTeamName, setNewTeamName] = useState("")
 	const [newTeamCategory, setNewTeamCategory] = useState("")
@@ -77,6 +79,9 @@ export const CreateTeamDialog = ({
 		const p1 = player1Email.toLowerCase()
 		const p2 = player2Email.toLowerCase()
 		const sub = substituteEmail.trim().toLowerCase()
+		const normalizedTeamName = newTeamName.trim()
+		const inviterName =
+			user.user_metadata?.full_name ?? user.email ?? "Administrador"
 
 		if (p1 === p2) {
 			toast.error("Los emails de los jugadores no pueden ser iguales.")
@@ -93,32 +98,44 @@ export const CreateTeamDialog = ({
 				teamData: {
 					competitionId,
 					categoryId: newTeamCategory,
-					teamName: newTeamName,
-					emailPlayer1: player1Email,
-					emailPlayer2: player2Email,
+					teamName: normalizedTeamName,
+					emailPlayer1: p1,
+					emailPlayer2: p2,
 					emailSubstitute: sub || null,
 				},
 				extraData: {
-					teamName: newTeamName,
+					teamName: normalizedTeamName,
 					competitionName,
 					clubName,
-					inviterName: "Administrador", // o user?.full_name si lo tienes
+					inviterName,
 				},
 			},
 			{
-				onSuccess: (data) => {
-					setIsOpen(false)
-					resetCreateForm()
-
-					if (availabilities.length > 0 && data.team_id) {
-						for (const avail of availabilities) {
-							createTeamAvailability.mutate({
-								team_id: data.team_id,
-								weekday: avail.weekday,
-								start_time: avail.startTime,
-								end_time: avail.endTime,
-							})
+				onSuccess: async (data) => {
+					try {
+						if (availabilities.length > 0 && data.team_id) {
+							await Promise.all(
+								availabilities.map((avail) =>
+									createTeamAvailability.mutateAsync({
+										availabilityData: {
+											team_id: data.team_id,
+											weekday: avail.weekday,
+											start_time: avail.startTime,
+											end_time: avail.endTime,
+										},
+										silentToast: true,
+									}),
+								),
+							)
 						}
+
+						setIsOpen(false)
+						resetCreateForm()
+					} catch (error) {
+						console.error("Error creating team availabilities:", error)
+						toast.error(
+							"El equipo se creó, pero no se pudieron guardar todas las disponibilidades.",
+						)
 					}
 				},
 			},

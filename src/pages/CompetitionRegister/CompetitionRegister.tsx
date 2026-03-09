@@ -218,10 +218,12 @@ const CompetitionRegister = () => {
 					if (availabilities.length > 0 && data.team_id) {
 						for (const avail of availabilities) {
 							createTeamAvailability.mutate({
-								team_id: data.team_id,
-								weekday: avail.weekday,
-								start_time: avail.startTime,
-								end_time: avail.endTime,
+								availabilityData: {
+									team_id: data.team_id,
+									weekday: avail.weekday,
+									start_time: avail.startTime,
+									end_time: avail.endTime,
+								},
 							})
 						}
 					}

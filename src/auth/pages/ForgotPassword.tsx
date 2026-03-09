@@ -77,6 +77,9 @@ export default function ForgotPasswordPage() {
 								<AlertDescription>
 									Si el correo existe, recibirás instrucciones para restablecer
 									tu contraseña.
+									<b>
+										👀¡Ojo! Si no aparece en tu bandeja principal mira spam.
+									</b>
 								</AlertDescription>
 							</Alert>
 						</div>

@@ -96,6 +96,7 @@ export default function AppRouter() {
 					<Route path={ROUTES.REGISTER} element={<Register />} />
 					<Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
 				</Route>
+				<Route path={ROUTES.RESET_PASSWORD} element={<ResetPassword />} />
 
 				{/* Legales */}
 				<Route
@@ -165,7 +166,6 @@ export default function AppRouter() {
 						<PrivateRoute roles={[ROLES.USER, ROLES.ADMIN, ROLES.OWNER]} />
 					}
 				>
-					<Route path={ROUTES.RESET_PASSWORD} element={<ResetPassword />} />
 					<Route
 						path={ROUTES.MIS_LIGAS}
 						element={

@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router"
 import { z } from "zod"
 import { useAuthActions } from "@/auth/hooks/useAuthActions"
+import { PasswordRequirements } from "@/auth/components/PasswordRequirements"
+import { passwordSchema } from "@/auth/schemas/password.schema"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,10 +29,8 @@ import { ROUTES } from "@/constants/ROUTES"
 
 const resetSchema = z
 	.object({
-		password: z
-			.string()
-			.min(6, "La contraseña debe tener al menos 6 caracteres"),
-		confirmPassword: z.string(),
+		password: passwordSchema,
+		confirmPassword: z.string().min(1, "Debes confirmar la contraseña"),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		message: "Las contraseñas no coinciden",
@@ -52,6 +52,7 @@ export default function ResetPasswordPage() {
 			confirmPassword: "",
 		},
 	})
+	const passwordValue = form.watch("password")
 
 	async function onSubmit(values: ResetSchema) {
 		setError(null)
@@ -62,7 +63,6 @@ export default function ResetPasswordPage() {
 			})
 			setSuccess(true)
 
-			// Redirigir después de 2s (opcional)
 			setTimeout(() => {
 				navigate(ROUTES.LOGIN)
 			}, 2000)
@@ -76,11 +76,13 @@ export default function ResetPasswordPage() {
 		<div className="flex min-h-screen items-center justify-center bg-background px-4">
 			<Card className="w-full max-w-md">
 				<CardHeader className="text-center">
-					<div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+					<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
 						<Lock className="h-6 w-6 text-primary" />
 					</div>
 					<CardTitle>Restablecer contraseña</CardTitle>
-					<CardDescription>Introduce tu nueva contraseña</CardDescription>
+					<CardDescription>
+						Introduce tu nueva contraseña
+					</CardDescription>
 				</CardHeader>
 
 				<CardContent>
@@ -129,6 +131,7 @@ export default function ResetPasswordPage() {
 														{...field}
 													/>
 												</FormControl>
+												<PasswordRequirements password={passwordValue} />
 												<FormMessage />
 											</FormItem>
 										)}
@@ -169,7 +172,7 @@ export default function ResetPasswordPage() {
 					<div className="mt-6 text-center text-sm">
 						<Link
 							to={ROUTES.LOGIN}
-							className="underline underline-offset-4 hover:text-primary transition"
+							className="underline underline-offset-4 transition hover:text-primary"
 						>
 							Volver al login
 						</Link>
